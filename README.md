@@ -1,94 +1,127 @@
-# 10x Astro Starter
+# 10xNoteQuiz - AI-Powered Quiz Generator from Your Notes
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+[![Project Status: In Development](https://img.shields.io/badge/status-in%20development-yellowgreen.svg)](https://github.com/PawelAdamWawrzyniak/10xdevs-project)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-## Tech Stack
+## 1. Project Description
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+**10xNoteQuiz** is a web application designed to enhance the learning process for students and lifelong learners. It empowers users to create notes in Markdown and then leverages Artificial Intelligence to automatically generate personalized quizzes from them. The application integrates a Spaced Repetition System (SRS) to optimize memory retention, making studying more efficient and effective.
 
-## Prerequisites
+The core problem this project solves is the time-consuming nature of creating self-assessment materials. By automating quiz generation, 10xNoteQuiz saves valuable time, allowing users to focus on what matters most: learning.
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+## 2. Table of Contents
+- [Project Description](#1-project-description)
+- [Tech Stack](#3-tech-stack)
+- [Getting Started Locally](#4-getting-started-locally)
+- [Available Scripts](#5-available-scripts)
+- [Project Scope](#6-project-scope)
+- [Project Status](#7-project-status)
+- [License](#8-license)
 
-## Getting Started
+## 3. Tech Stack
 
-1. Clone the repository:
+The project is built with a modern, robust, and scalable tech stack:
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+-   **Frontend**:
+    -   [Astro 5](https://astro.build/): For building fast, content-focused websites.
+    -   [React 19](https://react.dev/): For creating interactive UI components.
+    -   [TypeScript 5](https://www.typescriptlang.org/): For static type-checking and improved developer experience.
+    -   [Tailwind CSS 4](https://tailwindcss.com/): A utility-first CSS framework for rapid styling.
+    -   [Shadcn/ui](https://ui.shadcn.com/): A collection of accessible and reusable React components.
 
-2. Install dependencies:
+-   **Backend**:
+    -   [Supabase](https://supabase.io/): An open-source Firebase alternative providing a PostgreSQL database, authentication, and a Backend-as-a-Service SDK.
 
-```bash
-npm install
-```
+-   **Artificial Intelligence**:
+    -   [Openrouter.ai](https://openrouter.ai/): A service that provides access to a wide range of AI models (from OpenAI, Anthropic, Google, etc.) for high-efficiency and low-cost quiz generation.
 
-3. Run the development server:
+-   **CI/CD & Hosting**:
+    -   [GitHub Actions](https://github.com/features/actions): For continuous integration and deployment pipelines.
+    -   [DigitalOcean](https://www.digitalocean.com/): For hosting the application via a Docker image.
 
-```bash
-npm run dev
-```
+## 4. Getting Started Locally
 
-4. Build for production:
+Follow these steps to set up and run the project on your local machine.
 
-```bash
-npm run build
-```
+### Prerequisites
 
-## Available Scripts
+-   [Node.js](https://nodejs.org/) (LTS version recommended)
+-   [npm](https://www.npmjs.com/) (comes with Node.js)
+-   [Git](https://git-scm.com/)
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+### Installation
 
-## Project Structure
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/PawelAdamWawrzyniak/10xdevs-project.git
+    cd 10xdevs-project
+    ```
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-## AI Development Support
+3.  **Set up environment variables:**
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
+    Create a `.env` file in the root of the project by copying the example file:
+    ```bash
+    cp .env.example .env
+    ```
+    You will need to populate this file with your credentials for Supabase and Openrouter.ai.
 
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
+4.  **Set up Supabase:**
+    -   Create a new project on [Supabase](https://supabase.io/).
+    -   Use the Supabase SQL editor or CLI to set up the necessary database schema.
+    -   Find your project's API URL and `anon` key in the "API" settings and add them to your `.env` file.
 
-### Cursor IDE
+5.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+    The application should now be running at `http://localhost:4321`.
 
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
+## 5. Available Scripts
 
-### GitHub Copilot
+This project includes the following scripts defined in `package.json`:
 
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
+-   `npm run dev`: Starts the development server with hot-reloading.
+-   `npm run build`: Builds the application for production.
+-   `npm run preview`: Starts a local server to preview the production build.
+-   `npm run lint`: Lints the codebase using ESLint to find and report issues.
+-   `npm run lint:fix`: Lints the codebase and automatically fixes fixable issues.
+-   `npm run format`: Formats the code using Prettier.
 
-### Windsurf
+## 6. Project Scope
 
-The `.windsurfrules` file contains AI configuration for Windsurf.
+### Core Features (MVP)
 
-## Contributing
+The initial version of the application will include the following features:
 
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+-   **User Authentication**: Secure account creation and login via email and password.
+-   **API Key Management**: Users can add and manage their own encrypted AI model API keys.
+-   **Note Management**: Full CRUD (Create, Read, Update, Delete) functionality for notes in Markdown format.
+-   **Note Organization**: Ability to categorize notes with tags and categories.
+-   **AI-Powered Quiz Generation**: Generate quizzes from any note, consisting of True/False, multiple-choice, and short-answer questions.
+-   **Quiz Management**: Users can accept, reject (and regenerate), or delete quizzes.
+-   **Interactive Quiz Solving**: A user-friendly interface for taking quizzes.
+-   **Progress Tracking**: View quiz results, aggregated statistics, and progress charts.
+-   **Spaced Repetition System (SRS)**: An algorithm that schedules review sessions based on quiz performance to enhance long-term memory.
 
-## License
+### Future Features (Post-MVP)
 
-MIT
+-   Automatic AI-powered summaries of notes.
+-   Ability to edit individual questions within a quiz.
+-   Advanced quiz generation options (e.g., number of questions, difficulty level).
+-   Password recovery functionality.
+-   Syntax highlighting for code snippets within notes.
+
+## 7. Project Status
+
+**Current Phase: In Development**
+
+The project is currently focused on building the Minimum Viable Product (MVP). The primary goal is to implement all the core functionalities listed in the "Project Scope" section to provide a stable and useful tool for learners.
+
+## 8. License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE.md) file for more details.
