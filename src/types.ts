@@ -23,3 +23,27 @@ export interface NoteDetailsDto {
   created_at: string;
   updated_at: string;
 }
+
+/** DTO for a quiz answer. */
+export interface QuizAnswerDto {
+  id: string;
+  content: string;
+}
+
+/** Dto for a quiz question. */
+export interface QuizQuestionDto {
+  id: string;
+  type: "true_false" | "multiple_choice" | "short_answer";
+  content: string;
+  question_order: number;
+  answers?: QuizAnswerDto[];
+}
+
+/** DTO for the quiz generation API response. */
+export interface QuizGenerationResponseDto {
+  id: string;
+  note_id: string;
+  status: "pending_acceptance";
+  created_at: string;
+  questions: QuizQuestionDto[];
+}

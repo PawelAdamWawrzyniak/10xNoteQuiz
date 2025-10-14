@@ -101,6 +101,28 @@ Endpoints for managing notes.
 -   **Success**: `200 OK`
 -   **Error**: `401 Unauthorized`
 
+#### `GET /notes/due-for-review`
+
+-   **Description**: Retrieves a list of all notes scheduled for review (where `srs_data.due_date` is today or in the past).
+-   **Request Body**: None.
+-   **Response Body**:
+    ```json
+    {
+      "data": [
+        {
+          "id": "uuid",
+          "user_id": "uuid",
+          "category_id": "uuid | null",
+          "title": "string",
+          "created_at": "timestamptz",
+          "updated_at": "timestamptz"
+        }
+      ]
+    }
+    ```
+-   **Success**: `200 OK`
+-   **Error**: `401 Unauthorized`
+
 #### `POST /notes`
 
 -   **Description**: Creates a new note.
@@ -294,6 +316,53 @@ Standard CRUD endpoints for managing categories and tags.
 #### `GET /tags`, `POST /tags`, `PATCH /tags/{id}`, `DELETE /tags/{id}`
 
 -   **Description**: These endpoints follow standard REST conventions for managing `category` and `tag` resources, scoped to the current user. They accept and return simple `{ "name": "string" }` payloads.
+
+---
+
+### Statistics
+
+Endpoints for retrieving aggregated user statistics.
+
+#### `GET /statistics`
+
+-   **Description**: Retrieves aggregated statistical data for the authenticated user.
+-   **Request Body**: None.
+-   **Response Body**:
+    ```json
+    {
+      "kpi": {
+        "total_notes": 15,
+        "total_quiz_attempts": 42,
+        "overall_average_score": 83.5,
+        "due_for_review_today": 3
+      },
+      "progress_chart_data": [
+        { "week": "2025-10-05", "average_score": 75.0 },
+        { "week": "2025-10-12", "average_score": 81.2 },
+        { "week": "2025-10-19", "average_score": 85.5 },
+        { "week": "2025-10-26", "average_score": 88.0 }
+      ],
+      "recent_attempts": {
+        "data": [
+          {
+            "completed_at": "timestamptz",
+            "note_title": "string",
+            "note_id": "uuid",
+            "score_percentage": 90
+          }
+        ],
+        "pagination": {
+          "current_page": 1,
+          "total_pages": 5,
+          "total_items": 48
+        }
+      }
+    }
+    ```
+-   **Success**: `200 OK`
+-   **Error**: `401 Unauthorized`
+
+---
 
 ## 3. Authentication and Authorization
 
