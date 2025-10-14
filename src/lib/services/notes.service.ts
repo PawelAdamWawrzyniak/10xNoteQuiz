@@ -1,6 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabaseClient } from "../../db/supabase.client.ts";
 
-import type { Database } from "../../db/database.types";
 import type { NoteDetailsDto } from "../../types";
 
 /**
@@ -12,7 +11,7 @@ import type { NoteDetailsDto } from "../../types";
  */
 export const findNoteById = async (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  supabase: SupabaseClient<Database>,
+  supabase: typeof supabaseClient,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   noteId: string
 ): Promise<NoteDetailsDto | null> => {
