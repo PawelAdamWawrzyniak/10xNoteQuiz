@@ -47,3 +47,13 @@ export interface QuizGenerationResponseDto {
   created_at: string;
   questions: QuizQuestionDto[];
 }
+
+/** Represents the state of the quiz generation UI. */
+export type QuizGenerationState =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "timeout" }
+  | { status: "success"; quiz: QuizGenerationResponseDto; isRegenerated?: boolean }
+  | { status: "accepting" }
+  | { status: "accepted" }
+  | { status: "error"; message: string; code?: number };
