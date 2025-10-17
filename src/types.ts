@@ -57,3 +57,27 @@ export type QuizGenerationState =
   | { status: "accepting" }
   | { status: "accepted" }
   | { status: "error"; message: string; code?: number };
+
+/** JSON Schema type for OpenRouter response schemas. */
+export interface JSONSchema {
+  type: string;
+  properties?: Record<string, JSONSchema>;
+  required?: string[];
+  items?: JSONSchema;
+  description?: string;
+  enum?: string[];
+  [key: string]: unknown;
+}
+
+/** Configuration options for OpenRouter chat completion. */
+export interface ChatCompletionOptions {
+  model: string;
+  systemPrompt: string;
+  userPrompt: string;
+  responseSchema?: {
+    name: string;
+    schema: JSONSchema;
+  };
+  temperature?: number;
+  maxTokens?: number;
+}

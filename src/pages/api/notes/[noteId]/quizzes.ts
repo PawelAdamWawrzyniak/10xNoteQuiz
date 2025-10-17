@@ -1,6 +1,13 @@
 import type { APIRoute } from "astro";
 import { z } from "zod";
 import { QuizGenerationService } from "@/lib/services/quiz.service";
+import {
+  OpenRouterError,
+  AuthenticationError,
+  RateLimitError,
+  ServiceUnavailableError,
+  ModelResponseError,
+} from "@/lib/services/openrouter.errors";
 
 export const prerender = false;
 
@@ -17,17 +24,25 @@ export const POST: APIRoute = async ({ params, locals }) => {
 
   const userId = user.id;
 
+  // Validate request parameters
   const validationResult = QuizGenerationParams.safeParse(params);
   if (!validationResult.success) {
-    return new Response(validationResult.error.message, { status: 400 });
+    return new Response(JSON.stringify({ error: "Invalid note ID format" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const { noteId } = validationResult.data;
 
-  // Debug: Check if supabase client is available
+  // Verify Supabase client availability
   if (!locals.supabase) {
+    // eslint-disable-next-line no-console
     console.error("Supabase client is not available in locals");
-    return new Response("Internal server error: Supabase client not initialized", { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal server error: Database not initialized" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const quizGenerationService = new QuizGenerationService(locals.supabase, userId);
@@ -39,14 +54,73 @@ export const POST: APIRoute = async ({ params, locals }) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    // Enhanced error handling with stack trace
+    // eslint-disable-next-line no-console
     console.error("Error generating quiz:", error);
+
+    // Handle OpenRouter-specific errors
+    if (error instanceof AuthenticationError) {
+      return new Response(
+        JSON.stringify({ error: "AI service authentication failed. Please check API key configuration." }),
+        { status: 502, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (error instanceof RateLimitError) {
+      return new Response(JSON.stringify({ error: "AI service rate limit exceeded. Please try again later." }), {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (error instanceof ServiceUnavailableError) {
+      return new Response(JSON.stringify({ error: "AI service is temporarily unavailable. Please try again later." }), {
+        status: 503,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (error instanceof ModelResponseError) {
+      return new Response(
+        JSON.stringify({ error: "AI generated an invalid response. Please try regenerating the quiz." }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (error instanceof OpenRouterError) {
+      return new Response(JSON.stringify({ error: `AI service error: ${error.message}` }), {
+        status: 502,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Handle application-specific errors
     if (error instanceof Error) {
-      return new Response(JSON.stringify({ error: error.message, stack: error.stack }), {
+      // Check for known error messages
+      if (error.message.includes("not found") || error.message.includes("access denied")) {
+        return new Response(JSON.stringify({ error: "Note not found or access denied" }), {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (error.message.includes("too short")) {
+        return new Response(JSON.stringify({ error: error.message }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      // Generic error response
+      return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
-    return new Response("An unknown error occurred", { status: 500 });
+
+    // Unknown error
+    return new Response(JSON.stringify({ error: "An unexpected error occurred" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 };
