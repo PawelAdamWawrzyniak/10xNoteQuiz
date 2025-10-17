@@ -4,12 +4,12 @@ import { z } from "zod";
  * Schema for validating query parameters for GET /api/notes
  */
 export const GetNotesQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  page_size: z.coerce.number().int().min(1).max(100).default(20),
-  sort_by: z.string().optional().default("updated_at"),
-  order: z.enum(["asc", "desc"]).optional().default("desc"),
-  category_id: z.string().uuid().optional(),
-  tag_id: z.string().uuid().optional(),
+  page: z.coerce.number().int().min(1).catch(1),
+  page_size: z.coerce.number().int().min(1).max(100).catch(20),
+  sort_by: z.string().catch("updated_at"),
+  order: z.enum(["asc", "desc"]).catch("desc"),
+  category_id: z.string().uuid().nullish(),
+  tag_id: z.string().uuid().nullish(),
 });
 
 export type GetNotesQuery = z.infer<typeof GetNotesQuerySchema>;
@@ -47,4 +47,3 @@ export const UpdateNoteSchema = z.object({
 });
 
 export type UpdateNoteInput = z.infer<typeof UpdateNoteSchema>;
-
