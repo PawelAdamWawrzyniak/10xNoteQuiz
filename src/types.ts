@@ -24,6 +24,28 @@ export interface NoteDetailsDto {
   updated_at: string;
 }
 
+/** DTO for a note item in a list. */
+export interface NoteListItemDto {
+  id: string;
+  title: string;
+  category_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** DTO for pagination metadata. */
+export interface PaginationDto {
+  current_page: number;
+  total_pages: number;
+  total_items: number;
+}
+
+/** Generic DTO for paginated responses. */
+export interface PaginatedResponseDto<T> {
+  data: T[];
+  pagination: PaginationDto;
+}
+
 /** DTO for a quiz answer. */
 export interface QuizAnswerDto {
   id: string;
