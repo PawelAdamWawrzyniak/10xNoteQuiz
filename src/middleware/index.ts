@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 
-import { supabaseClient, TEST_USER_ID } from "../db/supabase.client.ts";
+import { supabaseClient, USER_ID } from "../db/supabase.client.ts";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   context.locals.supabase = supabaseClient;
@@ -8,7 +8,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // For testing: use hardcoded user ID
   // TODO: In production, implement real authentication using Supabase session
   context.locals.user = {
-    id: TEST_USER_ID,
+    id: USER_ID,
     email: "test@example.com",
   };
 

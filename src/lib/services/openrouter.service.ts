@@ -60,6 +60,7 @@ export class OpenRouterService {
     this.baseUrl = config.baseUrl ?? "https://openrouter.ai/api/v1";
 
     if (!this.apiKey) {
+      // eslint-disable-next-line no-console
       console.error("OpenRouter API key is not configured.");
       throw new Error("OpenRouter API key is not configured. Please set OPENROUTER_API_KEY environment variable.");
     }
@@ -283,8 +284,8 @@ export class OpenRouterService {
 
       // Validate array items if schema is provided
       if (schema.items && Array.isArray(value)) {
-        for (let i = 0; i < value.length; i++) {
-          this.validateAgainstSchema(value[i], schema.items);
+        for (const item of value) {
+          this.validateAgainstSchema(item, schema.items);
         }
       }
     } else if (schema.type !== actualType) {
