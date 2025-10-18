@@ -79,3 +79,21 @@ export type QuizGenerationState =
   | { status: "accepting" }
   | { status: "accepted" }
   | { status: "error"; message: string; code?: number };
+
+/** ViewModel for notes list filters, sorting, and pagination. */
+export interface NotesFilterViewModel {
+  page: number;
+  pageSize: number;
+  sortBy: "created_at" | "updated_at" | "title";
+  order: "asc" | "desc";
+  categoryId?: string;
+  tagId?: string;
+}
+
+/** ViewModel for note form data. */
+export interface NoteFormViewModel {
+  title: string;
+  content: string;
+  categoryId: string | null;
+  tags: TagDto[];
+}

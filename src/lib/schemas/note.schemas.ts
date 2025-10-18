@@ -47,3 +47,18 @@ export const UpdateNoteSchema = z.object({
 });
 
 export type UpdateNoteInput = z.infer<typeof UpdateNoteSchema>;
+
+/**
+ * Schema for validating note form data on the client side
+ */
+export const NoteFormSchema = z.object({
+  title: z.string().min(1, "Tytuł jest wymagany").max(500, "Tytuł może mieć maksymalnie 500 znaków"),
+  content: z.string(),
+  categoryId: z.string().uuid().nullable(),
+  tags: z.array(
+    z.object({
+      id: z.string().uuid(),
+      name: z.string(),
+    })
+  ),
+});
