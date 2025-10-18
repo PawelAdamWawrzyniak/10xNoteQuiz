@@ -113,7 +113,7 @@ export const POST: APIRoute = async ({ params, locals }) => {
       // Generic error response
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", error: error.message },
       });
     }
 

@@ -55,6 +55,7 @@ export class QuizGenerationService {
 Twoim zadaniem jest wygenerowanie quizu składającego się z 3 pytań na podstawie dostarczonej notatki.
 
 WYMAGANIA:
+- Wygeneruj tytuł quizu (pole "title") - krótki, opisowy tytuł bazujący na temacie notatki
 - Generuj dokładnie 3 pytania różnego typu
 - Typy pytań: "true_false", "multiple_choice", "short_answer"
 - Dla pytań "true_false": podaj opcje ["Prawda", "Fałsz"]
@@ -83,6 +84,43 @@ Wygeneruj quiz z 3 pytaniami testującymi zrozumienie tej notatki.`,
       }
       throw error;
     }
+
+    // Add fallback title if AI didn't provide one
+    if (!aiQuizResponse.title) {
+      aiQuizResponse.title = `Quiz: ${note.title}`;
+    }
+
+    // Validate and fix questions array
+    if (!aiQuizResponse.questions || !Array.isArray(aiQuizResponse.questions)) {
+      throw new Error("AI did not return a valid questions array");
+    }
+
+    // Add fallbacks for missing required fields in questions
+    aiQuizResponse.questions = aiQuizResponse.questions.map((q, index) => {
+      // Ensure question_text exists
+      if (!q.question_text || q.question_text.trim() === "") {
+        q.question_text = `Question ${index + 1}`;
+      }
+
+      // Ensure type exists and is valid
+      if (!q.type || !["true_false", "multiple_choice", "short_answer"].includes(q.type)) {
+        q.type = "multiple_choice";
+      }
+
+      // Ensure correct_answer exists
+      if (!q.correct_answer || q.correct_answer.trim() === "") {
+        q.correct_answer = q.options?.[0] || "Unknown";
+      }
+
+      // Ensure options exist for true_false and multiple_choice
+      if (q.type === "true_false" && (!q.options || q.options.length === 0)) {
+        q.options = ["Prawda", "Fałsz"];
+      } else if (q.type === "multiple_choice" && (!q.options || q.options.length === 0)) {
+        q.options = ["Option A", "Option B", "Option C", "Option D"];
+      }
+
+      return q;
+    });
 
     // Step 3: Transform AI response to application format
     const generateUUID = () => {
