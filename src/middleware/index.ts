@@ -1,18 +1,18 @@
 import { defineMiddleware } from "astro:middleware";
 
-import { supabaseClient, MOCK_USER_ID } from "../db/supabase.client.ts";
+import { supabaseClient, TEST_USER_ID } from "../db/supabase.client.ts";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   context.locals.supabase = supabaseClient;
 
-  // MOCK: For testing purposes, set a mock user
-  // In production, uncomment the real session logic below
+  // For testing: use hardcoded user ID
+  // TODO: In production, implement real authentication using Supabase session
   context.locals.user = {
-    id: MOCK_USER_ID,
-    email: "mock@example.com",
-  } as any;
+    id: TEST_USER_ID,
+    email: "test@example.com",
+  };
 
-  // Real authentication (commented out for testing):
+  // Real authentication implementation (for future use):
   // try {
   //   const {
   //     data: { session },
@@ -20,9 +20,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
   //
   //   if (session?.user) {
   //     context.locals.user = session.user;
+  //   } else {
+  //     // No session - user is not authenticated
+  //     context.locals.user = undefined;
   //   }
   // } catch (error) {
   //   console.error("Error getting session in middleware:", error);
+  //   context.locals.user = undefined;
   // }
 
   return next();

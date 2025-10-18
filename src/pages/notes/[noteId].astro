@@ -6,35 +6,35 @@ const { noteId } = Astro.params;
 
 // Mock data for demonstration purposes
 const note = {
-	id: noteId,
-	title: `Details for Note ${noteId}`,
-	content:
-		"This is the content of the note. It's long enough to generate a quiz from. We can add more details here as needed. The main point is to have a place to put the quiz generation button.",
+  id: noteId,
+  title: `Details for Note ${noteId}`,
+  content:
+    "This is the content of the note. It's long enough to generate a quiz from. We can add more details here as needed. The main point is to have a place to put the quiz generation button.",
 };
 
 // Mock user data
 const user = {
-	hasUserApiKey: false,
-	freeQuizzesRemaining: 5,
+  hasUserApiKey: false,
+  freeQuizzesRemaining: 5,
 };
 ---
 
 <Layout title={`Note: ${note.title}`}>
-	<main class="container mx-auto max-w-4xl py-12">
-		<a href="/" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
-		<h1 class="text-4xl font-bold mb-4">{note.title}</h1>
-		<div class="prose dark:prose-invert max-w-none">
-			<p>{note.content}</p>
-		</div>
+  <main class="container mx-auto max-w-4xl py-12">
+    <a href="/" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
+    <h1 class="text-4xl font-bold mb-4">{note.title}</h1>
+    <div class="prose dark:prose-invert max-w-none">
+      <p>{note.content}</p>
+    </div>
 
-		<div class="mt-8 border-t pt-8">
-			<h2 class="text-2xl font-bold mb-4">Actions</h2>
-			<QuizGenerationController
-				client:load
-				noteId={note.id}
-				hasUserApiKey={user.hasUserApiKey}
-				freeQuizzesRemaining={user.freeQuizzesRemaining}
-			/>
-		</div>
-	</main>
+    <div class="mt-8 border-t pt-8">
+      <h2 class="text-2xl font-bold mb-4">Actions</h2>
+      <QuizGenerationController
+        client:load
+        noteId={note.id}
+        hasUserApiKey={user.hasUserApiKey}
+        freeQuizzesRemaining={user.freeQuizzesRemaining}
+      />
+    </div>
+  </main>
 </Layout>

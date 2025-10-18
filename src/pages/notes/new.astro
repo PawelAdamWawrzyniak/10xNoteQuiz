@@ -1,0 +1,10 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { NoteEditorApp } from "@/components/NoteEditorApp";
+
+export const prerender = false;
+---
+
+<Layout title="Nowa Notatka">
+  <NoteEditorApp client:load mode="create" />
+</Layout>
