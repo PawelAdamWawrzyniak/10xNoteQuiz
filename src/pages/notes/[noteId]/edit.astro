@@ -1,0 +1,16 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { NoteEditorApp } from "@/components/NoteEditorApp";
+
+export const prerender = false;
+
+const { noteId } = Astro.params;
+
+if (!noteId) {
+  return Astro.redirect("/notes");
+}
+---
+
+<Layout title="Edytuj Notatkę">
+  <NoteEditorApp client:load mode="edit" noteId={noteId} />
+</Layout>

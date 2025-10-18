@@ -1,0 +1,10 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { NotesApp } from "@/components/NotesApp";
+
+export const prerender = false;
+---
+
+<Layout title="Moje Notatki">
+  <NotesApp client:load />
+</Layout>
