@@ -27,7 +27,7 @@ export const POST: APIRoute = async ({ params, locals }) => {
   // Validate request parameters
   const validationResult = QuizGenerationParams.safeParse(params);
   if (!validationResult.success) {
-    return new Response(JSON.stringify({ error: "Invalid note ID format" }), {
+    return new Response(JSON.stringify({ message: "Invalid note ID format" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ params, locals }) => {
   if (!locals.supabase) {
     // eslint-disable-next-line no-console
     console.error("Supabase client is not available in locals");
-    return new Response(JSON.stringify({ error: "Internal server error: Database not initialized" }), {
+    return new Response(JSON.stringify({ message: "Internal server error: Database not initialized" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
@@ -60,34 +60,39 @@ export const POST: APIRoute = async ({ params, locals }) => {
     // Handle OpenRouter-specific errors
     if (error instanceof AuthenticationError) {
       return new Response(
-        JSON.stringify({ error: "AI service authentication failed. Please check API key configuration." }),
+        JSON.stringify({ message: "AI service authentication failed. Please check API key configuration." }),
         { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 
     if (error instanceof RateLimitError) {
-      return new Response(JSON.stringify({ error: "AI service rate limit exceeded. Please try again later." }), {
+      return new Response(JSON.stringify({ message: "AI service rate limit exceeded. Please try again later." }), {
         status: 429,
         headers: { "Content-Type": "application/json" },
       });
     }
 
     if (error instanceof ServiceUnavailableError) {
-      return new Response(JSON.stringify({ error: "AI service is temporarily unavailable. Please try again later." }), {
-        status: 503,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ message: "AI service is temporarily unavailable. Please try again later." }),
+        {
+          status: 503,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     if (error instanceof ModelResponseError) {
       return new Response(
-        JSON.stringify({ error: "AI generated an invalid response. Please try regenerating the quiz." }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+        JSON.stringify({
+          message: error.message || "AI generated an invalid response. Please try regenerating the quiz.",
+        }),
+        { status: 422, headers: { "Content-Type": "application/json" } }
       );
     }
 
     if (error instanceof OpenRouterError) {
-      return new Response(JSON.stringify({ error: `AI service error: ${error.message}` }), {
+      return new Response(JSON.stringify({ message: `AI service error: ${error.message}` }), {
         status: 502,
         headers: { "Content-Type": "application/json" },
       });
@@ -97,28 +102,28 @@ export const POST: APIRoute = async ({ params, locals }) => {
     if (error instanceof Error) {
       // Check for known error messages
       if (error.message.includes("not found") || error.message.includes("access denied")) {
-        return new Response(JSON.stringify({ error: "Note not found or access denied" }), {
+        return new Response(JSON.stringify({ message: "Note not found or access denied" }), {
           status: 404,
           headers: { "Content-Type": "application/json" },
         });
       }
 
       if (error.message.includes("too short")) {
-        return new Response(JSON.stringify({ error: error.message }), {
+        return new Response(JSON.stringify({ message: error.message }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
         });
       }
 
       // Generic error response
-      return new Response(JSON.stringify({ error: error.message }), {
+      return new Response(JSON.stringify({ message: error.message }), {
         status: 500,
-        headers: { "Content-Type": "application/json", error: error.message },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     // Unknown error
-    return new Response(JSON.stringify({ error: "An unexpected error occurred" }), {
+    return new Response(JSON.stringify({ message: "An unexpected error occurred" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

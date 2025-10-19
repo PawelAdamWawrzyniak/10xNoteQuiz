@@ -50,6 +50,7 @@ export interface PaginatedResponseDto<T> {
 export interface QuizAnswerDto {
   id: string;
   content: string;
+  is_correct?: boolean;
 }
 
 /** Dto for a quiz question. */
@@ -59,6 +60,7 @@ export interface QuizQuestionDto {
   content: string;
   question_order: number;
   answers?: QuizAnswerDto[];
+  correct_answer?: string;
 }
 
 /** DTO for the quiz generation API response. */

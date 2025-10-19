@@ -49,7 +49,9 @@ export class QuizGenerationService {
     let aiQuizResponse: AIQuizResponse;
 
     try {
-      aiQuizResponse = await this.openRouterService.getChatCompletion<AIQuizResponse>({
+      // Try without schema validation first to get raw response
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const rawResponse = await this.openRouterService.getChatCompletion<any>({
         model: "anthropic/claude-3.5-haiku",
         systemPrompt: `Jesteś asystentem tworzącym quizy edukacyjne. 
 Twoim zadaniem jest wygenerowanie quizu składającego się z 3 pytań na podstawie dostarczonej notatki.
@@ -78,49 +80,23 @@ Wygeneruj quiz z 3 pytaniami testującymi zrozumienie tej notatki.`,
         },
         temperature: 0.7,
       });
+
+      // eslint-disable-next-line no-console
+      console.log("[QuizService] Raw response from AI:", JSON.stringify(rawResponse, null, 2));
+
+      aiQuizResponse = rawResponse as AIQuizResponse;
     } catch (error) {
       if (error instanceof OpenRouterError) {
-        throw new Error(`Failed to generate quiz using AI: ${error.message}`);
+        // Preserve the original error type so the API layer can map it to proper HTTP codes (e.g., 422 for ModelResponseError)
+        throw error;
       }
       throw error;
     }
 
-    // Add fallback title if AI didn't provide one
-    if (!aiQuizResponse.title) {
-      aiQuizResponse.title = `Quiz: ${note.title}`;
-    }
-
-    // Validate and fix questions array
+    // Validate questions array
     if (!aiQuizResponse.questions || !Array.isArray(aiQuizResponse.questions)) {
       throw new Error("AI did not return a valid questions array");
     }
-
-    // Add fallbacks for missing required fields in questions
-    aiQuizResponse.questions = aiQuizResponse.questions.map((q, index) => {
-      // Ensure question_text exists
-      if (!q.question_text || q.question_text.trim() === "") {
-        q.question_text = `Question ${index + 1}`;
-      }
-
-      // Ensure type exists and is valid
-      if (!q.type || !["true_false", "multiple_choice", "short_answer"].includes(q.type)) {
-        q.type = "multiple_choice";
-      }
-
-      // Ensure correct_answer exists
-      if (!q.correct_answer || q.correct_answer.trim() === "") {
-        q.correct_answer = q.options?.[0] || "Unknown";
-      }
-
-      // Ensure options exist for true_false and multiple_choice
-      if (q.type === "true_false" && (!q.options || q.options.length === 0)) {
-        q.options = ["Prawda", "Fałsz"];
-      } else if (q.type === "multiple_choice" && (!q.options || q.options.length === 0)) {
-        q.options = ["Option A", "Option B", "Option C", "Option D"];
-      }
-
-      return q;
-    });
 
     // Step 3: Transform AI response to application format
     const generateUUID = () => {
@@ -156,6 +132,7 @@ Wygeneruj quiz z 3 pytaniami testującymi zrozumienie tej notatki.`,
           answers = q.options.map((option) => ({
             id: generateUUID(),
             content: option,
+            is_correct: option === q.correct_answer,
           }));
         } else {
           answers = undefined;
@@ -167,6 +144,7 @@ Wygeneruj quiz z 3 pytaniami testującymi zrozumienie tej notatki.`,
           content: q.question_text,
           question_order: index + 1,
           answers,
+          correct_answer: q.correct_answer,
         };
       }),
     };

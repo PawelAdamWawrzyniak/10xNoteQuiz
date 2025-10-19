@@ -210,20 +210,27 @@ export class OpenRouterService {
       return content as T;
     }
 
-    // Parse JSON response
+    // Parse JSON response with tolerance for code fences or extra text
     let parsedData: unknown;
     try {
-      parsedData = JSON.parse(content);
+      const jsonString = this.extractJsonFromContent(content);
+      parsedData = JSON.parse(jsonString);
     } catch (error) {
       throw new ModelResponseError(
         `Failed to parse JSON response: ${error instanceof Error ? error.message : "Unknown error"}`
       );
     }
 
+    // Log the raw response for debugging
+    // eslint-disable-next-line no-console
+    console.log("[OpenRouterService] Raw AI response:", JSON.stringify(parsedData, null, 2));
+
     // Basic validation against schema
     try {
       this.validateAgainstSchema(parsedData, schema);
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("[OpenRouterService] Validation failed for response:", JSON.stringify(parsedData, null, 2));
       throw new ModelResponseError(
         `Response validation failed: ${error instanceof Error ? error.message : "Unknown error"}`
       );
@@ -240,6 +247,34 @@ export class OpenRouterService {
    * @param schema - The JSON schema to validate against
    * @throws {Error} When validation fails
    */
+  private extractJsonFromContent(content: string): string {
+    // Trim and handle code fences ```json ... ```
+    const trimmed = content.trim();
+
+    // 1) Code fence with language
+    const fenceMatch = trimmed.match(/```(?:json)?\n([\s\S]*?)```/i);
+    if (fenceMatch && fenceMatch[1]) {
+      return fenceMatch[1].trim();
+    }
+
+    // 2) Any code fence
+    const anyFence = trimmed.match(/```\n([\s\S]*?)```/);
+    if (anyFence && anyFence[1]) {
+      return anyFence[1].trim();
+    }
+
+    // 3) Extract first JSON object by locating first '{' and last '}'
+    const firstBrace = trimmed.indexOf("{");
+    const lastBrace = trimmed.lastIndexOf("}");
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      const candidate = trimmed.slice(firstBrace, lastBrace + 1);
+      return candidate;
+    }
+
+    // 4) As-is
+    return trimmed;
+  }
+
   private validateAgainstSchema(data: unknown, schema: JSONSchema): void {
     if (schema.type === "object" && typeof data === "object" && data !== null) {
       const dataObj = data as Record<string, unknown>;
