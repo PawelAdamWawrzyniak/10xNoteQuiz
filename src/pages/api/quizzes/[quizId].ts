@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const prerender = false;
 
-const QuizDeleteParams = z.object({
+const QuizRejectParams = z.object({
   quizId: z.string().uuid(),
 });
 
@@ -17,7 +17,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
   const userId = user.id;
 
   // Validate request parameters
-  const validationResult = QuizDeleteParams.safeParse(params);
+  const validationResult = QuizRejectParams.safeParse(params);
   if (!validationResult.success) {
     return new Response(JSON.stringify({ message: "Invalid quiz ID format" }), {
       status: 400,
@@ -41,12 +41,14 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
     // First, verify that the quiz exists and belongs to the user
     const { data: quiz, error: quizError } = await locals.supabase
       .from("quizzes")
-      .select(`
+      .select(
+        `
         id,
         status,
         note_id,
         notes!inner(user_id)
-      `)
+      `
+      )
       .eq("id", quizId)
       .eq("notes.user_id", userId)
       .single();
@@ -58,35 +60,39 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
       });
     }
 
-    // Delete the quiz (this will cascade delete questions and answers due to foreign key constraints)
-    const { error: deleteError } = await locals.supabase
+    // Update quiz status to rejected instead of deleting
+    const { data: updatedQuiz, error: updateError } = await locals.supabase
       .from("quizzes")
-      .delete()
-      .eq("id", quizId);
+      .update({ status: "rejected" })
+      .eq("id", quizId)
+      .select("id, status, created_at")
+      .single();
 
-    if (deleteError) {
+    if (updateError) {
       // eslint-disable-next-line no-console
-      console.error("Error deleting quiz:", deleteError);
-      return new Response(JSON.stringify({ message: "Failed to delete quiz" }), {
+      console.error("Error updating quiz status:", updateError);
+      return new Response(JSON.stringify({ message: "Failed to reject quiz" }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
 
     // eslint-disable-next-line no-console
-    console.log(`[QuizDelete] Successfully deleted quiz ${quizId} for user ${userId}`);
+    console.log(`[QuizReject] Successfully rejected quiz ${quizId} for user ${userId}`);
 
-    return new Response(JSON.stringify({
-      message: "Quiz rejected successfully",
-      quizId,
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-
+    return new Response(
+      JSON.stringify({
+        message: "Quiz rejected successfully",
+        quiz: updatedQuiz,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error("Error deleting quiz:", error);
+    console.error("Error rejecting quiz:", error);
     return new Response(JSON.stringify({ message: "An unexpected error occurred" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

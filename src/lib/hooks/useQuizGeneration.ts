@@ -27,6 +27,7 @@ export function useQuizGeneration(noteId: string) {
   }, [cleanup]);
 
   const generateQuiz = useCallback(async () => {
+    console.log("[Hook] generateQuiz: Starting quiz generation process");
     cleanup();
     abortControllerRef.current = new AbortController();
     setGenerationState({ status: "loading" });
@@ -37,6 +38,7 @@ export function useQuizGeneration(noteId: string) {
     }, API_TIMEOUT);
 
     try {
+      console.log("[Hook] generateQuiz: Making API call to generate quiz");
       const response = await fetch(`/api/notes/${noteId}/quizzes`, {
         method: "POST",
         signal: abortControllerRef.current.signal,
@@ -49,6 +51,7 @@ export function useQuizGeneration(noteId: string) {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error("[Hook] generateQuiz: API error:", response.status, errorData);
         setGenerationState({
           status: "error",
           message: errorData.message || "An unexpected error occurred during quiz generation.",
@@ -59,6 +62,7 @@ export function useQuizGeneration(noteId: string) {
       }
 
       const quiz = await response.json();
+      console.log("[Hook] generateQuiz: Quiz generated successfully:", quiz.id);
       setGenerationState({
         status: "success",
         quiz,
@@ -74,6 +78,7 @@ export function useQuizGeneration(noteId: string) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
+      console.error("[Hook] generateQuiz: Error occurred:", error);
       setGenerationState({
         status: "error",
         message: "A network error occurred. Please check your connection and try again.",
@@ -117,6 +122,8 @@ export function useQuizGeneration(noteId: string) {
   const rejectQuiz = useCallback(
     async (quizId: string) => {
       try {
+        console.log("[Hook] rejectQuiz: Starting rejection process for quizId:", quizId);
+        
         const response = await fetch(`/api/quizzes/${quizId}`, {
           method: "DELETE",
         });
@@ -129,11 +136,16 @@ export function useQuizGeneration(noteId: string) {
         }
 
         const data = await response.json();
+        console.log("[Hook] rejectQuiz: Quiz rejected successfully, generating new quiz...");
+        
         // The plan is to generate a new quiz immediately after rejection.
         isRegeneratingRef.current = true;
         await generateQuiz();
+        
+        console.log("[Hook] rejectQuiz: New quiz generated successfully");
         return data;
       } catch (error) {
+        console.error("[Hook] rejectQuiz: Error occurred:", error);
         if (!(error instanceof Error && error.message.includes("Failed to reject"))) {
           setGenerationState({
             status: "error",
