@@ -146,7 +146,10 @@ export class OpenRouterService {
       await this.handleErrorResponse(response);
     }
 
-    return (await response.json()) as ApiResponse;
+    const data = (await response.json()) as ApiResponse;
+    // eslint-disable-next-line no-console
+    console.log("[OpenRouterService] Successful API response:", JSON.stringify(data, null, 2));
+    return data;
   }
 
   /**
@@ -162,26 +165,39 @@ export class OpenRouterService {
   private async handleErrorResponse(response: Response): Promise<never> {
     const status = response.status;
     let errorMessage: string;
+    let errorData: unknown = undefined;
 
     try {
-      const errorData = await response.json();
-      errorMessage = errorData.error?.message ?? response.statusText;
+      errorData = await response.json();
+      // eslint-disable-next-line no-console
+      console.error("[OpenRouterService] API error response:", JSON.stringify(errorData, null, 2));
+      // Try to extract a standard message shape
+      // @ts-expect-error best-effort extraction
+      errorMessage = (errorData && (errorData.error?.message || errorData.message)) ?? response.statusText;
     } catch {
       errorMessage = response.statusText;
     }
 
     switch (status) {
       case 401:
-        throw new AuthenticationError(`Authentication failed: ${errorMessage}`);
+        throw new AuthenticationError(`Authentication failed: ${errorMessage}`, { responseBody: errorData }, status);
       case 429:
-        throw new RateLimitError(`Rate limit exceeded: ${errorMessage}`);
+        throw new RateLimitError(`Rate limit exceeded: ${errorMessage}`, { responseBody: errorData }, status);
       case 400:
-        throw new InvalidRequestError(`Invalid request: ${errorMessage}`);
+        throw new InvalidRequestError(`Invalid request: ${errorMessage}`, { responseBody: errorData }, status);
       default:
         if (status >= 500) {
-          throw new ServiceUnavailableError(`Service unavailable: ${errorMessage}`);
+          throw new ServiceUnavailableError(
+            `Service unavailable: ${errorMessage}`,
+            { responseBody: errorData },
+            status
+          );
         }
-        throw new OpenRouterError(`OpenRouter API error (${status}): ${errorMessage}`);
+        throw new OpenRouterError(
+          `OpenRouter API error (${status}): ${errorMessage}`,
+          { responseBody: errorData },
+          status
+        );
     }
   }
 
@@ -217,7 +233,9 @@ export class OpenRouterService {
       parsedData = JSON.parse(jsonString);
     } catch (error) {
       throw new ModelResponseError(
-        `Failed to parse JSON response: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to parse JSON response: ${error instanceof Error ? error.message : "Unknown error"}`,
+        { rawContent: content },
+        422
       );
     }
 
@@ -232,7 +250,9 @@ export class OpenRouterService {
       // eslint-disable-next-line no-console
       console.error("[OpenRouterService] Validation failed for response:", JSON.stringify(parsedData, null, 2));
       throw new ModelResponseError(
-        `Response validation failed: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Response validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        { parsedData, schema },
+        422
       );
     }
 

@@ -2,9 +2,14 @@
  * Base error class for all OpenRouter service errors.
  */
 export class OpenRouterError extends Error {
-  constructor(message: string) {
+  public debug?: unknown;
+  public statusCode?: number;
+
+  constructor(message: string, debug?: unknown, statusCode?: number) {
     super(message);
     this.name = this.constructor.name;
+    this.debug = debug;
+    this.statusCode = statusCode;
   }
 }
 

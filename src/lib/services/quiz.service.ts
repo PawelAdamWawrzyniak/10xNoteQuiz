@@ -52,7 +52,8 @@ export class QuizGenerationService {
       // Try without schema validation first to get raw response
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rawResponse = await this.openRouterService.getChatCompletion<any>({
-        model: "anthropic/claude-3.5-haiku",
+        model: "google/gemini-2.5-flash-lite",
+        // model: "google/gemini-2.5-flash-preview-09-2025",
         systemPrompt: `Jesteś asystentem tworzącym quizy edukacyjne. 
 Twoim zadaniem jest wygenerowanie quizu składającego się z 3 pytań na podstawie dostarczonej notatki.
 
@@ -67,7 +68,9 @@ WYMAGANIA:
 - Pytania powinny być konkretne i jednoznaczne
 - Poprawna odpowiedź (correct_answer) musi być dokładnie taka jak jedna z opcji
 
-Odpowiadaj TYLKO w formacie JSON zgodnym z dostarczonym schematem.`,
+Odpowiadaj TYLKO w formacie JSON zgodnym z dostarczonym schematem:
+
+${JSON.stringify(quizSchema, null, 2)}`,
         userPrompt: `Tytuł notatki: "${note.title}"
 
 Treść notatki:

@@ -60,21 +60,33 @@ export const POST: APIRoute = async ({ params, locals }) => {
     // Handle OpenRouter-specific errors
     if (error instanceof AuthenticationError) {
       return new Response(
-        JSON.stringify({ message: "AI service authentication failed. Please check API key configuration." }),
+        JSON.stringify({
+          message: "AI service authentication failed. Please check API key configuration.",
+          debug: (error as AuthenticationError).debug ?? null,
+        }),
         { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 
     if (error instanceof RateLimitError) {
-      return new Response(JSON.stringify({ message: "AI service rate limit exceeded. Please try again later." }), {
-        status: 429,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          message: "AI service rate limit exceeded. Please try again later.",
+          debug: (error as RateLimitError).debug ?? null,
+        }),
+        {
+          status: 429,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     if (error instanceof ServiceUnavailableError) {
       return new Response(
-        JSON.stringify({ message: "AI service is temporarily unavailable. Please try again later." }),
+        JSON.stringify({
+          message: "AI service is temporarily unavailable. Please try again later.",
+          debug: (error as ServiceUnavailableError).debug ?? null,
+        }),
         {
           status: 503,
           headers: { "Content-Type": "application/json" },
@@ -86,16 +98,23 @@ export const POST: APIRoute = async ({ params, locals }) => {
       return new Response(
         JSON.stringify({
           message: error.message || "AI generated an invalid response. Please try regenerating the quiz.",
+          debug: (error as ModelResponseError).debug ?? null,
         }),
         { status: 422, headers: { "Content-Type": "application/json" } }
       );
     }
 
     if (error instanceof OpenRouterError) {
-      return new Response(JSON.stringify({ message: `AI service error: ${error.message}` }), {
-        status: 502,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          message: `AI service error: ${error.message}`,
+          debug: (error as OpenRouterError).debug ?? null,
+        }),
+        {
+          status: 502,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     // Handle application-specific errors
