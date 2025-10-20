@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@/db/supabase.client";
-import type { QuizGenerationResponseDto } from "@/types";
+import type { QuizGenerationResponseDto, QuizQuestionDto } from "@/types";
+import type { Json } from "@/db/database.types";
 import { OpenRouterService } from "./openrouter.service";
 import { OpenRouterError } from "./openrouter.errors";
 import { quizSchema } from "@/pages/api/notes/[noteId]/_schema";
@@ -152,12 +153,116 @@ Wygeneruj quiz z 3 pytaniami testującymi zrozumienie tej notatki.`,
       }),
     };
 
-    // In a real implementation, you would:
-    // 1. Save the quiz to the 'quizzes' table
-    // 2. Save each question to the 'quiz_questions' table
-    // 3. Save each answer to the 'quiz_answers' table
-    // All wrapped in a database transaction
+    // Step 4: Save quiz to database in a transaction
+    try {
+      // Start transaction by saving quiz first
+      const { error: quizError } = await this.supabase.from("quizzes").insert({
+        id: quizId,
+        note_id: noteId,
+        status: "pending_acceptance",
+        ai_prompt: `Generated quiz for note: "${note.title}"`,
+        ai_raw_response: aiQuizResponse as unknown as Json, // Type assertion for JSONB field
+        ai_model_version: "google/gemini-2.5-flash-lite",
+        created_at: now,
+      });
+
+      if (quizError) {
+        throw new Error(`Failed to save quiz: ${quizError.message}`);
+      }
+
+      // Save questions
+      const questionsToInsert = quiz.questions.map((q) => ({
+        id: q.id,
+        quiz_id: quizId,
+        type: q.type,
+        content: q.content,
+        question_order: q.question_order,
+        correct_answers_data: this.buildCorrectAnswersData(q) as Json, // Type assertion for JSONB field
+        created_at: now,
+      }));
+
+      const { error: questionsError } = await this.supabase.from("questions").insert(questionsToInsert);
+
+      if (questionsError) {
+        throw new Error(`Failed to save questions: ${questionsError.message}`);
+      }
+
+      // Save answers for multiple choice questions
+      const answersToInsert: {
+        id: string;
+        question_id: string;
+        content: string;
+        is_correct: boolean;
+        created_at: string;
+      }[] = [];
+
+      quiz.questions.forEach((q) => {
+        if (q.answers && q.answers.length > 0) {
+          q.answers.forEach((answer) => {
+            answersToInsert.push({
+              id: answer.id,
+              question_id: q.id,
+              content: answer.content,
+              is_correct: answer.is_correct || false,
+              created_at: now,
+            });
+          });
+        }
+      });
+
+      if (answersToInsert.length > 0) {
+        const { error: answersError } = await this.supabase.from("answers").insert(answersToInsert);
+
+        if (answersError) {
+          throw new Error(`Failed to save answers: ${answersError.message}`);
+        }
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(`[QuizService] Successfully saved quiz ${quizId} to database`);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("[QuizService] Database save error:", error);
+      throw new Error(`Failed to save quiz to database: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
 
     return quiz;
+  }
+
+  /**
+   * Builds the correct_answers_data JSONB field for a question.
+   * This field stores structured data about correct answers for different question types.
+   */
+  private buildCorrectAnswersData(question: QuizQuestionDto): Record<string, unknown> {
+    switch (question.type) {
+      case "true_false": {
+        return {
+          type: "true_false",
+          correct_answer: question.correct_answer === "Prawda" || question.correct_answer === "True",
+        };
+      }
+
+      case "multiple_choice": {
+        // Find the correct answer ID from the answers array
+        const correctAnswer = question.answers?.find((answer) => answer.is_correct);
+        return {
+          type: "multiple_choice",
+          correct_answer_id: correctAnswer?.id || null,
+          correct_answer_text: question.correct_answer,
+        };
+      }
+
+      case "short_answer": {
+        return {
+          type: "short_answer",
+          correct_answers: [question.correct_answer],
+          // For short answers, we might want to accept variations
+          case_sensitive: false,
+        };
+      }
+
+      default:
+        throw new Error(`Unknown question type: ${question.type}`);
+    }
   }
 }

@@ -1,28 +1,95 @@
 import type { APIRoute } from "astro";
+import { z } from "zod";
 
-// This is a mock endpoint for deleting/rejecting a quiz.
-// In a real application, this would delete the quiz from the database.
-export const DELETE: APIRoute = async ({ params }) => {
-  const { quizId } = params;
+export const prerender = false;
 
-  if (!quizId) {
-    return new Response(JSON.stringify({ message: "Quiz ID is required" }), {
+const QuizDeleteParams = z.object({
+  quizId: z.string().uuid(),
+});
+
+export const DELETE: APIRoute = async ({ params, locals }) => {
+  // Check if user is authenticated (set by middleware)
+  const { user } = locals;
+  if (!user) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const userId = user.id;
+
+  // Validate request parameters
+  const validationResult = QuizDeleteParams.safeParse(params);
+  if (!validationResult.success) {
+    return new Response(JSON.stringify({ message: "Invalid quiz ID format" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
 
-  console.log(`[MOCK] Deleting quiz with ID: ${quizId}`);
+  const { quizId } = validationResult.data;
 
-  // Simulate a successful deletion
-  return new Response(
-    JSON.stringify({
+  // Verify Supabase client availability
+  if (!locals.supabase) {
+    // eslint-disable-next-line no-console
+    console.error("Supabase client is not available in locals");
+    return new Response(JSON.stringify({ message: "Internal server error: Database not initialized" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  try {
+    // First, verify that the quiz exists and belongs to the user
+    const { data: quiz, error: quizError } = await locals.supabase
+      .from("quizzes")
+      .select(`
+        id,
+        status,
+        note_id,
+        notes!inner(user_id)
+      `)
+      .eq("id", quizId)
+      .eq("notes.user_id", userId)
+      .single();
+
+    if (quizError || !quiz) {
+      return new Response(JSON.stringify({ message: "Quiz not found or access denied" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Delete the quiz (this will cascade delete questions and answers due to foreign key constraints)
+    const { error: deleteError } = await locals.supabase
+      .from("quizzes")
+      .delete()
+      .eq("id", quizId);
+
+    if (deleteError) {
+      // eslint-disable-next-line no-console
+      console.error("Error deleting quiz:", deleteError);
+      return new Response(JSON.stringify({ message: "Failed to delete quiz" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // eslint-disable-next-line no-console
+    console.log(`[QuizDelete] Successfully deleted quiz ${quizId} for user ${userId}`);
+
+    return new Response(JSON.stringify({
       message: "Quiz rejected successfully",
       quizId,
-    }),
-    {
+    }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
-  );
+    });
+
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error deleting quiz:", error);
+    return new Response(JSON.stringify({ message: "An unexpected error occurred" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 };
