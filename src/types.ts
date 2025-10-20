@@ -50,6 +50,7 @@ export interface PaginatedResponseDto<T> {
 export interface QuizAnswerDto {
   id: string;
   content: string;
+  is_correct?: boolean;
 }
 
 /** Dto for a quiz question. */
@@ -59,6 +60,7 @@ export interface QuizQuestionDto {
   content: string;
   question_order: number;
   answers?: QuizAnswerDto[];
+  correct_answer?: string;
 }
 
 /** DTO for the quiz generation API response. */
@@ -79,6 +81,30 @@ export type QuizGenerationState =
   | { status: "accepting" }
   | { status: "accepted" }
   | { status: "error"; message: string; code?: number };
+
+/** JSON Schema type for OpenRouter response schemas. */
+export interface JSONSchema {
+  type: string;
+  properties?: Record<string, JSONSchema>;
+  required?: string[];
+  items?: JSONSchema;
+  description?: string;
+  enum?: string[];
+  [key: string]: unknown;
+}
+
+/** Configuration options for OpenRouter chat completion. */
+export interface ChatCompletionOptions {
+  model: string;
+  systemPrompt: string;
+  userPrompt: string;
+  responseSchema?: {
+    name: string;
+    schema: JSONSchema;
+  };
+  temperature?: number;
+  maxTokens?: number;
+}
 
 /** ViewModel for notes list filters, sorting, and pagination. */
 export interface NotesFilterViewModel {

@@ -1,19 +1,27 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { QuizGenerationController } from "@/components/QuizGenerationController";
+import { findNoteById } from "@/lib/services/notes.service";
 
 const { noteId } = Astro.params;
+const { user, supabase } = Astro.locals;
 
-// Mock data for demonstration purposes
-const note = {
-  id: noteId,
-  title: `Details for Note ${noteId}`,
-  content:
-    "This is the content of the note. It's long enough to generate a quiz from. We can add more details here as needed. The main point is to have a place to put the quiz generation button.",
-};
+if (!user) {
+  return Astro.redirect("/");
+}
 
-// Mock user data
-const user = {
+if (!noteId) {
+  return new Response("Note ID is required", { status: 400 });
+}
+
+const note = await findNoteById(supabase, noteId, user.id);
+
+if (!note) {
+  return new Response("Note not found", { status: 404 });
+}
+
+// TODO: Replace with actual user data when implemented
+const userData = {
   hasUserApiKey: false,
   freeQuizzesRemaining: 5,
 };
@@ -21,7 +29,7 @@ const user = {
 
 <Layout title={`Note: ${note.title}`}>
   <main class="container mx-auto max-w-4xl py-12">
-    <a href="/" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
+    <a href="/notes" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
     <h1 class="text-4xl font-bold mb-4">{note.title}</h1>
     <div class="prose dark:prose-invert max-w-none">
       <p>{note.content}</p>
@@ -32,8 +40,8 @@ const user = {
       <QuizGenerationController
         client:load
         noteId={note.id}
-        hasUserApiKey={user.hasUserApiKey}
-        freeQuizzesRemaining={user.freeQuizzesRemaining}
+        hasUserApiKey={userData.hasUserApiKey}
+        freeQuizzesRemaining={userData.freeQuizzesRemaining}
       />
     </div>
   </main>

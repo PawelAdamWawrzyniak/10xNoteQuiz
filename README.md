@@ -68,7 +68,11 @@ Follow these steps to set up and run the project on your local machine.
     ```bash
     cp .env.example .env
     ```
-    You will need to populate this file with your credentials for Supabase and Openrouter.ai.
+    You will need to populate this file with your credentials for Supabase and Openrouter.ai:
+    
+    - `SUPABASE_URL`: Your Supabase project URL
+    - `SUPABASE_KEY`: Your Supabase anon/public key
+    - `OPENROUTER_API_KEY`: Your OpenRouter API key (get it from [openrouter.ai](https://openrouter.ai/keys))
 
 4.  **Set up Supabase:**
     -   Create a new project on [Supabase](https://supabase.io/).
