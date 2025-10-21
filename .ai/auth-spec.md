@@ -5,8 +5,8 @@
 
 ### 1.1 Nowe strony (Astro)
 
-- **`/login`**: Strona logowania, publicznie dostępna. Będzie renderować komponent React `LoginForm` po stronie klienta.
-- **`/register`**: Strona rejestracji, publicznie dostępna. Będzie renderować komponent React `RegisterForm`.
+- **`/auth/login`**: Strona logowania, publicznie dostępna. Będzie renderować komponent React `LoginForm` po stronie klienta.
+- **`/auth/register`**: Strona rejestracji, publicznie dostępna. Będzie renderować komponent React `RegisterForm`.
 - **`/auth/callback`**: Strona (endpoint) obsługująca callback od Supabase po pomyślnej autentykacji (np. po potwierdzeniu e-maila). Ta strona będzie odpowiedzialna za finalizację sesji i przekierowanie użytkownika do panelu głównego.
 
 ### 1.2 Nowe komponenty (React)
@@ -48,13 +48,17 @@
 
 - **`/settings`**: Strona ustawień konta, dostępna tylko dla zalogowanych użytkowników. Będzie renderować komponent React `UserSettingsForm`.
 
+**Uwaga**: Strony główne (`/`) pozostają publiczne i dostępne bez logowania.
+
 ### 1.5 Scenariusze i obsługa błędów
 
 - **Walidacja formularzy**: Komunikaty o błędach będą wyświetlane pod odpowiednimi polami formularza (np. "Nieprawidłowy format e-maila", "Hasła nie są zgodne", "Hasło musi mieć co najmniej 8 znaków, zawierać co najmniej jedną dużą i jedną małą literę").
-- **Błędy API**: Błędy serwera (np. nieudane logowanie, istniejący użytkownik) będą wyświetlane jako ogólny komunikat dla całego formularza, np. przy użyciu komponentu `Alert` z `shadcn/ui`.
+- **Błędy API**: Błędy serwera (np. nieudane logowanie, istniejący użytkownik) będą wyświetlane jako:
+    - Ogólny komunikat dla całego formularza przy użyciu komponentu `Alert` z `shadcn/ui`
+    - Toast notifications przy użyciu komponentu `Sonner` dla natychmiastowego feedbacku
 - **Nawigacja**:
-    - Niezalogowany użytkownik próbujący uzyskać dostęp do chronionej strony (np. `/notes`) zostanie automatycznie przekierowany na stronę `/login`.
-    - Zalogowany użytkownik próbujący uzyskać dostęp do `/login` lub `/register` zostanie przekierowany na stronę główną `/notes`.
+    - Niezalogowany użytkownik próbujący uzyskać dostęp do chronionej strony (np. `/notes`) zostanie automatycznie przekierowany na stronę `/auth/login`.
+    - Strona główna `/` pozostaje publiczna i nie wymaga logowania.
 
 ## 2. Logika Backendowa
 
@@ -131,17 +135,19 @@ Nie ma potrzeby zmiany sposobu renderowania aplikacji w `astro.config.mjs`, poni
 
 ### 3.1 Integracja z Supabase Auth
 
-- **Konfiguracja**: Klucze Supabase (`SUPABASE_URL` i `SUPABASE_ANON_KEY`) będą przechowywane jako zmienne środowiskowe. Klient Supabase (`src/db/supabase.client.ts`) zostanie zainicjowany z wykorzystaniem `createSupabaseClient` z `@supabase/auth-helpers-astro`.
+- **Konfiguracja**: Klucze Supabase (`SUPABASE_URL` i `SUPABASE_KEY`) będą przechowywane jako zmienne środowiskowe. W projekcie używamy **dual-client approach**:
+    - **Regular Client** (`supabaseClient`) z `@supabase/supabase-js` - dla operacji bazodanowych z Row Level Security
+    - **SSR Client** (`createSupabaseServerInstance`) z `@supabase/ssr` - dla operacji autentykacji
 
 - **Middleware**: Głównym mechanizmem zabezpieczającym aplikację będzie middleware Astro zlokalizowany w `src/middleware/index.ts`.
     - Middleware będzie uruchamiany dla każdego żądania.
-    - Sprawdzi, czy użytkownik próbuje uzyskać dostęp do chronionej ścieżki (np. wszystko poza `/`, `/login`, `/register`, `/api/auth/**`, `/auth/callback`).
-    - Użyje `supabase.auth.getSession()` do weryfikacji istnienia aktywnej sesji użytkownika na podstawie ciasteczka.
-    - Jeśli sesja nie istnieje, a ścieżka jest chroniona, użytkownik zostanie przekierowany do `/login`.
-    - Jeśli sesja istnieje, a użytkownik próbuje wejść na `/login` lub `/register`, zostanie przekierowany do `/notes`.
-    - Informacje o zalogowanym użytkowniku (`session.user`) będą przekazywane do `Astro.locals` w celu umożliwienia dostępu do nich w komponentach Astro i endpointach API.
+    - Sprawdzi, czy użytkownik próbuje uzyskać dostęp do chronionej ścieżki (np. wszystko poza `/`, `/auth/login`, `/auth/register`, `/api/auth/**`).
+    - Użyje SSR client z metodą `auth.getUser()` do weryfikacji istnienia aktywnej sesji użytkownika na podstawie ciasteczka.
+    - Jeśli sesja nie istnieje, a ścieżka jest chroniona, użytkownik zostanie przekierowany do `/auth/login`.
+    - Informacje o zalogowanym użytkowniku (`user.id`, `user.email`) będą przekazywane do `Astro.locals` w celu umożliwienia dostępu do nich w komponentach Astro i endpointach API.
+    - Regular client jest przekazywany do `locals.supabase` dla operacji bazodanowych.
 
-- **Zarządzanie sesją**: Biblioteka `@supabase/auth-helpers-astro` automatycznie zarządza sesją za pomocą bezpiecznych, serwerowych ciasteczek (`httpOnly`). Nie ma potrzeby ręcznego zarządzania tokenami JWT po stronie klienta.
+- **Zarządzanie sesją**: Biblioteka `@supabase/ssr` automatycznie zarządza sesją za pomocą bezpiecznych, serwerowych ciasteczek (`httpOnly`, `secure`, `sameSite: 'lax'`). Nie ma potrzeby ręcznego zarządzania tokenami JWT po stronie klienta.
 
 - **Logika wyboru klucza API**: Logika biznesowa odpowiedzialna za generowanie quizów musi zostać zaktualizowana. Przed wysłaniem zapytania do AI, system sprawdzi, czy użytkownik ma zapisany własny klucz API. Jeśli tak, użyje go. W przeciwnym razie, użyje domyślnego klucza systemowego, informując o tym użytkownika.
 

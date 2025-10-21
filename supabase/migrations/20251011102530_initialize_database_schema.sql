@@ -21,6 +21,19 @@ begin
 end;
 $$;
 
+-- creates a profile for a new user.
+create function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id)
+  values (new.id);
+  return new;
+end;
+$$;
+
 -- section: enum types
 -- description: custom data types used across the database schema.
 
@@ -183,6 +196,11 @@ comment on column public.quiz_attempts.user_answers is 'a json object storing th
 
 -- section: triggers
 -- description: setting up triggers for automated actions on tables.
+
+-- trigger to create a profile for a new user.
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
 -- trigger for profiles table to update `updated_at` column on any row modification.
 create trigger on_profiles_updated
