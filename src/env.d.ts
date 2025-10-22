@@ -6,7 +6,9 @@ import type { Database } from "./db/database.types.ts";
 declare global {
   namespace App {
     interface Locals {
+      // Regular Supabase client for database operations (RLS-protected)
       supabase: SupabaseClient<Database>;
+      // Authenticated user information (available after middleware)
       user?: {
         id: string;
         email?: string;

@@ -1,33 +1,42 @@
 import { defineMiddleware } from "astro:middleware";
 
-import { supabaseClient, USER_ID } from "../db/supabase.client.ts";
+import { createSupabaseServerInstance } from "../db/supabase.client.ts";
+
+// Public paths that don't require authentication
+const PUBLIC_PATHS = ["/", "/auth/login", "/auth/register", "/api/auth/login", "/api/auth/register"];
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  context.locals.supabase = supabaseClient;
+  const { locals, cookies, url, request, redirect } = context;
 
-  // For testing: use hardcoded user ID
-  // TODO: In production, implement real authentication using Supabase session
-  context.locals.user = {
-    id: USER_ID,
-    email: "test@example.com",
-  };
+  // Create SSR client for all operations in this request
+  const supabase = createSupabaseServerInstance({
+    cookies,
+    headers: request.headers,
+  });
 
-  // Real authentication implementation (for future use):
-  // try {
-  //   const {
-  //     data: { session },
-  //   } = await supabaseClient.auth.getSession();
-  //
-  //   if (session?.user) {
-  //     context.locals.user = session.user;
-  //   } else {
-  //     // No session - user is not authenticated
-  //     context.locals.user = undefined;
-  //   }
-  // } catch (error) {
-  //   console.error("Error getting session in middleware:", error);
-  //   context.locals.user = undefined;
-  // }
+  // Make Supabase client available in context
+  locals.supabase = supabase;
+
+  // Skip auth check for public paths
+  if (PUBLIC_PATHS.includes(url.pathname)) {
+    return next();
+  }
+
+  // Get authenticated user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    // User is authenticated - store minimal user info in locals
+    locals.user = {
+      id: user.id,
+      email: user.email,
+    };
+  } else {
+    // User is not authenticated - redirect to login for protected routes
+    return redirect("/auth/login");
+  }
 
   return next();
 });
