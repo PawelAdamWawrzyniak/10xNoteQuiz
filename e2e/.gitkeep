@@ -1,0 +1,9 @@
+# E2E Test Directory
+
+This directory contains End-to-End tests using Playwright.
+
+## Structure
+- `tests/` - Test files (*.spec.ts)
+- `page-objects/` - Page Object Models
+- `fixtures/` - Test data and fixtures
+- `helpers/` - Utility functions
