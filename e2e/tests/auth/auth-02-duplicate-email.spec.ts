@@ -239,8 +239,7 @@ test.describe('AUTH-02: Duplicate Email Edge Cases', () => {
     await registerPage.submit();
 
     // Assert - Validation error (passwords don't match)
-    const fieldError = page.locator('.text-sm.text-red-500').filter({ hasText: /hasła nie są zgodne/i });
-    await expect(fieldError).toBeVisible();
+    await registerPage.expectFieldError('confirmPassword', 'Hasła nie są zgodne');
 
     // Act - Fix password and register successfully
     await registerPage.fillConfirmPassword(user.confirmPassword!);

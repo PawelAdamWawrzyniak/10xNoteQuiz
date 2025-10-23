@@ -23,25 +23,24 @@ export class RegisterPage {
   constructor(page: Page) {
     this.page = page;
 
-    // Form fields - using label text for accessibility
+    // Form fields - KEEP semantic selectors for accessibility
     this.emailInput = page.getByLabel('Adres e-mail');
     this.passwordInput = page.getByLabel('Hasło', { exact: true });
     this.confirmPasswordInput = page.getByLabel('Potwierdź hasło');
 
-    // Buttons
+    // Buttons - KEEP semantic selectors
     this.submitButton = page.getByRole('button', { name: /zarejestruj się/i });
 
-    // Success state elements
-    // The success card is the parent Card component containing the success message
-    this.successCard = page.locator('div').filter({ hasText: 'Rejestracja pomyślna!' }).first();
-    this.successTitle = page.getByText('Rejestracja pomyślna!', { exact: true });
-    this.successMessage = page.getByRole('alert').getByText(/konto utworzone/i).first();
+    // Success state elements - USE data-testid for reliability
+    this.successCard = page.getByTestId('register-success-card');
+    this.successTitle = page.getByTestId('register-success-title');
+    this.successMessage = page.getByTestId('register-success-alert-description');
     this.goToLoginLink = page.getByRole('link', { name: /przejdź do logowania/i });
 
-    // Error elements
-    this.errorAlert = page.getByRole('alert');
+    // Error elements - USE data-testid for specificity
+    this.errorAlert = page.getByTestId('register-error-alert');
 
-    // Navigation
+    // Navigation - KEEP semantic selectors
     this.loginLink = page.getByRole('link', { name: /zaloguj się/i });
   }
 
@@ -118,11 +117,21 @@ export class RegisterPage {
   }
 
   /**
+   * Get field error element by field name using data-testid
+   */
+  getFieldError(fieldName: string): Locator {
+    return this.page.getByTestId(`register-field-error-${fieldName}`);
+  }
+
+  /**
    * Verify field-level error message
    */
-  async expectFieldError(fieldName: string, errorMessage: string) {
-    const errorText = this.page.locator('.text-sm.text-red-500', { hasText: errorMessage });
-    await expect(errorText).toBeVisible();
+  async expectFieldError(fieldName: string, errorMessage?: string) {
+    const errorElement = this.getFieldError(fieldName);
+    await expect(errorElement).toBeVisible();
+    if (errorMessage) {
+      await expect(errorElement).toContainText(errorMessage);
+    }
   }
 
   /**

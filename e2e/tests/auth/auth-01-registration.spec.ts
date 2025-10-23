@@ -123,8 +123,7 @@ test.describe('AUTH-01: Registration Validation', () => {
 
     // Assert - Validation error should be shown as field-level error
     // This will be caught by Zod validation on client side
-    const fieldError = registerPage.page.locator('.text-sm.text-red-500').filter({ hasText: /hasła nie są zgodne/i });
-    await expect(fieldError).toBeVisible();
+    await registerPage.expectFieldError('confirmPassword', 'Hasła nie są zgodne');
 
     // Should still be on register page
     await expect(registerPage.page).toHaveURL(/\/auth\/register/);
