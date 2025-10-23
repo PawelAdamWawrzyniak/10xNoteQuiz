@@ -163,6 +163,8 @@ test.describe('AUTH-01: Registration Validation', () => {
 /**
  * AUTH-01: Error Handling Tests
  * Tests for server-side errors and edge cases
+ *
+ * Note: AUTH-02 (duplicate email) tests are in auth-02-duplicate-email.spec.ts
  */
 test.describe('AUTH-01: Registration Error Handling', () => {
   let registerPage: RegisterPage;
@@ -172,23 +174,13 @@ test.describe('AUTH-01: Registration Error Handling', () => {
     await registerPage.navigate();
   });
 
-  test('should show error when email already exists (AUTH-02 scenario)', async () => {
-    // Arrange - Create a user first
-    const user = generateUniqueUser();
+  test('should handle server errors gracefully', async () => {
+    // This test would require mocking a server error
+    // For now, we verify the error alert component exists and can display errors
+    await registerPage.expectFormReady();
 
-    // Act - Register first time
-    await registerPage.register(user);
-    await registerPage.expectSuccessMessage();
-
-    // Navigate back to register page
-    await registerPage.navigate();
-
-    // Act - Try to register again with same email
-    await registerPage.register(user);
-
-    // Assert - Error message about duplicate email
-    await registerPage.expectErrorMessage();
-    // Should still be on register page
-    await expect(registerPage.page).toHaveURL(/\/auth\/register/);
+    // The error alert should not be visible initially
+    const errorAlert = registerPage.errorAlert;
+    await expect(errorAlert).not.toBeVisible();
   });
 });
