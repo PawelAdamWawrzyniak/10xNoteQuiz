@@ -87,14 +87,14 @@ export function RegisterForm() {
 
   if (isSuccess) {
     return (
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md" data-testid="register-success-card">
         <CardHeader>
-          <CardTitle>Rejestracja pomyślna!</CardTitle>
+          <CardTitle data-testid="register-success-title">Rejestracja pomyślna!</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Alert>
-            <AlertTitle>✓ Konto utworzone</AlertTitle>
-            <AlertDescription>{successMessage}</AlertDescription>
+          <Alert data-testid="register-success-alert">
+            <AlertTitle data-testid="register-success-alert-title">✓ Konto utworzone</AlertTitle>
+            <AlertDescription data-testid="register-success-alert-description">{successMessage}</AlertDescription>
           </Alert>
           <p className="text-center text-sm text-gray-600">
             <a href="/auth/login" className="font-semibold text-blue-600 hover:underline">
@@ -116,8 +116,8 @@ export function RegisterForm() {
         <CardContent className="space-y-4">
           {/* Display API error alert */}
           {error?.type === "api" && error.message && (
-            <Alert variant="destructive">
-              <AlertDescription>{error.message}</AlertDescription>
+            <Alert variant="destructive" data-testid="register-error-alert">
+              <AlertDescription data-testid="register-error-message">{error.message}</AlertDescription>
             </Alert>
           )}
 
@@ -132,7 +132,11 @@ export function RegisterForm() {
               disabled={isLoading}
               required
             />
-            {getFieldError("email") && <p className="text-sm text-red-500">{getFieldError("email")}</p>}
+            {getFieldError("email") && (
+              <p className="text-sm text-red-500" data-testid="register-field-error-email">
+                {getFieldError("email")}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Hasło</Label>
@@ -144,7 +148,11 @@ export function RegisterForm() {
               disabled={isLoading}
               required
             />
-            {getFieldError("password") && <p className="text-sm text-red-500">{getFieldError("password")}</p>}
+            {getFieldError("password") && (
+              <p className="text-sm text-red-500" data-testid="register-field-error-password">
+                {getFieldError("password")}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Potwierdź hasło</Label>
@@ -157,7 +165,9 @@ export function RegisterForm() {
               required
             />
             {getFieldError("confirmPassword") && (
-              <p className="text-sm text-red-500">{getFieldError("confirmPassword")}</p>
+              <p className="text-sm text-red-500" data-testid="register-field-error-confirmPassword">
+                {getFieldError("confirmPassword")}
+              </p>
             )}
           </div>
         </CardContent>
