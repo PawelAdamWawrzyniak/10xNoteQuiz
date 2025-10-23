@@ -14,9 +14,10 @@ The core problem this project solves is the time-consuming nature of creating se
 - [Tech Stack](#3-tech-stack)
 - [Getting Started Locally](#4-getting-started-locally)
 - [Available Scripts](#5-available-scripts)
-- [Project Scope](#6-project-scope)
-- [Project Status](#7-project-status)
-- [License](#8-license)
+- [Testing Strategy](#6-testing-strategy)
+- [Project Scope](#7-project-scope)
+- [Project Status](#8-project-status)
+- [License](#9-license)
 
 ## 3. Tech Stack
 
@@ -96,7 +97,17 @@ This project includes the following scripts defined in `package.json`:
 -   `npm run lint:fix`: Lints the codebase and automatically fixes fixable issues.
 -   `npm run format`: Formats the code using Prettier.
 
-## 6. Project Scope
+## 6. Testing Strategy
+
+This project follows a comprehensive testing plan to ensure high quality and reliability. Our strategy includes multiple layers of testing to cover everything from individual components to complete user workflows.
+
+-   **Unit Tests**: We use [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) to test individual components and utility functions in isolation.
+-   **Integration Tests**: These tests verify that different parts of the application, such as services and components, work together as expected.
+-   **End-to-End (E2E) Tests**: We use [Playwright](https://playwright.dev/) to simulate real user scenarios in a browser, ensuring the entire application flow is correct from the UI to the database.
+
+For a detailed overview of our testing strategy, including test scenarios, environments, and acceptance criteria, please refer to the full [Test Plan](./test-plan.md).
+
+## 7. Project Scope
 
 ### Core Features (MVP)
 
@@ -120,12 +131,12 @@ The initial version of the application will include the following features:
 -   Password recovery functionality.
 -   Syntax highlighting for code snippets within notes.
 
-## 7. Project Status
+## 8. Project Status
 
 **Current Phase: In Development**
 
 The project is currently focused on building the Minimum Viable Product (MVP). The primary goal is to implement all the core functionalities listed in the "Project Scope" section to provide a stable and useful tool for learners.
 
-## 8. License
+## 9. License
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE.md) file for more details.
