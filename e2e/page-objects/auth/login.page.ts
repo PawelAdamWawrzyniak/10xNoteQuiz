@@ -1,5 +1,5 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import type { Credentials } from '../../fixtures/users';
+import { type Page, type Locator, expect } from "@playwright/test";
+import type { Credentials } from "../../fixtures/users";
 
 /**
  * Page Object Model for Login Page
@@ -21,20 +21,20 @@ export class LoginPage {
     this.page = page;
 
     // Form fields - using label text for accessibility
-    this.emailInput = page.getByLabel('Adres e-mail');
-    this.passwordInput = page.getByLabel('Hasło');
+    this.emailInput = page.getByLabel("Adres e-mail");
+    this.passwordInput = page.getByLabel("Hasło");
 
     // Buttons
-    this.submitButton = page.getByRole('button', { name: /zaloguj się/i });
+    this.submitButton = page.getByRole("button", { name: /zaloguj się/i });
 
     // Error elements
-    this.errorAlert = page.getByRole('alert');
+    this.errorAlert = page.getByRole("alert");
 
     // Navigation
-    this.registerLink = page.getByRole('link', { name: /zarejestruj się/i });
+    this.registerLink = page.getByRole("link", { name: /zarejestruj się/i });
 
     // Page content
-    this.pageTitle = page.getByRole('heading', { name: /witaj ponownie/i });
+    this.pageTitle = page.getByRole("heading", { name: /witaj ponownie/i });
     this.pageDescription = page.getByText(/zaloguj się, aby kontynuować/i);
   }
 
@@ -42,8 +42,8 @@ export class LoginPage {
    * Navigate to the login page
    */
   async navigate() {
-    await this.page.goto('/auth/login');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto("/auth/login");
+    await this.page.waitForLoadState("networkidle");
   }
 
   /**
@@ -99,7 +99,7 @@ export class LoginPage {
    * Verify field-level error message
    */
   async expectFieldError(fieldName: string, errorMessage: string) {
-    const errorText = this.page.locator('.text-sm.text-red-500', { hasText: errorMessage });
+    const errorText = this.page.locator(".text-sm.text-red-500", { hasText: errorMessage });
     await expect(errorText).toBeVisible();
   }
 
@@ -147,7 +147,7 @@ export class LoginPage {
    * Useful for validating success/error toasts
    */
   async expectToast(message: string) {
-    const toast = this.page.locator('[data-sonner-toast]', { hasText: message });
+    const toast = this.page.locator("[data-sonner-toast]", { hasText: message });
     await expect(toast).toBeVisible({ timeout: 5000 });
   }
 
@@ -155,7 +155,7 @@ export class LoginPage {
    * Wait for success toast after login
    */
   async expectSuccessToast() {
-    await this.expectToast('Zalogowano pomyślnie!');
+    await this.expectToast("Zalogowano pomyślnie!");
   }
 
   /**

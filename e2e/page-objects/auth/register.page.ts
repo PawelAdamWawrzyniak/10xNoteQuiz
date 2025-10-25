@@ -1,5 +1,5 @@
-import { type Page, type Locator, expect } from '@playwright/test';
-import type { TestUser } from '../../fixtures/users';
+import { type Page, type Locator, expect } from "@playwright/test";
+import type { TestUser } from "../../fixtures/users";
 
 /**
  * Page Object Model for Registration Page
@@ -24,32 +24,32 @@ export class RegisterPage {
     this.page = page;
 
     // Form fields - KEEP semantic selectors for accessibility
-    this.emailInput = page.getByLabel('Adres e-mail');
-    this.passwordInput = page.getByLabel('Hasło', { exact: true });
-    this.confirmPasswordInput = page.getByLabel('Potwierdź hasło');
+    this.emailInput = page.getByLabel("Adres e-mail");
+    this.passwordInput = page.getByLabel("Hasło", { exact: true });
+    this.confirmPasswordInput = page.getByLabel("Potwierdź hasło");
 
     // Buttons - KEEP semantic selectors
-    this.submitButton = page.getByRole('button', { name: /zarejestruj się/i });
+    this.submitButton = page.getByRole("button", { name: /zarejestruj się/i });
 
     // Success state elements - USE data-testid for reliability
-    this.successCard = page.getByTestId('register-success-card');
-    this.successTitle = page.getByTestId('register-success-title');
-    this.successMessage = page.getByTestId('register-success-alert-description');
-    this.goToLoginLink = page.getByRole('link', { name: /przejdź do logowania/i });
+    this.successCard = page.getByTestId("register-success-card");
+    this.successTitle = page.getByTestId("register-success-title");
+    this.successMessage = page.getByTestId("register-success-alert-description");
+    this.goToLoginLink = page.getByRole("link", { name: /przejdź do logowania/i });
 
     // Error elements - USE data-testid for specificity
-    this.errorAlert = page.getByTestId('register-error-alert');
+    this.errorAlert = page.getByTestId("register-error-alert");
 
     // Navigation - KEEP semantic selectors
-    this.loginLink = page.getByRole('link', { name: /zaloguj się/i });
+    this.loginLink = page.getByRole("link", { name: /zaloguj się/i });
   }
 
   /**
    * Navigate to the registration page
    */
   async navigate() {
-    await this.page.goto('/auth/register');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto("/auth/register");
+    await this.page.waitForLoadState("networkidle");
   }
 
   /**

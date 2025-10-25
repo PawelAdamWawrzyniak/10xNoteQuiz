@@ -135,11 +135,7 @@ describe("POST /api/notes", () => {
         content: noteData.content,
       });
 
-      const { mockInsert } = createSuccessfulNoteMock(
-        mockSupabase,
-        mockCreatedNote,
-        mockNoteWithTags
-      );
+      const { mockInsert } = createSuccessfulNoteMock(mockSupabase, mockCreatedNote, mockNoteWithTags);
 
       const response = await POST(mockContext as APIContext);
       const responseData = await response.json();
@@ -185,11 +181,7 @@ describe("POST /api/notes", () => {
         category_id: noteData.category_id,
       });
 
-      const { mockInsert } = createSuccessfulNoteMock(
-        mockSupabase,
-        mockCreatedNote,
-        mockNoteWithTags
-      );
+      const { mockInsert } = createSuccessfulNoteMock(mockSupabase, mockCreatedNote, mockNoteWithTags);
 
       const response = await POST(mockContext as APIContext);
       const responseData = await response.json();
@@ -418,9 +410,7 @@ describe("GET /api/notes", () => {
   beforeEach(() => {
     mockSupabase = { from: vi.fn() };
     mockContext = {
-      url: new URL(
-        "http://localhost/api/notes?page=1&page_size=20&sort_by=updated_at&order=desc"
-      ),
+      url: new URL("http://localhost/api/notes?page=1&page_size=20&sort_by=updated_at&order=desc"),
       locals: {
         supabase: mockSupabase,
         user: { id: "test-user-123" },

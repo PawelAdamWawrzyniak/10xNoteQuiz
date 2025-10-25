@@ -123,7 +123,7 @@ export function useQuizGeneration(noteId: string) {
     async (quizId: string) => {
       try {
         console.log("[Hook] rejectQuiz: Starting rejection process for quizId:", quizId);
-        
+
         const response = await fetch(`/api/quizzes/${quizId}`, {
           method: "DELETE",
         });
@@ -137,11 +137,11 @@ export function useQuizGeneration(noteId: string) {
 
         const data = await response.json();
         console.log("[Hook] rejectQuiz: Quiz rejected successfully, generating new quiz...");
-        
+
         // The plan is to generate a new quiz immediately after rejection.
         isRegeneratingRef.current = true;
         await generateQuiz();
-        
+
         console.log("[Hook] rejectQuiz: New quiz generated successfully");
         return data;
       } catch (error) {
