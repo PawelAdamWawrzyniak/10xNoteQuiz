@@ -6,65 +6,67 @@ Ten punkt końcowy jest odpowiedzialny za generowanie nowego quizu na podstawie 
 
 ## 2. Szczegóły żądania
 
--   **Metoda HTTP:** `POST`
--   **Struktura URL:** `/api/notes/{noteId}/quizzes`
--   **Parametry:**
-    -   **Wymagane:**
-        -   `noteId` (w ścieżce URL): Identyfikator UUID notatki, dla której ma zostać wygenerowany quiz.
-    -   **Opcjonalne:** Brak.
--   **Request Body:** Puste.
+- **Metoda HTTP:** `POST`
+- **Struktura URL:** `/api/notes/{noteId}/quizzes`
+- **Parametry:**
+  - **Wymagane:**
+    - `noteId` (w ścieżce URL): Identyfikator UUID notatki, dla której ma zostać wygenerowany quiz.
+  - **Opcjonalne:** Brak.
+- **Request Body:** Puste.
 
 ## 3. Wykorzystywane typy
 
 Do implementacji tego punktu końcowego zostaną wykorzystane następujące DTO (Data Transfer Objects) i modele.
 
--   **QuizGenerationParams (Walidacja Zod):**
-    ```typescript
-    import { z } from 'zod';
+- **QuizGenerationParams (Walidacja Zod):**
 
-    export const QuizGenerationParams = z.object({
-      noteId: z.string().uuid(),
-    });
-    ```
+  ```typescript
+  import { z } from "zod";
 
--   **QuizGenerationResponseDto (Odpowiedź API):**
-    ```typescript
-    // Definicje typów dla odpowiedzi API
-    // src/types.ts
+  export const QuizGenerationParams = z.object({
+    noteId: z.string().uuid(),
+  });
+  ```
 
-    export interface QuizAnswerDto {
-      id: string;
-      content: string;
-    }
+- **QuizGenerationResponseDto (Odpowiedź API):**
 
-    export interface QuizQuestionDto {
-      id: string;
-      type: 'true_false' | 'multiple_choice' | 'short_answer';
-      content: string;
-      question_order: number;
-      answers?: QuizAnswerDto[]; // Występuje tylko dla pytań typu 'multiple_choice'
-    }
+  ```typescript
+  // Definicje typów dla odpowiedzi API
+  // src/types.ts
 
-    export interface QuizGenerationResponseDto {
-      id: string;
-      note_id: string;
-      status: 'pending_acceptance';
-      created_at: string;
-      questions: QuizQuestionDto[];
-    }
-    ```
+  export interface QuizAnswerDto {
+    id: string;
+    content: string;
+  }
+
+  export interface QuizQuestionDto {
+    id: string;
+    type: "true_false" | "multiple_choice" | "short_answer";
+    content: string;
+    question_order: number;
+    answers?: QuizAnswerDto[]; // Występuje tylko dla pytań typu 'multiple_choice'
+  }
+
+  export interface QuizGenerationResponseDto {
+    id: string;
+    note_id: string;
+    status: "pending_acceptance";
+    created_at: string;
+    questions: QuizQuestionDto[];
+  }
+  ```
 
 ## 4. Szczegóły odpowiedzi
 
--   **Pomyślna odpowiedź (`201 Created`):**
-    -   **Content-Type:** `application/json`
-    -   **Body:** Obiekt `QuizGenerationResponseDto` zawierający nowo utworzony quiz z zagnieżdżonymi pytaniami i odpowiedziami.
--   **Odpowiedzi błędów:**
-    -   `400 Bad Request`: Nieprawidłowy format `noteId` lub treść notatki jest niewystarczająca.
-    -   `401 Unauthorized`: Użytkownik nie jest zalogowany.
-    -   `402 Payment Required`: Użytkownik wyczerpał darmowe próby generowania quizu i nie skonfigurował klucza API.
-    -   `404 Not Found`: Notatka o podanym `noteId` nie istnieje lub nie należy do zalogowanego użytkownika.
-    -   `503 Service Unavailable`: Wystąpił błąd podczas komunikacji z zewnętrzną usługą AI.
+- **Pomyślna odpowiedź (`201 Created`):**
+  - **Content-Type:** `application/json`
+  - **Body:** Obiekt `QuizGenerationResponseDto` zawierający nowo utworzony quiz z zagnieżdżonymi pytaniami i odpowiedziami.
+- **Odpowiedzi błędów:**
+  - `400 Bad Request`: Nieprawidłowy format `noteId` lub treść notatki jest niewystarczająca.
+  - `401 Unauthorized`: Użytkownik nie jest zalogowany.
+  - `402 Payment Required`: Użytkownik wyczerpał darmowe próby generowania quizu i nie skonfigurował klucza API.
+  - `404 Not Found`: Notatka o podanym `noteId` nie istnieje lub nie należy do zalogowanego użytkownika.
+  - `503 Service Unavailable`: Wystąpił błąd podczas komunikacji z zewnętrzną usługą AI.
 
 ## 5. Przepływ danych
 
@@ -80,31 +82,31 @@ Do implementacji tego punktu końcowego zostaną wykorzystane następujące DTO 
     e. Wysyła żądanie do usługi Openrouter.ai.
     f. Przetwarza i waliduje odpowiedź JSON od AI.
     g. W ramach jednej transakcji bazodanowej:
-        i. Zapisuje nowy rekord w tabeli `quizzes`.
-        ii. Zapisuje pytania w tabeli `questions`.
-        iii. Zapisuje odpowiedzi w tabeli `answers`.
-        iv. Jeśli to konieczne, dekrementuje licznik `free_quizzes_remaining` w tabeli `profiles`.
+    i. Zapisuje nowy rekord w tabeli `quizzes`.
+    ii. Zapisuje pytania w tabeli `questions`.
+    iii. Zapisuje odpowiedzi w tabeli `answers`.
+    iv. Jeśli to konieczne, dekrementuje licznik `free_quizzes_remaining` w tabeli `profiles`.
     h. Zwraca nowo utworzone dane quizu do handlera.
 6.  Handler endpointu formatuje dane do postaci `QuizGenerationResponseDto` i wysyła odpowiedź `201 Created` z serializowanym obiektem JSON.
 
 ## 6. Względy bezpieczeństwa
 
--   **Autoryzacja:** Wszystkie zapytania do bazy danych w `QuizGenerationService` muszą zawierać warunek `where('user_id', '=', userId)`, aby uniemożliwić dostęp do danych innych użytkowników. Polegamy również na politykach RLS (Row-Level Security) w Supabase jako drugiej linii obrony.
--   **Zarządzanie kluczami API:** Klucz API użytkownika jest przechowywany w formie zaszyfrowanej. Proces jego użycia (odszyfrowanie) powinien być zrealizowany w bezpiecznym środowisku, np. w funkcji brzegowej Supabase (Edge Function), aby uniknąć jego ekspozycji.
--   **Ochrona przed DoS:** Endpoint jest kosztowny obliczeniowo. Ograniczenie liczby darmowych prób i wymóg własnego klucza API działają jako mechanizm ograniczający nadużycia. W razie potrzeby można dodać globalne rate limiting na poziomie middleware.
--   **Prompt Injection:** Prompt wysyłany do AI musi być starannie skonstruowany, aby oddzielić instrukcje systemowe od treści dostarczonej przez użytkownika, minimalizując ryzyko manipulacji modelem.
+- **Autoryzacja:** Wszystkie zapytania do bazy danych w `QuizGenerationService` muszą zawierać warunek `where('user_id', '=', userId)`, aby uniemożliwić dostęp do danych innych użytkowników. Polegamy również na politykach RLS (Row-Level Security) w Supabase jako drugiej linii obrony.
+- **Zarządzanie kluczami API:** Klucz API użytkownika jest przechowywany w formie zaszyfrowanej. Proces jego użycia (odszyfrowanie) powinien być zrealizowany w bezpiecznym środowisku, np. w funkcji brzegowej Supabase (Edge Function), aby uniknąć jego ekspozycji.
+- **Ochrona przed DoS:** Endpoint jest kosztowny obliczeniowo. Ograniczenie liczby darmowych prób i wymóg własnego klucza API działają jako mechanizm ograniczający nadużycia. W razie potrzeby można dodać globalne rate limiting na poziomie middleware.
+- **Prompt Injection:** Prompt wysyłany do AI musi być starannie skonstruowany, aby oddzielić instrukcje systemowe od treści dostarczonej przez użytkownika, minimalizując ryzyko manipulacji modelem.
 
 ## 7. Obsługa błędów
 
--   Błędy walidacji Zod w handlerze API zwracają `400 Bad Request` z komunikatem o błędzie.
--   Błędy biznesowe (np. brak notatki, brak darmowych quizów) rzucane z serwisu są łapane w handlerze i mapowane na odpowiednie kody statusu HTTP (`404`, `402`).
--   Błędy komunikacji z usługą AI są łapane i zwracają `503 Service Unavailable`.
--   Wszystkie nieoczekiwane błędy (np. błędy bazy danych) są logowane na serwerze i zwracają generyczny błąd `500 Internal Server Error`.
+- Błędy walidacji Zod w handlerze API zwracają `400 Bad Request` z komunikatem o błędzie.
+- Błędy biznesowe (np. brak notatki, brak darmowych quizów) rzucane z serwisu są łapane w handlerze i mapowane na odpowiednie kody statusu HTTP (`404`, `402`).
+- Błędy komunikacji z usługą AI są łapane i zwracają `503 Service Unavailable`.
+- Wszystkie nieoczekiwane błędy (np. błędy bazy danych) są logowane na serwerze i zwracają generyczny błąd `500 Internal Server Error`.
 
 ## 8. Rozważania dotyczące wydajności
 
--   Głównym wąskim gardłem wydajnościowym jest czas odpowiedzi zewnętrznej usługi AI. Proces jest asynchroniczny i jego czas wykonania jest poza naszą bezpośrednią kontrolą.
--   Operacje na bazie danych powinny być zoptymalizowane i wykonywane w ramach jednej transakcji, aby zapewnić spójność danych i zminimalizować liczbę zapytań.
+- Głównym wąskim gardłem wydajnościowym jest czas odpowiedzi zewnętrznej usługi AI. Proces jest asynchroniczny i jego czas wykonania jest poza naszą bezpośrednią kontrolą.
+- Operacje na bazie danych powinny być zoptymalizowane i wykonywane w ramach jednej transakcji, aby zapewnić spójność danych i zminimalizować liczbę zapytań.
 
 ## 9. Etapy wdrożenia
 

@@ -72,6 +72,7 @@ Zdobądź klucz API z: https://openrouter.ai/keys
 ### Plik `.env.example`
 
 Już zawiera wszystkie wymagane zmienne:
+
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
 - `OPENROUTER_API_KEY`
@@ -112,13 +113,13 @@ API Endpoint (HTTP interface)
 
 ### Typy Błędów
 
-| Błąd | Kod HTTP | Opis |
-|------|----------|------|
-| `AuthenticationError` | 401/502 | Nieprawidłowy klucz API |
-| `RateLimitError` | 429 | Przekroczony limit zapytań |
-| `InvalidRequestError` | 400 | Błędne parametry zapytania |
-| `ServiceUnavailableError` | 503 | OpenRouter niedostępny |
-| `ModelResponseError` | 500 | Nieprawidłowa odpowiedź AI |
+| Błąd                      | Kod HTTP | Opis                       |
+| ------------------------- | -------- | -------------------------- |
+| `AuthenticationError`     | 401/502  | Nieprawidłowy klucz API    |
+| `RateLimitError`          | 429      | Przekroczony limit zapytań |
+| `InvalidRequestError`     | 400      | Błędne parametry zapytania |
+| `ServiceUnavailableError` | 503      | OpenRouter niedostępny     |
+| `ModelResponseError`      | 500      | Nieprawidłowa odpowiedź AI |
 
 ### Strategia Obsługi
 
@@ -130,21 +131,27 @@ API Endpoint (HTTP interface)
 ## 🧪 Testy
 
 ### Build Test
+
 ```bash
 npm run build
 ```
+
 ✅ Status: Przeszedł pomyślnie (3.04s)
 
 ### Linter Test
+
 ```bash
 npm run lint
 ```
+
 ✅ Status: Brak błędów w nowych plikach
 
 ### TypeScript Check
+
 ```bash
 npx tsc --noEmit
 ```
+
 ✅ Status: Brak błędów typowania
 
 ## 📝 Użycie
@@ -208,6 +215,7 @@ const quiz = await service.getChatCompletion<Quiz>({
 Domyślny model: **`anthropic/claude-3.5-haiku`**
 
 Powody wyboru:
+
 - Szybki czas odpowiedzi
 - Wysoka jakość generowanych quizów
 - Dobry stosunek jakości do kosztu
@@ -249,6 +257,7 @@ Powody wyboru:
 ## ✨ Podsumowanie
 
 Implementacja OpenRouter Service została zakończona zgodnie z planem. Serwis jest:
+
 - ✅ Kompletny i funkcjonalny
 - ✅ Bezpieczny i zgodny z best practices
 - ✅ Dobrze udokumentowany
@@ -257,4 +266,3 @@ Implementacja OpenRouter Service została zakończona zgodnie z planem. Serwis j
 - ✅ Zgodny z zasadami projektu (clean code, error handling)
 
 Wszystkie wymagania z planu implementacji zostały spełnione.
-

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { POST, GET } from "../index";
+import { POST } from "../index";
 import type { APIContext } from "astro";
 
 // ============================================================================
@@ -32,6 +32,7 @@ const createMockNoteWithDetails = (overrides = {}) => ({
 /**
  * Creates a simplified Supabase mock for successful note creation
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createSuccessfulNoteMock = (mockSupabase: any, noteData: any, noteWithDetails: any) => {
   const mockSingle = vi.fn().mockResolvedValue({ data: noteData, error: null });
   const mockSelect = vi.fn().mockReturnValue({ single: mockSingle });
@@ -59,6 +60,7 @@ const createSuccessfulNoteMock = (mockSupabase: any, noteData: any, noteWithDeta
 /**
  * Creates a mock for database error scenarios
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createErrorNoteMock = (mockSupabase: any, errorMessage: string) => {
   const mockError = { message: errorMessage };
   const mockSingle = vi.fn().mockResolvedValue({ data: null, error: mockError });
@@ -73,6 +75,7 @@ const createErrorNoteMock = (mockSupabase: any, errorMessage: string) => {
 /**
  * Creates a mock for successful GET requests
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createSuccessfulGetMock = (mockSupabase: any, notes: any[], totalCount: number) => {
   const mockRange = vi.fn().mockResolvedValue({
     data: notes,
@@ -94,6 +97,7 @@ const createSuccessfulGetMock = (mockSupabase: any, notes: any[], totalCount: nu
 
 describe("POST /api/notes", () => {
   let mockContext: Partial<APIContext>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockSupabase: any;
 
   beforeEach(() => {
@@ -135,11 +139,7 @@ describe("POST /api/notes", () => {
         content: noteData.content,
       });
 
-      const { mockInsert } = createSuccessfulNoteMock(
-        mockSupabase,
-        mockCreatedNote,
-        mockNoteWithTags
-      );
+      const { mockInsert } = createSuccessfulNoteMock(mockSupabase, mockCreatedNote, mockNoteWithTags);
 
       const response = await POST(mockContext as APIContext);
       const responseData = await response.json();
@@ -185,11 +185,7 @@ describe("POST /api/notes", () => {
         category_id: noteData.category_id,
       });
 
-      const { mockInsert } = createSuccessfulNoteMock(
-        mockSupabase,
-        mockCreatedNote,
-        mockNoteWithTags
-      );
+      const { mockInsert } = createSuccessfulNoteMock(mockSupabase, mockCreatedNote, mockNoteWithTags);
 
       const response = await POST(mockContext as APIContext);
       const responseData = await response.json();
@@ -411,16 +407,16 @@ describe("POST /api/notes", () => {
 // GET /api/notes Tests
 // ============================================================================
 
+// GET tests were removed - only POST tests exist in this file
 describe("GET /api/notes", () => {
   let mockContext: Partial<APIContext>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockSupabase: any;
 
   beforeEach(() => {
     mockSupabase = { from: vi.fn() };
     mockContext = {
-      url: new URL(
-        "http://localhost/api/notes?page=1&page_size=20&sort_by=updated_at&order=desc"
-      ),
+      url: new URL("http://localhost/api/notes?page=1&page_size=20&sort_by=updated_at&order=desc"),
       locals: {
         supabase: mockSupabase,
         user: { id: "test-user-123" },
@@ -565,7 +561,7 @@ describe("GET /api/notes", () => {
       const { mockRange } = createSuccessfulGetMock(mockSupabase, mockNotes, 1);
 
       const response = await GET(mockContext as APIContext);
-      const responseData = await response.json();
+      await response.json();
 
       expect(response.status).toBe(200);
       // Invalid page_size falls back to default (20)
@@ -579,7 +575,7 @@ describe("GET /api/notes", () => {
       const { mockOrder } = createSuccessfulGetMock(mockSupabase, mockNotes, 1);
 
       const response = await GET(mockContext as APIContext);
-      const responseData = await response.json();
+      await response.json();
 
       expect(response.status).toBe(200);
       // Schema uses .catch() for sort_by, but doesn't validate enum, so it passes through

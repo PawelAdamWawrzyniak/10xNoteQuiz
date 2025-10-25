@@ -24,12 +24,12 @@ export class OpenRouterService {
 
   constructor(config: OpenRouterServiceConfig = {}) {
     this.apiKey = config.apiKey ?? import.meta.env.OPENROUTER_API_KEY;
-    this.baseUrl = config.baseUrl ?? 'https://openrouter.ai/api/v1';
+    this.baseUrl = config.baseUrl ?? "https://openrouter.ai/api/v1";
 
     if (!this.apiKey) {
       // Błąd krytyczny, aplikacja nie może kontynuować bez klucza
-      console.error('OpenRouter API key is not configured.');
-      throw new Error('OpenRouter API key is not configured. Please set OPENROUTER_API_KEY environment variable.');
+      console.error("OpenRouter API key is not configured.");
+      throw new Error("OpenRouter API key is not configured. Please set OPENROUTER_API_KEY environment variable.");
     }
   }
 
@@ -38,12 +38,12 @@ export class OpenRouterService {
 ```
 
 - **Parametry**:
-    - `config` (opcjonalny): Obiekt konfiguracyjny pozwalający na nadpisanie domyślnych wartości, przydatny w testach.
-        - `apiKey` (string): Klucz API OpenRouter. Domyślnie pobierany ze zmiennej środowiskowej `OPENROUTER_API_KEY`.
-        - `baseUrl` (string): Adres URL API. Domyślnie `https://openrouter.ai/api/v1`.
+  - `config` (opcjonalny): Obiekt konfiguracyjny pozwalający na nadpisanie domyślnych wartości, przydatny w testach.
+    - `apiKey` (string): Klucz API OpenRouter. Domyślnie pobierany ze zmiennej środowiskowej `OPENROUTER_API_KEY`.
+    - `baseUrl` (string): Adres URL API. Domyślnie `https://openrouter.ai/api/v1`.
 - **Logika**:
-    1. Przypisuje klucz API i bazowy URL, korzystając z wartości domyślnych ze zmiennych środowiskowych.
-    2. Sprawdza, czy klucz API jest dostępny. Jeśli nie, zgłasza błąd krytyczny, aby zapobiec dalszemu działaniu usługi bez autoryzacji.
+  1. Przypisuje klucz API i bazowy URL, korzystając z wartości domyślnych ze zmiennych środowiskowych.
+  2. Sprawdza, czy klucz API jest dostępny. Jeśli nie, zgłasza błąd krytyczny, aby zapobiec dalszemu działaniu usługi bez autoryzacji.
 
 ## 3. Publiczne Metody i Pola
 
@@ -52,41 +52,44 @@ export class OpenRouterService {
 Główna metoda usługi, która wysyła zapytanie do modelu i zwraca odpowiedź sparsowaną do oczekiwanego typu `T`.
 
 - **Parametry**:
-    - `options`: Obiekt `ChatCompletionOptions` zawierający wszystkie niezbędne informacje do zbudowania zapytania.
-      ```typescript
-      // Proponowana lokalizacja: src/types.ts
-      import { JSONSchema } from 'json-schema-to-ts';
+  - `options`: Obiekt `ChatCompletionOptions` zawierający wszystkie niezbędne informacje do zbudowania zapytania.
 
-      export interface ChatCompletionOptions {
-        model: string;
-        systemPrompt: string;
-        userPrompt: string;
-        responseSchema?: {
-          name: string;
-          schema: JSONSchema;
-        };
-        temperature?: number;
-        maxTokens?: number;
-      }
-      ```
+    ```typescript
+    // Proponowana lokalizacja: src/types.ts
+    import { JSONSchema } from "json-schema-to-ts";
+
+    export interface ChatCompletionOptions {
+      model: string;
+      systemPrompt: string;
+      userPrompt: string;
+      responseSchema?: {
+        name: string;
+        schema: JSONSchema;
+      };
+      temperature?: number;
+      maxTokens?: number;
+    }
+    ```
+
 - **Zwraca**: `Promise<T>`, gdzie `T` to typ danych zgodny z dostarczonym `responseSchema`. Jeśli `responseSchema` nie jest podane, `T` będzie domyślnie `string`.
 - **Przykład użycia**:
+
   ```typescript
   // w pliku src/pages/api/notes/[noteId]/quizzes.ts
-  import { quizSchema } from './_schema'; // Załóżmy, że schemat jest zdefiniowany
-  import { type Quiz } from '@/types';
+  import { quizSchema } from "./_schema"; // Załóżmy, że schemat jest zdefiniowany
+  import { type Quiz } from "@/types";
 
   const openRouter = new OpenRouterService();
-  
+
   const quiz: Quiz = await openRouter.getChatCompletion<Quiz>({
-    model: 'anthropic/claude-3-haiku',
-    systemPrompt: 'Jesteś asystentem, który tworzy quizy. Odpowiadaj zawsze w formacie JSON.',
+    model: "anthropic/claude-3-haiku",
+    systemPrompt: "Jesteś asystentem, który tworzy quizy. Odpowiadaj zawsze w formacie JSON.",
     userPrompt: `Wygeneruj quiz z 3 pytaniami na podstawie tej notatki: ${noteContent}`,
     responseSchema: {
-      name: 'create_quiz',
-      schema: quizSchema
+      name: "create_quiz",
+      schema: quizSchema,
     },
-    temperature: 0.5
+    temperature: 0.5,
   });
   ```
 
@@ -97,30 +100,30 @@ Główna metoda usługi, która wysyła zapytanie do modelu i zwraca odpowiedź 
 Metoda pomocnicza do budowania ciała zapytania HTTP na podstawie opcji.
 
 - **Logika**:
-    1. Tworzy tablicę `messages` z `systemPrompt` i `userPrompt`.
-    2. Buduje obiekt `response_format`, jeśli `responseSchema` zostało dostarczone.
-    3. Składa finalny obiekt zapytania, uwzględniając model, wiadomości i opcjonalne parametry.
+  1. Tworzy tablicę `messages` z `systemPrompt` i `userPrompt`.
+  2. Buduje obiekt `response_format`, jeśli `responseSchema` zostało dostarczone.
+  3. Składa finalny obiekt zapytania, uwzględniając model, wiadomości i opcjonalne parametry.
 
 ### `private async executeRequest<T>(requestBody: Record<string, any>): Promise<ApiResponse>`
 
 Metoda odpowiedzialna za wykonanie zapytania `fetch` do API OpenRouter.
 
 - **Logika**:
-    1. Ustawia nagłówki `Authorization`, `Content-Type` oraz `HTTP-Referer`.
-    2. Wykonuje zapytanie `POST` na endpoint `/chat/completions`.
-    3. Sprawdza status odpowiedzi HTTP. W przypadku błędu (np. 401, 429, 500), rzuca odpowiedni customowy błąd.
-    4. Zwraca odpowiedź w formacie JSON.
+  1. Ustawia nagłówki `Authorization`, `Content-Type` oraz `HTTP-Referer`.
+  2. Wykonuje zapytanie `POST` na endpoint `/chat/completions`.
+  3. Sprawdza status odpowiedzi HTTP. W przypadku błędu (np. 401, 429, 500), rzuca odpowiedni customowy błąd.
+  4. Zwraca odpowiedź w formacie JSON.
 
 ### `private parseResponse<T>(apiResponse: ApiResponse, schema?: JSONSchema): T`
 
 Metoda do parsowania i walidacji odpowiedzi z API.
 
 - **Logika**:
-    1. Wyodrębnia treść odpowiedzi z `apiResponse.choices[0].message.content`.
-    2. Jeśli `schema` jest dostarczona:
-        a. Parsuje treść (string) do obiektu JSON.
-        b. Waliduje obiekt względem schematu (można użyć biblioteki jak `zod` lub `ajv`). W przypadku błędu walidacji, rzuca `ModelResponseError`.
-    3. Zwraca sparsowane i zwalidowane dane.
+  1. Wyodrębnia treść odpowiedzi z `apiResponse.choices[0].message.content`.
+  2. Jeśli `schema` jest dostarczona:
+     a. Parsuje treść (string) do obiektu JSON.
+     b. Waliduje obiekt względem schematu (można użyć biblioteki jak `zod` lub `ajv`). W przypadku błędu walidacji, rzuca `ModelResponseError`.
+  3. Zwraca sparsowane i zwalidowane dane.
 
 ## 5. Obsługa Błędów
 
@@ -143,11 +146,11 @@ export class ModelResponseError extends OpenRouterError {} // Błąd parsowania/
 ```
 
 - **Scenariusze błędów**:
-    1. **Błąd Konfiguracji**: Konstruktor rzuca `Error`, jeśli brakuje klucza API.
-    2. **Błąd Autoryzacji (401)**: `executeRequest` rzuca `AuthenticationError`.
-    3. **Błąd Limitu Zapytań (429)**: `executeRequest` rzuca `RateLimitError`. Można zaimplementować mechanizm ponawiania z "exponential backoff".
-    4. **Błąd po stronie serwera (5xx)**: `executeRequest` rzuca `ServiceUnavailableError`.
-    5. **Błąd parsowania/walidacji odpowiedzi modelu**: `parseResponse` rzuca `ModelResponseError`, jeśli model nie zwrócił poprawnego JSON-a zgodnego ze schematem.
+  1. **Błąd Konfiguracji**: Konstruktor rzuca `Error`, jeśli brakuje klucza API.
+  2. **Błąd Autoryzacji (401)**: `executeRequest` rzuca `AuthenticationError`.
+  3. **Błąd Limitu Zapytań (429)**: `executeRequest` rzuca `RateLimitError`. Można zaimplementować mechanizm ponawiania z "exponential backoff".
+  4. **Błąd po stronie serwera (5xx)**: `executeRequest` rzuca `ServiceUnavailableError`.
+  5. **Błąd parsowania/walidacji odpowiedzi modelu**: `parseResponse` rzuca `ModelResponseError`, jeśli model nie zwrócił poprawnego JSON-a zgodnego ze schematem.
 
 ## 6. Kwestie Bezpieczeństwa
 
@@ -173,26 +176,26 @@ export class ModelResponseError extends OpenRouterError {} // Błąd parsowania/
 
     ```typescript
     // src/pages/api/notes/[noteId]/_schema.ts
-    import { type JSONSchema } from 'json-schema-to-ts';
+    import { type JSONSchema } from "json-schema-to-ts";
 
     export const quizSchema = {
-      type: 'object',
+      type: "object",
       properties: {
-        title: { type: 'string', description: 'Tytuł quizu.' },
+        title: { type: "string", description: "Tytuł quizu." },
         questions: {
-          type: 'array',
+          type: "array",
           items: {
-            type: 'object',
+            type: "object",
             properties: {
-              question_text: { type: 'string' },
-              options: { type: 'array', items: { type: 'string' } },
-              correct_answer: { type: 'string' }
+              question_text: { type: "string" },
+              options: { type: "array", items: { type: "string" } },
+              correct_answer: { type: "string" },
             },
-            required: ['question_text', 'options', 'correct_answer']
-          }
-        }
+            required: ["question_text", "options", "correct_answer"],
+          },
+        },
       },
-      required: ['title', 'questions']
+      required: ["title", "questions"],
     } as const satisfies JSONSchema;
     ```
 
@@ -225,11 +228,11 @@ private buildRequestBody(options: ChatCompletionOptions): Record<string, any> {
       },
     };
   }
-  
+
   // Dodaj opcjonalne parametry
   if (options.temperature) body.temperature = options.temperature;
   if (options.maxTokens) body.max_tokens = options.maxTokens;
-  
+
   return body;
 }
 ```
@@ -242,32 +245,33 @@ private buildRequestBody(options: ChatCompletionOptions): Record<string, any> {
 
 ```typescript
 // src/pages/api/notes/[noteId]/quizzes.ts
-import type { APIRoute } from 'astro';
-import { OpenRouterService } from '@/lib/services/openrouter.service';
-import { OpenRouterError } from '@/lib/services/openrouter.errors';
-import { quizSchema } from './_schema';
+import type { APIRoute } from "astro";
+import { OpenRouterService } from "@/lib/services/openrouter.service";
+import { OpenRouterError } from "@/lib/services/openrouter.errors";
+import { quizSchema } from "./_schema";
 
 export const POST: APIRoute = async ({ params, request }) => {
   const { noteId } = params;
   const { content } = await request.json(); // Załóżmy, że treść notatki jest przesyłana w ciele
 
   if (!content) {
-    return new Response('Note content is required.', { status: 400 });
+    return new Response("Note content is required.", { status: 400 });
   }
 
   const service = new OpenRouterService();
 
   try {
     const quiz = await service.getChatCompletion({
-      model: 'anthropic/claude-3-haiku',
-      systemPrompt: 'Twoim zadaniem jest stworzenie quizu z 3 pytaniami na podstawie dostarczonego tekstu. Zawsze odpowiadaj w formacie JSON zgodnym z dostarczonym schematem.',
+      model: "anthropic/claude-3-haiku",
+      systemPrompt:
+        "Twoim zadaniem jest stworzenie quizu z 3 pytaniami na podstawie dostarczonego tekstu. Zawsze odpowiadaj w formacie JSON zgodnym z dostarczonym schematem.",
       userPrompt: `Oto tekst notatki:\n\n${content}`,
-      responseSchema: { name: 'create_quiz', schema: quizSchema },
+      responseSchema: { name: "create_quiz", schema: quizSchema },
     });
 
     return new Response(JSON.stringify(quiz), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     if (error instanceof OpenRouterError) {
@@ -275,7 +279,7 @@ export const POST: APIRoute = async ({ params, request }) => {
       return new Response(error.message, { status: 502 }); // Bad Gateway
     }
     console.error(`Unexpected Error: ${error}`);
-    return new Response('An unexpected error occurred.', { status: 500 });
+    return new Response("An unexpected error occurred.", { status: 500 });
   }
 };
 ```

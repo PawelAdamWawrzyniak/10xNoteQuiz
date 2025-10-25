@@ -1,8 +1,8 @@
-import { type Page } from '@playwright/test';
-import { RegisterPage } from '../page-objects/auth/register.page';
-import { LoginPage } from '../page-objects/auth/login.page';
-import type { TestUser } from '../fixtures/users';
-import { generateUniqueUser } from '../fixtures/users';
+import { type Page } from "@playwright/test";
+import { RegisterPage } from "../page-objects/auth/register.page";
+import { LoginPage } from "../page-objects/auth/login.page";
+import type { TestUser } from "../fixtures/users";
+import { generateUniqueUser } from "../fixtures/users";
 
 /**
  * Authentication Helper Utilities
@@ -82,12 +82,12 @@ export async function isAuthenticated(page: Page): Promise<boolean> {
   try {
     // Check if we're on a protected page (notes page)
     const url = page.url();
-    if (!url.includes('/notes')) {
+    if (!url.includes("/notes")) {
       return false;
     }
 
     // Check for authenticated-only elements
-    const logoutButton = page.getByRole('button', { name: /wyloguj/i });
+    const logoutButton = page.getByRole("button", { name: /wyloguj/i });
     const isVisible = await logoutButton.isVisible({ timeout: 2000 });
     return isVisible;
   } catch {
@@ -102,7 +102,7 @@ export async function isAuthenticated(page: Page): Promise<boolean> {
  * @param page - Playwright page object
  */
 export async function logoutUser(page: Page): Promise<void> {
-  const logoutButton = page.getByRole('button', { name: /wyloguj/i });
+  const logoutButton = page.getByRole("button", { name: /wyloguj/i });
   await logoutButton.click();
 
   // Wait for redirect after logout

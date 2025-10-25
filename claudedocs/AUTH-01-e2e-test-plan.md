@@ -8,8 +8,10 @@
 ## Test Scenario Summary
 
 ### AUTH-01: User Registration
+
 **Scenario**: User fills in the registration form with valid data and clicks "Register"
 **Expected Result**:
+
 - Account is created successfully
 - User is logged in automatically
 - User is redirected to the main page (notes page)
@@ -17,6 +19,7 @@
 ## Current State Analysis
 
 ### ✅ What We Have
+
 - Playwright installed (`@playwright/test": "^1.56.1"`)
 - Registration page: `/auth/register`
 - Registration form component: `RegisterForm.tsx`
@@ -28,6 +31,7 @@
   - Submit button
 
 ### ❌ What We Need to Create
+
 - Playwright configuration (`playwright.config.ts`)
 - E2E test directory structure
 - Page Object Models
@@ -40,9 +44,11 @@
 ### Phase 1: Project Setup (30 min)
 
 #### 1.1 Create Playwright Configuration
+
 **File**: `playwright.config.ts`
 
 **Configuration Requirements** (from `.ai/playwright-e2e-testing.mdc`):
+
 - ✅ Initialize with **Chromium/Desktop Chrome only**
 - ✅ Set base URL for local dev environment
 - ✅ Configure test directory: `./e2e`
@@ -52,6 +58,7 @@
 - ✅ Use projects for different environments (dev, staging)
 
 **Key Settings**:
+
 ```typescript
 {
   baseURL: 'http://localhost:4321', // Astro default dev server
@@ -72,6 +79,7 @@
 ```
 
 #### 1.2 Create Directory Structure
+
 ```
 e2e/
 ├── page-objects/           # Page Object Models
@@ -95,61 +103,67 @@ e2e/
 ### Phase 2: Page Object Model (45 min)
 
 #### 2.1 Create RegisterPage POM
+
 **File**: `e2e/page-objects/auth/register.page.ts`
 
 **Purpose**: Encapsulate registration page interactions
 
 **Key Methods**:
+
 ```typescript
 class RegisterPage {
   // Locators
-  emailInput: Locator         // getByLabel('Adres e-mail')
-  passwordInput: Locator      // getByLabel('Hasło')
-  confirmPasswordInput: Locator // getByLabel('Potwierdź hasło')
-  submitButton: Locator       // getByRole('button', { name: /zarejestruj/i })
-  successMessage: Locator     // getByText(/rejestracja pomyślna/i)
-  errorMessage: Locator       // getByRole('alert')
+  emailInput: Locator; // getByLabel('Adres e-mail')
+  passwordInput: Locator; // getByLabel('Hasło')
+  confirmPasswordInput: Locator; // getByLabel('Potwierdź hasło')
+  submitButton: Locator; // getByRole('button', { name: /zarejestruj/i })
+  successMessage: Locator; // getByText(/rejestracja pomyślna/i)
+  errorMessage: Locator; // getByRole('alert')
 
   // Actions
-  async navigate()            // Go to /auth/register
-  async fillEmail(email)      // Fill email field
-  async fillPassword(pwd)     // Fill password field
-  async fillConfirmPassword(pwd) // Fill confirm password field
-  async submit()              // Click submit button
-  async register(email, password) // Complete flow
+  async navigate(); // Go to /auth/register
+  async fillEmail(email); // Fill email field
+  async fillPassword(pwd); // Fill password field
+  async fillConfirmPassword(pwd); // Fill confirm password field
+  async submit(); // Click submit button
+  async register(email, password); // Complete flow
 
   // Assertions
-  async expectSuccessMessage() // Verify success alert
-  async expectErrorMessage(msg) // Verify error alert
+  async expectSuccessMessage(); // Verify success alert
+  async expectErrorMessage(msg); // Verify error alert
 }
 ```
 
 **Rationale**:
+
 - Uses `getByLabel` for form fields (accessible, resilient)
 - No `data-testid` needed initially (forms already have semantic labels)
 - If selectors are fragile, we'll add `data-testid` later
 
 #### 2.2 Create NotesListPage POM
+
 **File**: `e2e/page-objects/notes/notes-list.page.ts`
 
 **Purpose**: Verify successful redirect after registration
 
 **Key Methods**:
+
 ```typescript
 class NotesListPage {
   // Locators
-  pageTitle: Locator          // getByRole('heading', { name: /notatki/i })
-  createNoteButton: Locator   // getByRole('button', { name: /nowa notatka/i })
+  pageTitle: Locator; // getByRole('heading', { name: /notatki/i })
+  createNoteButton: Locator; // getByRole('button', { name: /nowa notatka/i })
 
   // Assertions
-  async expectToBeVisible()   // Verify on notes page
-  async waitForPageLoad()     // Wait for page to load
+  async expectToBeVisible(); // Verify on notes page
+  async waitForPageLoad(); // Wait for page to load
 }
 ```
 
 ### Phase 3: Test Fixtures (15 min)
 
 #### 3.1 Create User Fixtures
+
 **File**: `e2e/fixtures/users.ts`
 
 **Purpose**: Generate test user data
@@ -158,43 +172,45 @@ class NotesListPage {
 export const testUsers = {
   valid: {
     email: `test-${Date.now()}@example.com`, // Unique email
-    password: 'TestPassword123!',
+    password: "TestPassword123!",
   },
   invalidEmail: {
-    email: 'invalid-email',
-    password: 'TestPassword123!',
+    email: "invalid-email",
+    password: "TestPassword123!",
   },
   weakPassword: {
-    email: 'test@example.com',
-    password: '123',
+    email: "test@example.com",
+    password: "123",
   },
   mismatchedPassword: {
-    email: 'test@example.com',
-    password: 'TestPassword123!',
-    confirmPassword: 'DifferentPassword456!',
+    email: "test@example.com",
+    password: "TestPassword123!",
+    confirmPassword: "DifferentPassword456!",
   },
 };
 
 // Helper to generate unique user
 export const generateUniqueUser = () => ({
   email: `test-${Date.now()}-${Math.random().toString(36).substr(2, 9)}@example.com`,
-  password: 'TestPassword123!',
+  password: "TestPassword123!",
 });
 ```
 
 ### Phase 4: E2E Test Implementation (60 min)
 
 #### 4.1 AUTH-01 Main Test
+
 **File**: `e2e/tests/auth/auth-01-registration.spec.ts`
 
 **Test Structure** (AAA Pattern):
-```typescript
-import { test, expect } from '@playwright/test';
-import { RegisterPage } from '../../page-objects/auth/register.page';
-import { NotesListPage } from '../../page-objects/notes/notes-list.page';
-import { generateUniqueUser } from '../../fixtures/users';
 
-test.describe('AUTH-01: User Registration', () => {
+```typescript
+import { test, expect } from "@playwright/test";
+import { RegisterPage } from "../../page-objects/auth/register.page";
+import { NotesListPage } from "../../page-objects/notes/notes-list.page";
+import { generateUniqueUser } from "../../fixtures/users";
+
+test.describe("AUTH-01: User Registration", () => {
   let registerPage: RegisterPage;
   let notesPage: NotesListPage;
 
@@ -204,7 +220,7 @@ test.describe('AUTH-01: User Registration', () => {
     await registerPage.navigate();
   });
 
-  test('should register user with valid data and redirect to notes page', async ({ page }) => {
+  test("should register user with valid data and redirect to notes page", async ({ page }) => {
     // Arrange
     const user = generateUniqueUser();
 
@@ -222,7 +238,7 @@ test.describe('AUTH-01: User Registration', () => {
     await expect(page).toHaveURL(/\/auth\/register/); // Still on register page
 
     // Click "Go to login" link
-    await page.getByRole('link', { name: /przejdź do logowania/i }).click();
+    await page.getByRole("link", { name: /przejdź do logowania/i }).click();
 
     // Verify redirected to login page
     await expect(page).toHaveURL(/\/auth\/login/);
@@ -234,9 +250,11 @@ test.describe('AUTH-01: User Registration', () => {
 Current implementation shows **success message** but does **NOT auto-login** or redirect!
 
 This deviates from AUTH-01 expected behavior:
+
 > "Użytkownik zostaje zalogowany i przekierowany na stronę główną"
 
 **Two Options**:
+
 1. **Test current behavior** (success message → manual login)
 2. **Update code to match spec** (auto-login → redirect to /notes)
 
@@ -245,31 +263,33 @@ This deviates from AUTH-01 expected behavior:
 #### 4.2 Additional Test Scenarios
 
 **Validation Tests**:
+
 ```typescript
-test('should show error for invalid email format', async () => {
+test("should show error for invalid email format", async () => {
   // Test client-side validation
 });
 
-test('should show error for weak password', async () => {
+test("should show error for weak password", async () => {
   // Test password requirements
 });
 
-test('should show error when passwords do not match', async () => {
+test("should show error when passwords do not match", async () => {
   // Test confirmPassword validation
 });
 
-test('should show error for empty fields', async () => {
+test("should show error for empty fields", async () => {
   // Test required field validation
 });
 ```
 
 **API Error Tests**:
+
 ```typescript
-test('should show error when email already exists (AUTH-02)', async () => {
+test("should show error when email already exists (AUTH-02)", async () => {
   // Create user first, then try to register again
 });
 
-test('should show error when server is unreachable', async () => {
+test("should show error when server is unreachable", async () => {
   // Mock network failure
 });
 ```
@@ -277,6 +297,7 @@ test('should show error when server is unreachable', async () => {
 ### Phase 5: Helper Utilities (30 min)
 
 #### 5.1 Authentication Helpers
+
 **File**: `e2e/helpers/auth.helpers.ts`
 
 **Purpose**: Reusable auth flows for test setup
@@ -305,6 +326,7 @@ export async function setupAuthenticatedUser(page: Page) {
 ```
 
 #### 5.2 Database Cleanup Helpers (Optional)
+
 **File**: `e2e/helpers/database.helpers.ts`
 
 **Purpose**: Clean up test data after tests
@@ -320,6 +342,7 @@ export async function cleanupTestUser(email: string) {
 ### Phase 6: CI/CD Integration (15 min)
 
 #### 6.1 Add npm Scripts
+
 **File**: `package.json`
 
 ```json
@@ -335,6 +358,7 @@ export async function cleanupTestUser(email: string) {
 ```
 
 #### 6.2 GitHub Actions Workflow (Future)
+
 **File**: `.github/workflows/e2e-tests.yml`
 
 ```yaml
@@ -356,12 +380,14 @@ jobs:
 ## Test Data Strategy
 
 ### User Data Management
+
 - **Generate unique emails** using timestamp + random string
 - **Avoid conflicts** between parallel test runs
 - **Use consistent passwords** for test users
 - **Clean up test data** after test suite (optional, depends on Supabase setup)
 
 ### Environment Variables
+
 ```env
 # .env.test
 PUBLIC_BASE_URL=http://localhost:4321
@@ -372,6 +398,7 @@ SUPABASE_KEY=your-test-supabase-key
 ## Expected Test Coverage
 
 ### AUTH-01 Specific Tests
+
 1. ✅ **Happy path**: Valid registration → Success message → Can login
 2. ✅ **Email validation**: Invalid email format
 3. ✅ **Password validation**: Weak password
@@ -381,6 +408,7 @@ SUPABASE_KEY=your-test-supabase-key
 7. ✅ **Network error**: Server unreachable
 
 ### Total Estimated Tests
+
 - **Main scenario**: 1 test
 - **Validation scenarios**: 4 tests
 - **Error scenarios**: 2 tests
@@ -388,23 +416,25 @@ SUPABASE_KEY=your-test-supabase-key
 
 ## Implementation Timeline
 
-| Phase | Task | Duration | Total |
-|-------|------|----------|-------|
-| 1 | Playwright setup & config | 30 min | 30 min |
-| 2 | Page Object Models | 45 min | 1h 15min |
-| 3 | Test fixtures | 15 min | 1h 30min |
-| 4 | E2E test implementation | 60 min | 2h 30min |
-| 5 | Helper utilities | 30 min | 3h |
-| 6 | CI/CD integration | 15 min | 3h 15min |
-| **Total** | | **~3-4 hours** | |
+| Phase     | Task                      | Duration       | Total    |
+| --------- | ------------------------- | -------------- | -------- |
+| 1         | Playwright setup & config | 30 min         | 30 min   |
+| 2         | Page Object Models        | 45 min         | 1h 15min |
+| 3         | Test fixtures             | 15 min         | 1h 30min |
+| 4         | E2E test implementation   | 60 min         | 2h 30min |
+| 5         | Helper utilities          | 30 min         | 3h       |
+| 6         | CI/CD integration         | 15 min         | 3h 15min |
+| **Total** |                           | **~3-4 hours** |          |
 
 ## Key Decisions Needed
 
 ### 🔴 CRITICAL: Auto-Login Behavior
+
 **Current**: Registration shows success message, user must manually click "Go to login"
 **Expected (per test plan)**: User is auto-logged in and redirected to notes page
 
 **Options**:
+
 1. **Option A**: Test current behavior (simpler, no code changes)
    - Test registration → success message → manual navigation to login
    - Does NOT match AUTH-01 spec
@@ -417,10 +447,12 @@ SUPABASE_KEY=your-test-supabase-key
 **Recommendation**: **Option B** - Update code to auto-login, then test
 
 ### Test Selectors Strategy
+
 **Current approach**: Use semantic selectors (labels, roles, text)
 **Fallback**: Add `data-testid` if selectors are fragile
 
 **When to add data-testid**:
+
 - Dynamic text content
 - Elements without clear semantic role
 - Elements that frequently change structure
@@ -428,6 +460,7 @@ SUPABASE_KEY=your-test-supabase-key
 ## Success Criteria
 
 ### Test Passes When:
+
 - ✅ User can navigate to `/auth/register`
 - ✅ User can fill in valid registration data
 - ✅ Form submits successfully
@@ -437,6 +470,7 @@ SUPABASE_KEY=your-test-supabase-key
 - ✅ Test is reliable (no flakiness)
 
 ### Test Quality Metrics:
+
 - **Readability**: Tests use descriptive names and follow AAA pattern
 - **Maintainability**: Page Object Model separates selectors from tests
 - **Reliability**: Uses Playwright auto-waiting and proper assertions
@@ -445,22 +479,28 @@ SUPABASE_KEY=your-test-supabase-key
 ## Risks & Mitigations
 
 ### Risk 1: Flaky Tests
+
 **Cause**: Race conditions, timing issues
 **Mitigation**:
+
 - Use Playwright's auto-waiting
 - Use `waitForLoadState()` when needed
 - Avoid hard-coded `sleep()`
 
 ### Risk 2: Test Data Conflicts
+
 **Cause**: Multiple tests using same email
 **Mitigation**:
+
 - Generate unique emails with timestamp
 - Use test isolation with `test.beforeEach()`
 - Clean up test data after tests
 
 ### Risk 3: Environment Differences
+
 **Cause**: Dev vs CI environment differences
 **Mitigation**:
+
 - Use environment variables
 - Test on both local and CI
 - Document environment setup

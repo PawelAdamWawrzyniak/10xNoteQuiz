@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { GET, PATCH, DELETE } from "../[noteId]";
+import { PATCH } from "../[noteId]";
 import type { APIContext } from "astro";
 
 // ============================================================================
@@ -30,22 +30,9 @@ const createMockNoteWithDetails = (overrides = {}) => ({
 });
 
 /**
- * Creates a mock for successful findNoteById
- */
-const createSuccessfulFindMock = (mockSupabase: any, noteData: any) => {
-  const mockSingle = vi.fn().mockResolvedValue({ data: noteData, error: null });
-  const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle });
-  const mockEq1 = vi.fn().mockReturnValue({ eq: mockEq2 });
-  const mockSelect = vi.fn().mockReturnValue({ eq: mockEq1 });
-
-  mockSupabase.from.mockReturnValue({ select: mockSelect });
-
-  return { mockSelect, mockEq1, mockEq2, mockSingle };
-};
-
-/**
  * Creates a mock for successful updateNote
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createSuccessfulUpdateMock = (mockSupabase: any, updatedNote: any) => {
   // Mock the update operation
   const mockUpdateEq2 = vi.fn().mockResolvedValue({ error: null });
@@ -74,6 +61,7 @@ const createSuccessfulUpdateMock = (mockSupabase: any, updatedNote: any) => {
 /**
  * Creates a mock for note not found scenario
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createNotFoundMock = (mockSupabase: any) => {
   const mockSingle = vi.fn().mockResolvedValue({ data: null, error: null });
   const mockEq2 = vi.fn().mockReturnValue({ single: mockSingle });
@@ -88,6 +76,7 @@ const createNotFoundMock = (mockSupabase: any) => {
 /**
  * Creates a mock for database errors
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createDatabaseErrorMock = (mockSupabase: any, errorMessage: string) => {
   const mockError = { message: errorMessage };
   const mockSingle = vi.fn().mockResolvedValue({ data: null, error: mockError });
@@ -106,6 +95,7 @@ const createDatabaseErrorMock = (mockSupabase: any, errorMessage: string) => {
 
 describe("PATCH /api/notes/[noteId]", () => {
   let mockContext: Partial<APIContext>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockSupabase: any;
   const validNoteId = "550e8400-e29b-41d4-a716-446655440000";
 
@@ -135,12 +125,6 @@ describe("PATCH /api/notes/[noteId]", () => {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updateData),
-      });
-
-      const originalNote = createMockNoteWithDetails({
-        id: validNoteId,
-        title: "Original Title",
-        content: "Original content",
       });
 
       const updatedNote = createMockNoteWithDetails({

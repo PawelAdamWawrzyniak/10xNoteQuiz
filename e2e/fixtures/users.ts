@@ -20,8 +20,8 @@ export function generateUniqueUser(): TestUser {
 
   return {
     email,
-    password: 'TestPassword123!',
-    confirmPassword: 'TestPassword123!',
+    password: "TestPassword123!",
+    confirmPassword: "TestPassword123!",
   };
 }
 
@@ -34,63 +34,63 @@ export const testUsers = {
    * Valid user data for testing successful flows
    */
   valid: {
-    email: 'valid.user@example.com',
-    password: 'ValidPassword123!',
-    confirmPassword: 'ValidPassword123!',
+    email: "valid.user@example.com",
+    password: "ValidPassword123!",
+    confirmPassword: "ValidPassword123!",
   },
 
   /**
    * User with invalid email format
    */
   invalidEmail: {
-    email: 'invalid-email-format',
-    password: 'TestPassword123!',
-    confirmPassword: 'TestPassword123!',
+    email: "invalid-email-format",
+    password: "TestPassword123!",
+    confirmPassword: "TestPassword123!",
   },
 
   /**
    * User with weak password (too short)
    */
   weakPassword: {
-    email: 'weak@example.com',
-    password: '123',
-    confirmPassword: '123',
+    email: "weak@example.com",
+    password: "123",
+    confirmPassword: "123",
   },
 
   /**
    * User with mismatched passwords
    */
   mismatchedPasswords: {
-    email: 'mismatch@example.com',
-    password: 'TestPassword123!',
-    confirmPassword: 'DifferentPassword456!',
+    email: "mismatch@example.com",
+    password: "TestPassword123!",
+    confirmPassword: "DifferentPassword456!",
   },
 
   /**
    * User with empty fields
    */
   emptyFields: {
-    email: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    password: "",
+    confirmPassword: "",
   },
 
   /**
    * User with password missing uppercase
    */
   noUppercasePassword: {
-    email: 'test@example.com',
-    password: 'testpassword123!',
-    confirmPassword: 'testpassword123!',
+    email: "test@example.com",
+    password: "testpassword123!",
+    confirmPassword: "testpassword123!",
   },
 
   /**
    * User with password missing number
    */
   noNumberPassword: {
-    email: 'test@example.com',
-    password: 'TestPassword!',
-    confirmPassword: 'TestPassword!',
+    email: "test@example.com",
+    password: "TestPassword!",
+    confirmPassword: "TestPassword!",
   },
 };
 

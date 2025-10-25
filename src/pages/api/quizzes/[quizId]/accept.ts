@@ -41,12 +41,14 @@ export const POST: APIRoute = async ({ params, locals }) => {
     // First, verify that the quiz exists and belongs to the user
     const { data: quiz, error: quizError } = await locals.supabase
       .from("quizzes")
-      .select(`
+      .select(
+        `
         id,
         status,
         note_id,
         notes!inner(user_id)
-      `)
+      `
+      )
       .eq("id", quizId)
       .eq("notes.user_id", userId)
       .single();
@@ -60,12 +62,15 @@ export const POST: APIRoute = async ({ params, locals }) => {
 
     // Check if quiz is in pending_acceptance status
     if (quiz.status !== "pending_acceptance") {
-      return new Response(JSON.stringify({ 
-        message: `Quiz is not in pending acceptance status. Current status: ${quiz.status}` 
-      }), {
-        status: 409,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          message: `Quiz is not in pending acceptance status. Current status: ${quiz.status}`,
+        }),
+        {
+          status: 409,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     // Update quiz status to accepted
@@ -88,14 +93,16 @@ export const POST: APIRoute = async ({ params, locals }) => {
     // eslint-disable-next-line no-console
     console.log(`[QuizAccept] Successfully accepted quiz ${quizId} for user ${userId}`);
 
-    return new Response(JSON.stringify({
-      message: "Quiz accepted successfully",
-      quiz: updatedQuiz,
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-
+    return new Response(
+      JSON.stringify({
+        message: "Quiz accepted successfully",
+        quiz: updatedQuiz,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Error accepting quiz:", error);

@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { RegisterPage } from '../../page-objects/auth/register.page';
-import { generateUniqueUser } from '../../fixtures/users';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { test, expect } from "@playwright/test";
+import { RegisterPage } from "../../page-objects/auth/register.page";
+import { generateUniqueUser } from "../../fixtures/users";
 
 /**
  * AUTH-02: Duplicate Email Registration E2E Tests
@@ -10,14 +11,14 @@ import { generateUniqueUser } from '../../fixtures/users';
  * Expected: Error message "Użytkownik o tym adresie e-mail już istnieje"
  * Priority: High
  */
-test.describe('AUTH-02: Duplicate Email Registration', () => {
+test.describe("AUTH-02: Duplicate Email Registration", () => {
   let registerPage: RegisterPage;
 
   test.beforeEach(async ({ page }) => {
     registerPage = new RegisterPage(page);
   });
 
-  test('should show error when registering with already existing email', async ({ page }) => {
+  test("should show error when registering with already existing email", async ({ page }) => {
     // Arrange - Create a user first
     const user = generateUniqueUser();
 
@@ -33,7 +34,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.navigate();
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Error message is displayed
@@ -46,7 +47,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.expectFormReady();
   });
 
-  test('should show specific error message about duplicate email', async ({ page }) => {
+  test("should show specific error message about duplicate email", async ({ page: _page }) => {
     // Arrange - Create a user first
     const user = generateUniqueUser();
 
@@ -70,7 +71,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     expect(errorText?.toLowerCase()).toMatch(/już istnieje|already exists|already registered|already in use/);
   });
 
-  test('should handle duplicate email with different password', async ({ page }) => {
+  test("should handle duplicate email with different password", async ({ page }) => {
     // Arrange - Create a user first
     const user = generateUniqueUser();
 
@@ -82,8 +83,8 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     // Act - Try to register with same email but different password
     await registerPage.navigate();
     await registerPage.fillEmail(user.email);
-    await registerPage.fillPassword('DifferentPassword123!');
-    await registerPage.fillConfirmPassword('DifferentPassword123!');
+    await registerPage.fillPassword("DifferentPassword123!");
+    await registerPage.fillConfirmPassword("DifferentPassword123!");
     await registerPage.submit();
 
     // Assert - Should still show error (email is unique constraint)
@@ -91,7 +92,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await expect(page).toHaveURL(/\/auth\/register/);
   });
 
-  test('should handle case sensitivity correctly for duplicate emails', async ({ page }) => {
+  test("should handle case sensitivity correctly for duplicate emails", async ({ page: _page }) => {
     // Arrange - Create a user with lowercase email
     const user = generateUniqueUser();
     const lowercaseEmail = user.email.toLowerCase();
@@ -100,7 +101,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.navigate();
     await registerPage.fillEmail(lowercaseEmail);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
     await registerPage.expectSuccessMessage();
 
@@ -109,7 +110,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.navigate();
     await registerPage.fillEmail(uppercaseEmail);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Should show error (emails should be case-insensitive)
@@ -118,7 +119,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.expectErrorMessage();
   });
 
-  test('should handle email with extra whitespace', async ({ page }) => {
+  test("should handle email with extra whitespace", async ({ page: _page }) => {
     // Arrange - Create a user
     const user = generateUniqueUser();
 
@@ -131,7 +132,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.navigate();
     await registerPage.fillEmail(`  ${user.email}  `); // Email with spaces
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Should show error (email should be trimmed and detected as duplicate)
@@ -139,7 +140,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await registerPage.expectErrorMessage();
   });
 
-  test('should allow user to correct email after duplicate error', async ({ page }) => {
+  test("should allow user to correct email after duplicate error", async ({ page }) => {
     // Arrange - Create a user first
     const existingUser = generateUniqueUser();
 
@@ -157,7 +158,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     const newUser = generateUniqueUser();
     await registerPage.fillEmail(newUser.email);
     await registerPage.fillPassword(newUser.password);
-    await registerPage.fillConfirmPassword(newUser.confirmPassword!);
+    await registerPage.fillConfirmPassword(newUser.confirmPassword ?? newUser.password);
     await registerPage.submit();
 
     // Assert - Should succeed with new email
@@ -165,7 +166,7 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
     await expect(page).toHaveURL(/\/auth\/register/);
   });
 
-  test('should not expose existing user information in error message', async ({ page }) => {
+  test("should not expose existing user information in error message", async ({ page: _page }) => {
     // Arrange - Create a user
     const user = generateUniqueUser();
 
@@ -197,14 +198,14 @@ test.describe('AUTH-02: Duplicate Email Registration', () => {
 /**
  * AUTH-02: Edge Cases and Security
  */
-test.describe('AUTH-02: Duplicate Email Edge Cases', () => {
+test.describe("AUTH-02: Duplicate Email Edge Cases", () => {
   let registerPage: RegisterPage;
 
   test.beforeEach(async ({ page }) => {
     registerPage = new RegisterPage(page);
   });
 
-  test('should prevent rapid duplicate registration attempts', async ({ page }) => {
+  test("should prevent rapid duplicate registration attempts", async ({ page }) => {
     // Arrange
     const user = generateUniqueUser();
 
@@ -227,7 +228,7 @@ test.describe('AUTH-02: Duplicate Email Edge Cases', () => {
     await registerPage.expectFormReady();
   });
 
-  test('should handle duplicate email after failed first registration', async ({ page }) => {
+  test("should handle duplicate email after failed first registration", async ({ page: _page }) => {
     // Arrange
     const user = generateUniqueUser();
 
@@ -235,14 +236,14 @@ test.describe('AUTH-02: Duplicate Email Edge Cases', () => {
     await registerPage.navigate();
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword('WrongPassword123!');
+    await registerPage.fillConfirmPassword("WrongPassword123!");
     await registerPage.submit();
 
     // Assert - Validation error (passwords don't match)
-    await registerPage.expectFieldError('confirmPassword', 'Hasła nie są zgodne');
+    await registerPage.expectFieldError("confirmPassword", "Hasła nie są zgodne");
 
     // Act - Fix password and register successfully
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Registration succeeds

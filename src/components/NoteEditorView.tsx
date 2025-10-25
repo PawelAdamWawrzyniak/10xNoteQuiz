@@ -25,8 +25,9 @@ export function NoteEditorView({ mode, noteId }: NoteEditorViewProps) {
         window.location.href = "/notes";
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Failed to save note:", error);
       toast.error("Wystąpił błąd podczas zapisywania notatki");
-      console.error("Submit error:", error);
     }
   };
 

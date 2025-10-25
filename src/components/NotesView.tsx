@@ -40,8 +40,9 @@ export function NotesView() {
       toast.success("Notatka została usunięta");
       setDeleteNoteId(null);
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Failed to delete note:", error);
       toast.error("Nie udało się usunąć notatki");
-      console.error("Delete error:", error);
     }
   };
 

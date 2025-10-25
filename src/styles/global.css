@@ -39,7 +39,7 @@
 }
 
 [data-sonner-toaster] {
-	z-index: 9999 !important;
+  z-index: 9999 !important;
 }
 
 .dark {

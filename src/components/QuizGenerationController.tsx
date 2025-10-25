@@ -50,13 +50,11 @@ export function QuizGenerationController({
   };
 
   const handleAccept = (quizId: string) => {
-    console.log("[Controller] handleAccept called for quizId:", quizId);
     const promise = acceptQuiz(quizId);
 
     toast.promise(promise, {
       loading: "Accepting quiz...",
       success: () => {
-        console.log("[Controller] Toast success");
         // Close modal after showing the success toast
         setTimeout(() => {
           setIsModalOpen(false);
@@ -64,7 +62,6 @@ export function QuizGenerationController({
         return "Quiz was accepted";
       },
       error: (err) => {
-        console.error("[Controller] Toast error:", err);
         return err.message || "Failed to accept quiz.";
       },
     });
