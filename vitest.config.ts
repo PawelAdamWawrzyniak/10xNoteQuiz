@@ -8,7 +8,7 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     exclude: ["**/node_modules/**", "**/dist/**", "**/e2e/**", "**/.{idea,git,cache,output,temp}/**"],
     coverage: {
-      provider: "c8",
+      provider: "v8",
       reporter: ["text", "json", "html"],
       exclude: ["node_modules/", "dist/", "**/*.d.ts", "**/*.config.*", "**/mockData.ts"],
     },
