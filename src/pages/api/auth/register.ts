@@ -85,7 +85,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    // eslint-disable-next-line no-console
+    console.error("Failed to register:", error);
     return new Response(
       JSON.stringify({
         error: "Wystąpił błąd podczas rejestracji. Spróbuj ponownie.",

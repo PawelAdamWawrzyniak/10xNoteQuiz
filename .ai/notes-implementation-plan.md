@@ -1,11 +1,13 @@
 # API Endpoint Implementation Plan: /notes
 
 ## 1. Przegląd punktu końcowego
+
 Ten dokument opisuje plan wdrożenia interfejsu API REST dla zasobu `notes`. Endpointy te umożliwią pełen zakres operacji CRUD (Create, Read, Update, Delete) na notatkach użytkownika, zapewniając jednocześnie bezpieczeństwo i walidację danych.
 
 ## 2. Szczegóły żądania
 
 ### `GET /api/notes`
+
 - **Metoda HTTP**: `GET`
 - **Struktura URL**: `/api/notes`
 - **Parametry Query (opcjonalne)**:
@@ -18,6 +20,7 @@ Ten dokument opisuje plan wdrożenia interfejsu API REST dla zasobu `notes`. End
 - **Request Body**: Brak
 
 ### `POST /api/notes`
+
 - **Metoda HTTP**: `POST`
 - **Struktura URL**: `/api/notes`
 - **Request Body**:
@@ -31,6 +34,7 @@ Ten dokument opisuje plan wdrożenia interfejsu API REST dla zasobu `notes`. End
   ```
 
 ### `GET /api/notes/{noteId}`
+
 - **Metoda HTTP**: `GET`
 - **Struktura URL**: `/api/notes/{noteId}`
 - **Parametry Path (wymagane)**:
@@ -38,6 +42,7 @@ Ten dokument opisuje plan wdrożenia interfejsu API REST dla zasobu `notes`. End
 - **Request Body**: Brak
 
 ### `PATCH /api/notes/{noteId}`
+
 - **Metoda HTTP**: `PATCH`
 - **Struktura URL**: `/api/notes/{noteId}`
 - **Parametry Path (wymagane)**:
@@ -53,6 +58,7 @@ Ten dokument opisuje plan wdrożenia interfejsu API REST dla zasobu `notes`. End
   ```
 
 ### `DELETE /api/notes/{noteId}`
+
 - **Metoda HTTP**: `DELETE`
 - **Struktura URL**: `/api/notes/{noteId}`
 - **Parametry Path (wymagane)**:
@@ -60,6 +66,7 @@ Ten dokument opisuje plan wdrożenia interfejsu API REST dla zasobu `notes`. End
 - **Request Body**: Brak
 
 ## 3. Wykorzystywane typy
+
 W pliku `src/types.ts` zostaną zdefiniowane lub zaktualizowane następujące typy:
 
 - **`NoteListItemDto`**: Reprezentacja notatki na liście (dla `GET /api/notes`).
@@ -73,6 +80,7 @@ W pliku `src/types.ts` zostaną zdefiniowane lub zaktualizowane następujące ty
   }
   ```
 - **`PaginatedResponseDto<T>`**: Generyczna struktura odpowiedzi dla list z paginacją.
+
   ```typescript
   export interface PaginationDto {
     current_page: number;
@@ -85,9 +93,11 @@ W pliku `src/types.ts` zostaną zdefiniowane lub zaktualizowane następujące ty
     pagination: PaginationDto;
   }
   ```
+
 - **`NoteDetailsDto`** (istniejący): Używany dla odpowiedzi `GET /api/notes/{noteId}`, `POST` i `PATCH`.
 
 ## 4. Przepływ danych
+
 1.  **Żądanie**: Żądanie HTTP trafia do odpowiedniego endpointu Astro w `src/pages/api/notes/`.
 2.  **Middleware**: Middleware Astro (`src/middleware/index.ts`) weryfikuje token JWT. Jeśli jest nieprawidłowy, zwraca `401 Unauthorized`. W przeciwnym razie, dołącza dane użytkownika do `context.locals`.
 3.  **Walidacja**: Endpoint używa biblioteki `zod` do walidacji parametrów ścieżki, query i ciała żądania. W przypadku błędu zwraca `400 Bad Request`.
@@ -96,23 +106,27 @@ W pliku `src/types.ts` zostaną zdefiniowane lub zaktualizowane następujące ty
 6.  **Odpowiedź**: Serwis zwraca dane (lub informację o sukcesie) do endpointu, który następnie formatuje odpowiedź HTTP (np. `200 OK`, `201 Created`, `204 No Content`) i wysyła ją do klienta.
 
 ## 5. Względy bezpieczeństwa
+
 - **Uwierzytelnianie**: Wszystkie endpointy będą chronione. Dostęp będzie możliwy tylko po podaniu prawidłowego tokenu JWT w nagłówku `Authorization: Bearer <token>`.
 - **Autoryzacja**: Każde zapytanie do bazy danych będzie ściśle powiązane z `user_id` zalogowanego użytkownika. Próba dostępu do zasobu nienależącego do użytkownika zwróci błąd `404 Not Found`, aby nie ujawniać istnienia zasobu.
 - **Walidacja danych wejściowych**: Rygorystyczna walidacja za pomocą `zod` zapobiegnie atakom typu injection i zapewni spójność danych.
 - **Cross-Site Scripting (XSS)**: Zespół frontendowy musi zostać poinformowany o konieczności sanitazyzacji pola `content` (Markdown) przed jego renderowaniem, aby zapobiec atakom XSS.
 
 ## 6. Obsługa błędów
+
 - **`400 Bad Request`**: Zwracany w przypadku nieudanej walidacji `zod`. Odpowiedź będzie zawierać szczegóły dotyczące błędów walidacji.
 - **`401 Unauthorized`**: Zwracany przez middleware, gdy użytkownik nie jest uwierzytelniony.
 - **`404 Not Found`**: Zwracany, gdy żądany zasób (`note`, `category`, `tag`) nie zostanie znaleziony lub nie należy do użytkownika.
 - **`500 Internal Server Error`**: Zwracany w przypadku nieoczekiwanych błędów po stronie serwera (np. problem z połączeniem z bazą danych). Błąd zostanie zalogowany na konsoli serwera.
 
 ## 7. Rozważania dotyczące wydajności
+
 - **Paginacja**: `GET /api/notes` musi zawsze używać paginacji, aby uniknąć przesyłania dużych ilości danych.
 - **Indeksy**: Należy upewnić się, że w bazie danych istnieją odpowiednie indeksy na kolumnach używanych do filtrowania i sortowania (`user_id`, `category_id`, `updated_at`).
 - **N+1 Query Problem**: Podczas pobierania tagów dla notatek należy unikać problemu N+1. Serwis powinien pobierać wszystkie powiązane tagi w jednym lub dwóch zapytaniach, a nie w pętli.
 
 ## 8. Etapy wdrożenia
+
 1.  **Aktualizacja typów**: Zdefiniować brakujące typy DTO (`NoteListItemDto`, `PaginatedResponseDto`) w pliku `src/types.ts`.
 2.  **Schematy walidacji**: Stworzyć plik `src/lib/schemas/note.schemas.ts` zawierający wszystkie schematy `zod` do walidacji (`GetNotesQuerySchema`, `CreateNoteSchema`, `UpdateNoteSchema`, `NotePathParamsSchema`).
 3.  **Rozbudowa `NotesService`**: Zaimplementować wszystkie wymagane metody w `src/lib/services/notes.service.ts`, hermetyzując logikę interakcji z Supabase.

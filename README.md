@@ -10,6 +10,7 @@
 The core problem this project solves is the time-consuming nature of creating self-assessment materials. By automating quiz generation, 10xNoteQuiz saves valuable time, allowing users to focus on what matters most: learning.
 
 ## 2. Table of Contents
+
 - [Project Description](#1-project-description)
 - [Tech Stack](#3-tech-stack)
 - [Getting Started Locally](#4-getting-started-locally)
@@ -23,22 +24,22 @@ The core problem this project solves is the time-consuming nature of creating se
 
 The project is built with a modern, robust, and scalable tech stack:
 
--   **Frontend**:
-    -   [Astro 5](https://astro.build/): For building fast, content-focused websites.
-    -   [React 19](https://react.dev/): For creating interactive UI components.
-    -   [TypeScript 5](https://www.typescriptlang.org/): For static type-checking and improved developer experience.
-    -   [Tailwind CSS 4](https://tailwindcss.com/): A utility-first CSS framework for rapid styling.
-    -   [Shadcn/ui](https://ui.shadcn.com/): A collection of accessible and reusable React components.
+- **Frontend**:
+  - [Astro 5](https://astro.build/): For building fast, content-focused websites.
+  - [React 19](https://react.dev/): For creating interactive UI components.
+  - [TypeScript 5](https://www.typescriptlang.org/): For static type-checking and improved developer experience.
+  - [Tailwind CSS 4](https://tailwindcss.com/): A utility-first CSS framework for rapid styling.
+  - [Shadcn/ui](https://ui.shadcn.com/): A collection of accessible and reusable React components.
 
--   **Backend**:
-    -   [Supabase](https://supabase.io/): An open-source Firebase alternative providing a PostgreSQL database, authentication, and a Backend-as-a-Service SDK.
+- **Backend**:
+  - [Supabase](https://supabase.io/): An open-source Firebase alternative providing a PostgreSQL database, authentication, and a Backend-as-a-Service SDK.
 
--   **Artificial Intelligence**:
-    -   [Openrouter.ai](https://openrouter.ai/): A service that provides access to a wide range of AI models (from OpenAI, Anthropic, Google, etc.) for high-efficiency and low-cost quiz generation.
+- **Artificial Intelligence**:
+  - [Openrouter.ai](https://openrouter.ai/): A service that provides access to a wide range of AI models (from OpenAI, Anthropic, Google, etc.) for high-efficiency and low-cost quiz generation.
 
--   **CI/CD & Hosting**:
-    -   [GitHub Actions](https://github.com/features/actions): For continuous integration and deployment pipelines.
-    -   [DigitalOcean](https://www.digitalocean.com/): For hosting the application via a Docker image.
+- **CI/CD & Hosting**:
+  - [GitHub Actions](https://github.com/features/actions): For continuous integration and deployment pipelines.
+  - [DigitalOcean](https://www.digitalocean.com/): For hosting the application via a Docker image.
 
 ## 4. Getting Started Locally
 
@@ -46,19 +47,21 @@ Follow these steps to set up and run the project on your local machine.
 
 ### Prerequisites
 
--   [Node.js](https://nodejs.org/) (LTS version recommended)
--   [npm](https://www.npmjs.com/) (comes with Node.js)
--   [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) (LTS version recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Git](https://git-scm.com/)
 
 ### Installation
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/PawelAdamWawrzyniak/10xdevs-project.git
     cd 10xdevs-project
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```
@@ -66,19 +69,20 @@ Follow these steps to set up and run the project on your local machine.
 3.  **Set up environment variables:**
 
     Create a `.env` file in the root of the project by copying the example file:
+
     ```bash
     cp .env.example .env
     ```
+
     You will need to populate this file with your credentials for Supabase and Openrouter.ai:
-    
     - `SUPABASE_URL`: Your Supabase project URL
     - `SUPABASE_KEY`: Your Supabase anon/public key
     - `OPENROUTER_API_KEY`: Your OpenRouter API key (get it from [openrouter.ai](https://openrouter.ai/keys))
 
 4.  **Set up Supabase:**
-    -   Create a new project on [Supabase](https://supabase.io/).
-    -   Use the Supabase SQL editor or CLI to set up the necessary database schema.
-    -   Find your project's API URL and `anon` key in the "API" settings and add them to your `.env` file.
+    - Create a new project on [Supabase](https://supabase.io/).
+    - Use the Supabase SQL editor or CLI to set up the necessary database schema.
+    - Find your project's API URL and `anon` key in the "API" settings and add them to your `.env` file.
 
 5.  **Run the development server:**
     ```bash
@@ -90,20 +94,20 @@ Follow these steps to set up and run the project on your local machine.
 
 This project includes the following scripts defined in `package.json`:
 
--   `npm run dev`: Starts the development server with hot-reloading.
--   `npm run build`: Builds the application for production.
--   `npm run preview`: Starts a local server to preview the production build.
--   `npm run lint`: Lints the codebase using ESLint to find and report issues.
--   `npm run lint:fix`: Lints the codebase and automatically fixes fixable issues.
--   `npm run format`: Formats the code using Prettier.
+- `npm run dev`: Starts the development server with hot-reloading.
+- `npm run build`: Builds the application for production.
+- `npm run preview`: Starts a local server to preview the production build.
+- `npm run lint`: Lints the codebase using ESLint to find and report issues.
+- `npm run lint:fix`: Lints the codebase and automatically fixes fixable issues.
+- `npm run format`: Formats the code using Prettier.
 
 ## 6. Testing Strategy
 
 This project follows a comprehensive testing plan to ensure high quality and reliability. Our strategy includes multiple layers of testing to cover everything from individual components to complete user workflows.
 
--   **Unit Tests**: We use [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) to test individual components and utility functions in isolation.
--   **Integration Tests**: These tests verify that different parts of the application, such as services and components, work together as expected.
--   **End-to-End (E2E) Tests**: We use [Playwright](https://playwright.dev/) to simulate real user scenarios in a browser, ensuring the entire application flow is correct from the UI to the database.
+- **Unit Tests**: We use [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) to test individual components and utility functions in isolation.
+- **Integration Tests**: These tests verify that different parts of the application, such as services and components, work together as expected.
+- **End-to-End (E2E) Tests**: We use [Playwright](https://playwright.dev/) to simulate real user scenarios in a browser, ensuring the entire application flow is correct from the UI to the database.
 
 For a detailed overview of our testing strategy, including test scenarios, environments, and acceptance criteria, please refer to the full [Test Plan](./test-plan.md).
 
@@ -113,23 +117,23 @@ For a detailed overview of our testing strategy, including test scenarios, envir
 
 The initial version of the application will include the following features:
 
--   **User Authentication**: Secure account creation and login via email and password.
--   **API Key Management**: Users can add and manage their own encrypted AI model API keys.
--   **Note Management**: Full CRUD (Create, Read, Update, Delete) functionality for notes in Markdown format.
--   **Note Organization**: Ability to categorize notes with tags and categories.
--   **AI-Powered Quiz Generation**: Generate quizzes from any note, consisting of True/False, multiple-choice, and short-answer questions.
--   **Quiz Management**: Users can accept, reject (and regenerate), or delete quizzes.
--   **Interactive Quiz Solving**: A user-friendly interface for taking quizzes.
--   **Progress Tracking**: View quiz results, aggregated statistics, and progress charts.
--   **Spaced Repetition System (SRS)**: An algorithm that schedules review sessions based on quiz performance to enhance long-term memory.
+- **User Authentication**: Secure account creation and login via email and password.
+- **API Key Management**: Users can add and manage their own encrypted AI model API keys.
+- **Note Management**: Full CRUD (Create, Read, Update, Delete) functionality for notes in Markdown format.
+- **Note Organization**: Ability to categorize notes with tags and categories.
+- **AI-Powered Quiz Generation**: Generate quizzes from any note, consisting of True/False, multiple-choice, and short-answer questions.
+- **Quiz Management**: Users can accept, reject (and regenerate), or delete quizzes.
+- **Interactive Quiz Solving**: A user-friendly interface for taking quizzes.
+- **Progress Tracking**: View quiz results, aggregated statistics, and progress charts.
+- **Spaced Repetition System (SRS)**: An algorithm that schedules review sessions based on quiz performance to enhance long-term memory.
 
 ### Future Features (Post-MVP)
 
--   Automatic AI-powered summaries of notes.
--   Ability to edit individual questions within a quiz.
--   Advanced quiz generation options (e.g., number of questions, difficulty level).
--   Password recovery functionality.
--   Syntax highlighting for code snippets within notes.
+- Automatic AI-powered summaries of notes.
+- Ability to edit individual questions within a quiz.
+- Advanced quiz generation options (e.g., number of questions, difficulty level).
+- Password recovery functionality.
+- Syntax highlighting for code snippets within notes.
 
 ## 8. Project Status
 

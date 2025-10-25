@@ -136,7 +136,7 @@ try {
     systemPrompt: "You are a helpful assistant.",
     userPrompt: "Hello!",
   });
-  
+
   console.log(response);
 } catch (error) {
   if (error instanceof AuthenticationError) {
@@ -172,11 +172,13 @@ constructor(config?: OpenRouterServiceConfig)
 Creates a new instance of OpenRouterService.
 
 **Parameters:**
+
 - `config` (optional): Configuration object
   - `apiKey` (string): Override the API key from environment variables
   - `baseUrl` (string): Override the base URL (default: `https://openrouter.ai/api/v1`)
 
 **Throws:**
+
 - `Error`: If API key is not configured
 
 ### getChatCompletion<T>()
@@ -188,9 +190,11 @@ public async getChatCompletion<T>(options: ChatCompletionOptions): Promise<T>
 Sends a chat completion request and returns the parsed response.
 
 **Type Parameters:**
+
 - `T`: The expected type of the response
 
 **Parameters:**
+
 - `options`: Chat completion options
   - `model` (string): Model identifier (e.g., `"anthropic/claude-3.5-haiku"`)
   - `systemPrompt` (string): System message to set context
@@ -202,9 +206,11 @@ Sends a chat completion request and returns the parsed response.
   - `maxTokens` (optional, number): Maximum tokens in response
 
 **Returns:**
+
 - `Promise<T>`: Parsed response of type T
 
 **Throws:**
+
 - `AuthenticationError`: Invalid API key (401)
 - `RateLimitError`: Rate limit exceeded (429)
 - `InvalidRequestError`: Malformed request (400)
@@ -214,21 +220,27 @@ Sends a chat completion request and returns the parsed response.
 ## Error Types
 
 ### OpenRouterError
+
 Base error class for all OpenRouter-related errors.
 
 ### AuthenticationError
+
 Thrown when API authentication fails (HTTP 401). Usually indicates an invalid or missing API key.
 
 ### RateLimitError
+
 Thrown when rate limit is exceeded (HTTP 429). Indicates too many requests in a short time.
 
 ### InvalidRequestError
+
 Thrown when the request is malformed (HTTP 400). Check request parameters.
 
 ### ServiceUnavailableError
+
 Thrown when the service is unavailable (HTTP 5xx). Usually temporary.
 
 ### ModelResponseError
+
 Thrown when the model's response cannot be parsed or validated against the schema.
 
 ## Available Models
@@ -255,10 +267,10 @@ See [OpenRouter Models](https://openrouter.ai/models) for the full list.
 
 ```typescript
 // Good: Clear, specific instructions
-systemPrompt: "You are a quiz generator. Generate exactly 3 questions. Always respond in JSON format matching the provided schema."
+systemPrompt: "You are a quiz generator. Generate exactly 3 questions. Always respond in JSON format matching the provided schema.";
 
 // Bad: Vague instructions
-systemPrompt: "Make a quiz."
+systemPrompt: "Make a quiz.";
 ```
 
 ### 3. Schema Design
@@ -268,17 +280,19 @@ systemPrompt: "Make a quiz."
 const schema: JSONSchema = {
   type: "object",
   properties: {
-    title: { 
-      type: "string", 
-      description: "A concise title for the quiz" 
+    title: {
+      type: "string",
+      description: "A concise title for the quiz",
     },
     questions: {
       type: "array",
       description: "List of quiz questions",
-      items: { /* ... */ }
-    }
+      items: {
+        /* ... */
+      },
+    },
   },
-  required: ["title", "questions"]
+  required: ["title", "questions"],
 };
 ```
 
@@ -288,7 +302,9 @@ Always wrap API calls in try-catch blocks and handle specific error types:
 
 ```typescript
 try {
-  const result = await service.getChatCompletion({ /* ... */ });
+  const result = await service.getChatCompletion({
+    /* ... */
+  });
   // Handle success
 } catch (error) {
   if (error instanceof RateLimitError) {
@@ -325,20 +341,24 @@ const mockService = new OpenRouterService({
 ## Troubleshooting
 
 ### "OpenRouter API key is not configured"
+
 - Ensure `OPENROUTER_API_KEY` is set in `.env`
 - Restart the development server after adding environment variables
 
 ### "Authentication failed"
+
 - Verify your API key is correct
 - Check that the key hasn't expired
 - Ensure the key has sufficient credits
 
 ### "Rate limit exceeded"
+
 - Implement exponential backoff retry logic
 - Consider upgrading your OpenRouter plan
 - Cache responses when possible
 
 ### "Model returned invalid response"
+
 - Check your schema definition
 - Verify the model supports structured outputs
 - Review the system prompt for clarity
@@ -351,4 +371,3 @@ const mockService = new OpenRouterService({
 - `src/lib/services/quiz.service.ts` - Integration example
 - `src/types.ts` - Type definitions
 - `.ai/openrouter-service-implementation-plan.md` - Implementation plan
-

@@ -70,6 +70,7 @@ describe("notes.service", () => {
         eq: mockEqUserId,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (mockSupabase.from as any).mockImplementation((table: string) => {
         if (table === "notes") {
           return {
@@ -162,6 +163,7 @@ describe("notes.service", () => {
         eq: mockEqUserId,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (mockSupabase.from as any).mockImplementation((table: string) => {
         if (table === "notes") {
           return {
@@ -214,6 +216,7 @@ describe("notes.service", () => {
         select: mockSelect,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (mockSupabase.from as any).mockReturnValue({
         insert: mockInsert,
       });
@@ -279,6 +282,7 @@ describe("notes.service", () => {
         eq: mockEq,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (mockSupabase.from as any).mockReturnValue({
         select: mockSelect,
       });
@@ -350,6 +354,7 @@ describe("notes.service", () => {
         eq: mockEq,
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (mockSupabase.from as any).mockReturnValue({
         select: mockSelect,
       });

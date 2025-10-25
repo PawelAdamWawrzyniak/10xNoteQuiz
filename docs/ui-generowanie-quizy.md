@@ -3,73 +3,77 @@ Jako starszy programista frontendu Twoim zadaniem jest stworzenie szczegółoweg
 Najpierw przejrzyj następujące informacje:
 
 1. Product Requirements Document (PRD):
-<prd>
-@prd.md 
-</prd>
+   <prd>
+   @prd.md
+   </prd>
 
 2. Opis widoku:
-<view_description>
-2.  **Generowanie Quizu**: Proces generowania quizu będzie synchroniczny z perspektywy użytkownika (zablokuje UI spinnerem). Zrezygnowano z ręcznego przycisku "Anuluj". Zamiast tego, po upływie ustalonego czasu (wstępnie 10 sekund), użytkownik otrzyma opcje "Poczekaj jeszcze" lub "Anuluj i spróbuj później".
-</view_description>
+   <view_description>
+3. **Generowanie Quizu**: Proces generowania quizu będzie synchroniczny z perspektywy użytkownika (zablokuje UI spinnerem). Zrezygnowano z ręcznego przycisku "Anuluj". Zamiast tego, po upływie ustalonego czasu (wstępnie 10 sekund), użytkownik otrzyma opcje "Poczekaj jeszcze" lub "Anuluj i spróbuj później".
+   </view_description>
 
-3. User Stories:
-<user_stories>
+4. User Stories:
+   <user_stories>
+
 - ID: US-022
 - Tytuł: Generowanie quizu bez własnego klucza API
 - Opis: Jako nowy użytkownik, chcę móc wygenerować quiz bez konieczności natychmiastowego podawania własnego klucza API, aby móc szybko przetestować podstawową funkcjonalność aplikacji.
 - Kryteria akceptacji:
-    - Gdy użytkownik nie ma zapisanego klucza API w ustawieniach, przycisk "Generuj quiz" jest nadal aktywny.
-    - Po kliknięciu "Generuj quiz", aplikacja używa domyślnego, wbudowanego klucza API do komunikacji z AI.
-    - Użytkownik jest informowany (np. za pomocą dyskretnego komunikatu), że korzysta z klucza domyślnego, co może wiązać się z pewnymi ograniczeniami (np. limit zapytań).
-    - Generowanie quizu przebiega pomyślnie, tak jak w przypadku użycia własnego klucza.
+  - Gdy użytkownik nie ma zapisanego klucza API w ustawieniach, przycisk "Generuj quiz" jest nadal aktywny.
+  - Po kliknięciu "Generuj quiz", aplikacja używa domyślnego, wbudowanego klucza API do komunikacji z AI.
+  - Użytkownik jest informowany (np. za pomocą dyskretnego komunikatu), że korzysta z klucza domyślnego, co może wiązać się z pewnymi ograniczeniami (np. limit zapytań).
+  - Generowanie quizu przebiega pomyślnie, tak jak w przypadku użycia własnego klucza.
 - ID: US-013
 - Tytuł: Akceptacja wygenerowanego quizu
 - Opis: Jako użytkownik, po przejrzeniu wygenerowanego quizu, chcę go zaakceptować, jeśli jest dla mnie odpowiedni.
 - Kryteria akceptacji:
-    - Po wygenerowaniu quizu pojawiają się przyciski "Akceptuj" i "Odrzuć".
-    - Po kliknięciu "Akceptuj", quiz zostaje zapisany i powiązany z notatką.
-    - Zaakceptowany quiz jest gotowy do rozwiązania.
+  - Po wygenerowaniu quizu pojawiają się przyciski "Akceptuj" i "Odrzuć".
+  - Po kliknięciu "Akceptuj", quiz zostaje zapisany i powiązany z notatką.
+  - Zaakceptowany quiz jest gotowy do rozwiązania.
 
 - ID: US-014
 - Tytuł: Odrzucenie i ponowne generowanie quizu
 - Opis: Jako użytkownik, jeśli wygenerowany quiz mi nie odpowiada, chcę go odrzucić i spróbować wygenerować nowy.
 - Kryteria akceptacji:
-    - Po kliknięciu "Odrzuć", aplikacja ponownie wysyła zapytanie do AI w celu wygenerowania nowego zestawu pytań.
-    - Stary zestaw pytań jest odrzucany i nie jest zapisywany.
+  - Po kliknięciu "Odrzuć", aplikacja ponownie wysyła zapytanie do AI w celu wygenerowania nowego zestawu pytań.
+  - Stary zestaw pytań jest odrzucany i nie jest zapisywany.
 
 </user_stories>
 
 4. Endpoint Description:
-<endpoint_description>
-@api-plan.md 
-</endpoint_description>
+   <endpoint_description>
+   @api-plan.md
+   </endpoint_description>
 
 5. Endpoint Implementation:
-<endpoint_implementation>
-//TODO
-</endpoint_implementation>
+   <endpoint_implementation>
+   //TODO
+   </endpoint_implementation>
 
 6. Type Definitions:
-<type_definitions>
-@types.ts 
-</type_definitions>
+   <type_definitions>
+   @types.ts
+   </type_definitions>
 
 7. Tech Stack:
-<tech_stack>
-@tech-stack.md 
-</tech_stack>
+   <tech_stack>
+   @tech-stack.md
+   </tech_stack>
 
-<ui_architecture-info>
-8. Informacja z ui-architecture
--   **Przepływ Generowania Quizu**: Inicjowany z widoku notatki, blokuje UI za pomocą modala ze wskaźnikiem ładowania. Posiada mechanizm timeout (~10s) z opcjami dla użytkownika. Po wygenerowaniu następuje krok akceptacji lub odrzucenia quizu.
-</ui_architecture-info>
-Przed utworzeniem ostatecznego planu wdrożenia przeprowadź analizę i planowanie wewnątrz tagów <implementation_breakdown> w swoim bloku myślenia. Ta sekcja może być dość długa, ponieważ ważne jest, aby być dokładnym.
+<ui_architecture-info> 8. Informacja z ui-architecture
+
+- **Przepływ Generowania Quizu**: Inicjowany z widoku notatki, blokuje UI za pomocą modala ze wskaźnikiem ładowania. Posiada mechanizm timeout (~10s) z opcjami dla użytkownika. Po wygenerowaniu następuje krok akceptacji lub odrzucenia quizu.
+  </ui_architecture-info>
+  Przed utworzeniem ostatecznego planu wdrożenia przeprowadź analizę i planowanie wewnątrz tagów <implementation_breakdown> w swoim bloku myślenia. Ta sekcja może być dość długa, ponieważ ważne jest, aby być dokładnym.
 
 W swoim podziale implementacji wykonaj następujące kroki:
+
 1. Dla każdej sekcji wejściowej (PRD, User Stories, Endpoint Description, Endpoint Implementation, Type Definitions, Tech Stack):
-  - Podsumuj kluczowe punkty
- - Wymień wszelkie wymagania lub ograniczenia
- - Zwróć uwagę na wszelkie potencjalne wyzwania lub ważne kwestie
+
+- Podsumuj kluczowe punkty
+- Wymień wszelkie wymagania lub ograniczenia
+- Zwróć uwagę na wszelkie potencjalne wyzwania lub ważne kwestie
+
 2. Wyodrębnienie i wypisanie kluczowych wymagań z PRD
 3. Wypisanie wszystkich potrzebnych głównych komponentów, wraz z krótkim opisem ich opisu, potrzebnych typów, obsługiwanych zdarzeń i warunków walidacji
 4. Stworzenie wysokopoziomowego diagramu drzewa komponentów
@@ -88,12 +92,14 @@ Po przeprowadzeniu analizy dostarcz plan wdrożenia w formacie Markdown z nastę
 2. Routing widoku: Określenie ścieżki, na której widok powinien być dostępny.
 3. Struktura komponentów: Zarys głównych komponentów i ich hierarchii.
 4. Szczegóły komponentu: Dla każdego komponentu należy opisać:
- - Opis komponentu, jego przeznaczenie i z czego się składa
- - Główne elementy HTML i komponenty dzieci, które budują komponent
- - Obsługiwane zdarzenia
- - Warunki walidacji (szczegółowe warunki, zgodnie z API)
- - Typy (DTO i ViewModel) wymagane przez komponent
- - Propsy, które komponent przyjmuje od rodzica (interfejs komponentu)
+
+- Opis komponentu, jego przeznaczenie i z czego się składa
+- Główne elementy HTML i komponenty dzieci, które budują komponent
+- Obsługiwane zdarzenia
+- Warunki walidacji (szczegółowe warunki, zgodnie z API)
+- Typy (DTO i ViewModel) wymagane przez komponent
+- Propsy, które komponent przyjmuje od rodzica (interfejs komponentu)
+
 5. Typy: Szczegółowy opis typów wymaganych do implementacji widoku, w tym dokładny podział wszelkich nowych typów lub modeli widoku według pól i typów.
 6. Zarządzanie stanem: Szczegółowy opis sposobu zarządzania stanem w widoku, określenie, czy wymagany jest customowy hook.
 7. Integracja API: Wyjaśnienie sposobu integracji z dostarczonym punktem końcowym. Precyzyjnie wskazuje typy żądania i odpowiedzi.
@@ -112,16 +118,21 @@ Oto przykład tego, jak powinien wyglądać plik wyjściowy (treść jest do zas
 # Plan implementacji widoku [Nazwa widoku]
 
 ## 1. Przegląd
+
 [Krótki opis widoku i jego celu]
 
 ## 2. Routing widoku
+
 [Ścieżka, na której widok powinien być dostępny]
 
 ## 3. Struktura komponentów
+
 [Zarys głównych komponentów i ich hierarchii]
 
 ## 4. Szczegóły komponentów
+
 ### [Nazwa komponentu 1]
+
 - Opis komponentu [opis]
 - Główne elementy: [opis]
 - Obsługiwane interakcje: [lista]
@@ -130,27 +141,35 @@ Oto przykład tego, jak powinien wyglądać plik wyjściowy (treść jest do zas
 - Propsy: [lista]
 
 ### [Nazwa komponentu 2]
+
 [...]
 
 ## 5. Typy
+
 [Szczegółowy opis wymaganych typów]
 
 ## 6. Zarządzanie stanem
+
 [Opis zarządzania stanem w widoku]
 
 ## 7. Integracja API
+
 [Wyjaśnienie integracji z dostarczonym endpointem, wskazanie typów żądania i odpowiedzi]
 
 ## 8. Interakcje użytkownika
+
 [Szczegółowy opis interakcji użytkownika]
 
 ## 9. Warunki i walidacja
+
 [Szczegółowy opis warunków i ich walidacji]
 
 ## 10. Obsługa błędów
+
 [Opis obsługi potencjalnych błędów]
 
 ## 11. Kroki implementacji
+
 1. [Krok 1]
 2. [Krok 2]
 3. [...]

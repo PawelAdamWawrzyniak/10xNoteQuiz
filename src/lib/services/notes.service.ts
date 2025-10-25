@@ -38,7 +38,7 @@ export const findNoteById = async (
 
   // Transform note_tags junction table data to flat tags array
   const tags = Array.isArray(data.note_tags)
-    ? data.note_tags.map((nt: any) => nt.tags).filter((tag: any) => tag !== null)
+    ? data.note_tags.map((nt: { tags: { id: string; name: string } }) => nt.tags).filter((tag) => tag !== null)
     : [];
 
   const noteDetails: NoteDetailsDto = {
@@ -161,6 +161,7 @@ export const createNote = async (
 
     if (tagsError) {
       // Consider rolling back the note creation or logging the error
+      // eslint-disable-next-line no-console
       console.error("Error associating tags with note:", tagsError);
     }
   }
@@ -199,7 +200,7 @@ export const updateNote = async (
   }
 
   // Prepare update data (only include provided fields)
-  const updateData: any = {};
+  const updateData: Record<string, string | null> = {};
   if (title !== undefined) updateData.title = title;
   if (content !== undefined) updateData.content = content;
   if (category_id !== undefined) updateData.category_id = category_id;

@@ -66,7 +66,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
     );
   } catch (error) {
-    console.error("Login error:", error);
+    // eslint-disable-next-line no-console
+    console.error("Failed to login :", error);
     return new Response(
       JSON.stringify({
         error: "Wystąpił błąd podczas logowania. Spróbuj ponownie.",

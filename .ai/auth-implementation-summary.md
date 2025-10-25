@@ -11,6 +11,7 @@ Data: 2025-10-21
 **Plik:** `src/db/supabase.client.ts`
 
 Implementacja wykorzystuje podejście dual-client:
+
 - **Regular Client** (`supabaseClient`) - dla operacji bazodanowych z Row Level Security
 - **SSR Client** (`createSupabaseServerInstance`) - dla operacji autentykacji z cookie management
 
@@ -32,6 +33,7 @@ Implementacja wykorzystuje podejście dual-client:
 - **`logout.ts`** - POST endpoint do wylogowania
 
 Wszystkie endpointy:
+
 - Używają Zod do walidacji danych wejściowych
 - Zwracają odpowiednie kody statusu HTTP
 - Obsługują błędy z komunikatami po polsku
@@ -50,6 +52,7 @@ Obie strony używają `AuthLayout` i renderują komponenty React client-side.
 **Pliki:** `src/components/`
 
 #### LoginForm.tsx
+
 - Walidacja formularza z Zod (client-side)
 - Integracja z API `/api/auth/login`
 - Obsługa błędów:
@@ -60,6 +63,7 @@ Obie strony używają `AuthLayout` i renderują komponenty React client-side.
 - Redirect do `/notes` po sukcesie
 
 #### RegisterForm.tsx
+
 - Walidacja formularza z Zod (hasło min 8 znaków, duża/mała litera)
 - Integracja z API `/api/auth/register`
 - Podobna obsługa błędów jak LoginForm
@@ -121,15 +125,18 @@ namespace App {
 ## Obsługa Błędów
 
 ### Walidacja Client-Side (Zod)
+
 - Błędy wyświetlane pod polami formularza
 - Czerwony tekst z konkretnym komunikatem
 
 ### Błędy API
+
 - Alert component (destructive variant) nad formularzem
 - Toast notification dla natychmiastowego feedbacku
 - Polskie komunikaty błędów
 
 ### Komunikaty
+
 - ✅ "Nieprawidłowy e-mail lub hasło"
 - ✅ "Użytkownik o tym adresie e-mail już istnieje"
 - ✅ "Hasło musi mieć co najmniej 8 znaków"
@@ -179,4 +186,3 @@ namespace App {
 - **Brak console.log** w produkcji (usunięte dla zgodności z linterem)
 - **Wszystkie linter errors naprawione** ✅
 - **Kompatybilność z istniejącym kodem** - services używają `locals.supabase`
-

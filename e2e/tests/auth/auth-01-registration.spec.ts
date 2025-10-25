@@ -27,7 +27,7 @@ test.describe("AUTH-01: User Registration", () => {
     // Act - Fill registration form and submit
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Success message is displayed
@@ -143,7 +143,7 @@ test.describe("AUTH-01: Registration Validation", () => {
     // Act - Fill form
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Registration completes successfully
