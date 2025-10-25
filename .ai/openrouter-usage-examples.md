@@ -32,13 +32,13 @@ const summarySchema = {
   type: "object",
   properties: {
     title: { type: "string" },
-    key_points: { 
+    key_points: {
       type: "array",
-      items: { type: "string" }
+      items: { type: "string" },
     },
-    conclusion: { type: "string" }
+    conclusion: { type: "string" },
   },
-  required: ["title", "key_points", "conclusion"]
+  required: ["title", "key_points", "conclusion"],
 } as const;
 
 const service = new OpenRouterService();
@@ -49,9 +49,9 @@ const summary = await service.getChatCompletion<SummaryResponse>({
   userPrompt: `Summarize this article: ${articleContent}`,
   responseSchema: {
     name: "create_summary",
-    schema: summarySchema
+    schema: summarySchema,
   },
-  temperature: 0.5
+  temperature: 0.5,
 });
 
 console.log(summary.title);
@@ -84,9 +84,9 @@ Odpowiadaj TYLKO w formacie JSON.`,
   userPrompt: `Wygeneruj quiz na podstawie tej notatki: ${noteContent}`,
   responseSchema: {
     name: "create_quiz",
-    schema: quizSchema
+    schema: quizSchema,
   },
-  temperature: 0.7
+  temperature: 0.7,
 });
 
 console.log(`Created quiz: ${quiz.title}`);
@@ -102,7 +102,7 @@ import {
   RateLimitError,
   ServiceUnavailableError,
   ModelResponseError,
-  OpenRouterError
+  OpenRouterError,
 } from "@/lib/services/openrouter.errors";
 
 const service = new OpenRouterService();
@@ -113,30 +113,24 @@ try {
     systemPrompt: "You are a helpful assistant.",
     userPrompt: "Hello!",
   });
-  
+
   console.log(result);
-  
 } catch (error) {
   if (error instanceof AuthenticationError) {
     console.error("Invalid API key. Please check your configuration.");
     // Notify admin, log to monitoring service
-    
   } else if (error instanceof RateLimitError) {
     console.error("Rate limit exceeded. Retrying in 60 seconds...");
     // Implement retry logic with exponential backoff
-    
   } else if (error instanceof ServiceUnavailableError) {
     console.error("OpenRouter is temporarily unavailable.");
     // Show user-friendly error, try fallback service
-    
   } else if (error instanceof ModelResponseError) {
     console.error("AI returned invalid JSON. Requesting regeneration...");
     // Retry with same or different prompt
-    
   } else if (error instanceof OpenRouterError) {
     console.error(`OpenRouter error: ${error.message}`);
     // Log and report
-    
   } else {
     console.error("Unexpected error:", error);
     // Generic error handling
@@ -152,7 +146,7 @@ import { OpenRouterService } from "@/lib/services/openrouter.service";
 // Use custom API key and base URL (useful for testing)
 const service = new OpenRouterService({
   apiKey: "test-api-key",
-  baseUrl: "http://localhost:3001/mock-api"
+  baseUrl: "http://localhost:3001/mock-api",
 });
 
 const result = await service.getChatCompletion<string>({
@@ -174,7 +168,7 @@ const factual = await service.getChatCompletion<string>({
   model: "anthropic/claude-3.5-haiku",
   systemPrompt: "Provide factual information.",
   userPrompt: "What is 2+2?",
-  temperature: 0.1  // Very deterministic
+  temperature: 0.1, // Very deterministic
 });
 
 // Średnia temperatura (0.5-0.7) - balanced creativity
@@ -182,7 +176,7 @@ const balanced = await service.getChatCompletion<string>({
   model: "anthropic/claude-3.5-haiku",
   systemPrompt: "Generate quiz questions.",
   userPrompt: "Create questions about JavaScript.",
-  temperature: 0.7  // Good for quiz generation
+  temperature: 0.7, // Good for quiz generation
 });
 
 // Wysoka temperatura (0.8-1.0) - creative, varied responses
@@ -190,7 +184,7 @@ const creative = await service.getChatCompletion<string>({
   model: "anthropic/claude-3.5-haiku",
   systemPrompt: "Write a creative story.",
   userPrompt: "Write a short story about a developer.",
-  temperature: 0.9  // Very creative
+  temperature: 0.9, // Very creative
 });
 ```
 
@@ -206,7 +200,7 @@ const brief = await service.getChatCompletion<string>({
   model: "anthropic/claude-3.5-haiku",
   systemPrompt: "Be brief.",
   userPrompt: "Explain async/await.",
-  maxTokens: 100  // Limit to ~75 words
+  maxTokens: 100, // Limit to ~75 words
 });
 
 // Długa odpowiedź (szczegółowa analiza)
@@ -214,7 +208,7 @@ const detailed = await service.getChatCompletion<string>({
   model: "anthropic/claude-3.5-haiku",
   systemPrompt: "Provide detailed explanation.",
   userPrompt: "Explain async/await with examples.",
-  maxTokens: 1000  // Allow up to ~750 words
+  maxTokens: 1000, // Allow up to ~750 words
 });
 ```
 
@@ -237,10 +231,10 @@ const validationSchema = {
     isValid: { type: "boolean" },
     errors: {
       type: "array",
-      items: { type: "string" }
-    }
+      items: { type: "string" },
+    },
   },
-  required: ["isValid", "errors"]
+  required: ["isValid", "errors"],
 } as const;
 
 try {
@@ -250,14 +244,13 @@ try {
     userPrompt: `Validate this code: ${userCode}`,
     responseSchema: {
       name: "validate_code",
-      schema: validationSchema
-    }
+      schema: validationSchema,
+    },
   });
-  
+
   if (!result.isValid) {
     console.log("Validation errors:", result.errors);
   }
-  
 } catch (error) {
   if (error instanceof ModelResponseError) {
     console.error("AI failed to return valid validation result");
@@ -274,21 +267,21 @@ const service = new OpenRouterService();
 
 // Fast and cheap - dla prostych zadań
 const quick = await service.getChatCompletion<string>({
-  model: "anthropic/claude-3.5-haiku",  // Fastest, cheapest
+  model: "anthropic/claude-3.5-haiku", // Fastest, cheapest
   systemPrompt: "Summarize briefly.",
   userPrompt: text,
 });
 
 // Balanced - dla większości przypadków
 const balanced = await service.getChatCompletion<string>({
-  model: "anthropic/claude-3.5-sonnet",  // Good balance
+  model: "anthropic/claude-3.5-sonnet", // Good balance
   systemPrompt: "Analyze this text.",
   userPrompt: text,
 });
 
 // High quality - dla skomplikowanych zadań
 const premium = await service.getChatCompletion<string>({
-  model: "openai/gpt-4o",  // Highest quality
+  model: "openai/gpt-4o", // Highest quality
   systemPrompt: "Provide deep analysis.",
   userPrompt: text,
 });
@@ -302,30 +295,26 @@ import { RateLimitError } from "@/lib/services/openrouter.errors";
 
 const service = new OpenRouterService();
 
-async function getChatCompletionWithRetry<T>(
-  options: any,
-  maxRetries = 3
-): Promise<T> {
+async function getChatCompletionWithRetry<T>(options: any, maxRetries = 3): Promise<T> {
   let lastError: Error;
-  
+
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await service.getChatCompletion<T>(options);
-      
     } catch (error) {
       lastError = error as Error;
-      
+
       if (error instanceof RateLimitError && attempt < maxRetries - 1) {
         const delay = Math.pow(2, attempt) * 1000; // 1s, 2s, 4s
         console.log(`Rate limited. Retrying in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
-      
+
       throw error;
     }
   }
-  
+
   throw lastError!;
 }
 
@@ -349,4 +338,3 @@ const result = await getChatCompletionWithRetry<string>({
 8. **Monitoruj koszty** używając dashboardu OpenRouter
 9. **Testuj różne modele** aby znaleźć najlepszy stosunek jakości do ceny
 10. **Używaj type safety** - zawsze definiuj typy TypeScript dla odpowiedzi
-

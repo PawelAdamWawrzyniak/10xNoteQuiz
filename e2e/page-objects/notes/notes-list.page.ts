@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 /**
  * Page Object Model for Notes List Page
@@ -18,30 +18,30 @@ export class NotesListPage {
     this.page = page;
 
     // Main page elements
-    this.pageHeading = page.getByRole('heading', { name: /notatki/i });
-    this.createNoteButton = page.getByRole('button', { name: /nowa notatka/i });
-    this.notesList = page.locator('[data-testid="notes-list"]').or(page.locator('.notes-container'));
+    this.pageHeading = page.getByRole("heading", { name: /notatki/i });
+    this.createNoteButton = page.getByRole("button", { name: /nowa notatka/i });
+    this.notesList = page.locator('[data-testid="notes-list"]').or(page.locator(".notes-container"));
     this.searchInput = page.getByPlaceholder(/szukaj/i);
-    this.logoutButton = page.getByRole('button', { name: /wyloguj/i });
+    this.logoutButton = page.getByRole("button", { name: /wyloguj/i });
   }
 
   /**
    * Navigate to the notes list page
    */
   async navigate() {
-    await this.page.goto('/notes');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto("/notes");
+    await this.page.waitForLoadState("networkidle");
   }
 
   /**
    * Wait for the notes page to load completely
    */
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState("networkidle");
     // Wait for either the heading or the create button to be visible
     await Promise.race([
-      this.pageHeading.waitFor({ state: 'visible', timeout: 10000 }),
-      this.createNoteButton.waitFor({ state: 'visible', timeout: 10000 }),
+      this.pageHeading.waitFor({ state: "visible", timeout: 10000 }),
+      this.createNoteButton.waitFor({ state: "visible", timeout: 10000 }),
     ]).catch(() => {
       // If neither is visible, that's okay - the page might have a different structure
       // We'll verify with expectToBeVisible() in the test

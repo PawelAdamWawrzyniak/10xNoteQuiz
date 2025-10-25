@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Playwright E2E Test Configuration
@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   // Test directory
-  testDir: './e2e/tests',
+  testDir: "./e2e/tests",
 
   // Maximum time one test can run
   timeout: 30 * 1000,
@@ -24,24 +24,21 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   // Reporter to use
-  reporter: [
-    ['html', { outputFolder: 'playwright-report' }],
-    ['list'],
-  ],
+  reporter: [["html", { outputFolder: "playwright-report" }], ["list"]],
 
   // Shared settings for all projects
   use: {
     // Base URL for navigation
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || "http://localhost:3000",
 
     // Collect trace on first retry
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
 
     // Screenshot on failure
-    screenshot: 'only-on-failure',
+    screenshot: "only-on-failure",
 
     // Video on failure
-    video: 'retain-on-failure',
+    video: "retain-on-failure",
 
     // Maximum time each action can take
     actionTimeout: 10 * 1000,
@@ -54,9 +51,9 @@ export default defineConfig({
   // Following guidelines: Initialize with Chromium/Desktop Chrome only
   projects: [
     {
-      name: 'chromium',
+      name: "chromium",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         viewport: { width: 1280, height: 720 },
       },
     },
@@ -64,8 +61,8 @@ export default defineConfig({
 
   // Run your local dev server before starting the tests
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: "npm run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

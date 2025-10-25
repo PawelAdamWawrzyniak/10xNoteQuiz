@@ -1,7 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { RegisterPage } from '../../page-objects/auth/register.page';
-import { NotesListPage } from '../../page-objects/notes/notes-list.page';
-import { generateUniqueUser } from '../../fixtures/users';
+import { test, expect } from "@playwright/test";
+import { RegisterPage } from "../../page-objects/auth/register.page";
+import { generateUniqueUser } from "../../fixtures/users";
 
 /**
  * AUTH-01: User Registration E2E Tests
@@ -13,24 +12,22 @@ import { generateUniqueUser } from '../../fixtures/users';
  * NOTE: Current implementation shows success message but does NOT auto-login.
  * This test validates the CURRENT behavior: Registration → Success Message → Manual Login
  */
-test.describe('AUTH-01: User Registration', () => {
+test.describe("AUTH-01: User Registration", () => {
   let registerPage: RegisterPage;
-  let notesPage: NotesListPage;
 
   test.beforeEach(async ({ page }) => {
     registerPage = new RegisterPage(page);
-    notesPage = new NotesListPage(page);
     await registerPage.navigate();
   });
 
-  test('should successfully register a new user with valid data', async ({ page }) => {
+  test("should successfully register a new user with valid data", async ({ page }) => {
     // Arrange - Generate unique user to avoid conflicts
     const user = generateUniqueUser();
 
     // Act - Fill registration form and submit
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Success message is displayed
@@ -44,7 +41,7 @@ test.describe('AUTH-01: User Registration', () => {
     await expect(registerPage.goToLoginLink).toBeVisible();
   });
 
-  test('should allow navigation to login page after successful registration', async ({ page }) => {
+  test("should allow navigation to login page after successful registration", async ({ page }) => {
     // Arrange
     const user = generateUniqueUser();
 
@@ -61,17 +58,17 @@ test.describe('AUTH-01: User Registration', () => {
     await expect(page).toHaveURL(/\/auth\/login/);
   });
 
-  test('should show form in ready state on page load', async () => {
+  test("should show form in ready state on page load", async () => {
     // Assert - Form fields and button are enabled
     await registerPage.expectFormReady();
   });
 
-  test('should be accessible via navigation from login page', async ({ page }) => {
+  test("should be accessible via navigation from login page", async ({ page }) => {
     // Arrange - Start on login page
-    await page.goto('/auth/login');
+    await page.goto("/auth/login");
 
     // Act - Click register link
-    const registerLink = page.getByRole('link', { name: /zarejestruj się/i });
+    const registerLink = page.getByRole("link", { name: /zarejestruj się/i });
     await registerLink.click();
 
     // Assert - Navigated to register page
@@ -84,7 +81,7 @@ test.describe('AUTH-01: User Registration', () => {
  * AUTH-01: Additional Registration Validation Tests
  * These tests verify client-side and server-side validation
  */
-test.describe('AUTH-01: Registration Validation', () => {
+test.describe("AUTH-01: Registration Validation", () => {
   let registerPage: RegisterPage;
 
   test.beforeEach(async ({ page }) => {
@@ -92,12 +89,12 @@ test.describe('AUTH-01: Registration Validation', () => {
     await registerPage.navigate();
   });
 
-  test('should show error for invalid email format', async () => {
+  test("should show error for invalid email format", async () => {
     // Arrange
     const invalidUser = {
-      email: 'invalid-email-format',
-      password: 'TestPassword123!',
-      confirmPassword: 'TestPassword123!',
+      email: "invalid-email-format",
+      password: "TestPassword123!",
+      confirmPassword: "TestPassword123!",
     };
 
     // Act
@@ -107,13 +104,13 @@ test.describe('AUTH-01: Registration Validation', () => {
     // Note: Browser's built-in validation might kick in here
     // Or Zod validation on client side
     const url = registerPage.page.url();
-    expect(url).toContain('/auth/register');
+    expect(url).toContain("/auth/register");
   });
 
-  test('should show error when passwords do not match', async () => {
+  test("should show error when passwords do not match", async () => {
     // Arrange
     const user = generateUniqueUser();
-    const mismatchedPassword = 'DifferentPassword456!';
+    const mismatchedPassword = "DifferentPassword456!";
 
     // Act
     await registerPage.fillEmail(user.email);
@@ -123,30 +120,30 @@ test.describe('AUTH-01: Registration Validation', () => {
 
     // Assert - Validation error should be shown as field-level error
     // This will be caught by Zod validation on client side
-    await registerPage.expectFieldError('confirmPassword', 'Hasła nie są zgodne');
+    await registerPage.expectFieldError("confirmPassword", "Hasła nie są zgodne");
 
     // Should still be on register page
     await expect(registerPage.page).toHaveURL(/\/auth\/register/);
   });
 
-  test('should show error for empty required fields', async () => {
+  test("should show error for empty required fields", async () => {
     // Act - Try to submit with empty fields
     await registerPage.submit();
 
     // Assert - Browser validation prevents submission or form shows errors
     // Form should still be on register page
     const url = registerPage.page.url();
-    expect(url).toContain('/auth/register');
+    expect(url).toContain("/auth/register");
   });
 
-  test('should prevent submission while request is in progress', async () => {
+  test("should prevent submission while request is in progress", async () => {
     // Arrange
     const user = generateUniqueUser();
 
     // Act - Fill form
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword!);
+    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
     await registerPage.submit();
 
     // Assert - Registration completes successfully
@@ -165,7 +162,7 @@ test.describe('AUTH-01: Registration Validation', () => {
  *
  * Note: AUTH-02 (duplicate email) tests are in auth-02-duplicate-email.spec.ts
  */
-test.describe('AUTH-01: Registration Error Handling', () => {
+test.describe("AUTH-01: Registration Error Handling", () => {
   let registerPage: RegisterPage;
 
   test.beforeEach(async ({ page }) => {
@@ -173,7 +170,7 @@ test.describe('AUTH-01: Registration Error Handling', () => {
     await registerPage.navigate();
   });
 
-  test('should handle server errors gracefully', async () => {
+  test("should handle server errors gracefully", async () => {
     // This test would require mocking a server error
     // For now, we verify the error alert component exists and can display errors
     await registerPage.expectFormReady();
