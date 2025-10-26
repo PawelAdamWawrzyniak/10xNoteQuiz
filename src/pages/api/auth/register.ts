@@ -41,6 +41,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (error) {
+      // Log error for debugging
+      // eslint-disable-next-line no-console
+      console.error("Supabase registration error:", {
+        message: error.message,
+        status: error.status,
+        code: error.code,
+      });
+
       // Check for existing user
       if (error.message.includes("already registered")) {
         return new Response(
@@ -54,9 +62,29 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         );
       }
 
+      // Check for rate limit errors
+      if (
+        error.message.toLowerCase().includes("rate") ||
+        error.message.toLowerCase().includes("limit") ||
+        error.message.toLowerCase().includes("too many") ||
+        error.status === 429
+      ) {
+        return new Response(
+          JSON.stringify({
+            error: "Email rate limit exceeded",
+            details: error.message,
+          }),
+          {
+            status: 429,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
+
       return new Response(
         JSON.stringify({
-          error: error.message + "!2" || "Błąd podczas rejestracji",
+          error: error.message || "Błąd podczas rejestracji",
+          details: error.code,
         }),
         {
           status: 400,

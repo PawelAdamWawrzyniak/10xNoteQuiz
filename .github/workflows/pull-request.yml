@@ -82,10 +82,11 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          SUPABASE_PUBLIC_KEY: ${{ secrets.SUPABASE_PUBLIC_KEY }}
           E2E_USERNAME_ID: ${{ secrets.E2E_USERNAME_ID }}
           E2E_USERNAME: ${{ secrets.E2E_USERNAME }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          BASE_URL: http://localhost:3000
+          CI: true
         run: npm run test:e2e
 
       - name: Upload E2E test results
