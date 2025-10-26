@@ -78,19 +78,6 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      # Start server in BACKGROUND (& means background)
-      - name: Start development server
-        run: npm run dev &
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          SUPABASE_PUBLIC_KEY: ${{ secrets.SUPABASE_PUBLIC_KEY }}
-
-      # WAIT until server is ready (this is the key!)
-      - name: Wait for server to be ready
-        run: npx wait-on http://localhost:3000 --timeout 60000
-        # Waits up to 60 seconds for server to respond
-
       - name: Run E2E tests
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
