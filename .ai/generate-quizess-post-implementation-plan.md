@@ -102,6 +102,7 @@ Do implementacji widoku wykorzystane zostaną istniejące typy DTO. Dodatkowo, w
 - **`QuizAnswerDto`**: Istniejący typ DTO dla pojedynczej odpowiedzi.
 
 - **`QuizGenerationState` (ViewModel)**: Nowy typ do zarządzania stanem UI.
+
   ```typescript
   type QuizGenerationState =
     | { status: "idle" }
