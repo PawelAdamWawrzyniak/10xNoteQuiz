@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { POST } from "../index";
+import { GET, POST } from "../index";
 import type { APIContext } from "astro";
 
 // ============================================================================
