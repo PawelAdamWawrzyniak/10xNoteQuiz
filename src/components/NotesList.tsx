@@ -3,12 +3,13 @@ import type { NoteListItemDto } from "@/types";
 
 interface NotesListProps {
   notes: NoteListItemDto[];
+  onView: (noteId: string) => void;
   onEdit: (noteId: string) => void;
   onDelete: (noteId: string) => void;
   isLoading?: boolean;
 }
 
-export function NotesList({ notes, onEdit, onDelete, isLoading }: NotesListProps) {
+export function NotesList({ notes, onView, onEdit, onDelete, isLoading }: NotesListProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -31,7 +32,7 @@ export function NotesList({ notes, onEdit, onDelete, isLoading }: NotesListProps
   return (
     <div className="space-y-4">
       {notes.map((note) => (
-        <NoteListItem key={note.id} note={note} onEdit={onEdit} onDelete={onDelete} />
+        <NoteListItem key={note.id} note={note} onView={onView} onEdit={onEdit} onDelete={onDelete} />
       ))}
     </div>
   );

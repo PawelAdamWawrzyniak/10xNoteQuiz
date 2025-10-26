@@ -24,6 +24,10 @@ export function NotesView() {
     window.location.href = "/notes/new";
   };
 
+  const handleView = (noteId: string) => {
+    window.location.href = `/notes/${noteId}`;
+  };
+
   const handleEdit = (noteId: string) => {
     window.location.href = `/notes/${noteId}/edit`;
   };
@@ -69,7 +73,13 @@ export function NotesView() {
     <div className="container mx-auto max-w-4xl py-12">
       <NotesToolbar onCreateNew={handleCreateNew} />
 
-      <NotesList notes={data?.data || []} onEdit={handleEdit} onDelete={handleDeleteClick} isLoading={isLoading} />
+      <NotesList
+        notes={data?.data || []}
+        onView={handleView}
+        onEdit={handleEdit}
+        onDelete={handleDeleteClick}
+        isLoading={isLoading}
+      />
 
       {data && data.pagination.total_pages > 1 && (
         <div className="mt-8">
