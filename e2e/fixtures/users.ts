@@ -16,7 +16,19 @@ export interface TestUser {
 export function generateUniqueUser(): TestUser {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 9);
-  const email = `test-${timestamp}-${random}@example.com`;
+
+  // Use a real test email domain that Supabase accepts
+  // Options:
+  // 1. mailinator.com - public disposable emails (recommended for CI)
+  // 2. Gmail plus addressing - uses your real email with +suffix
+  // 3. Your own domain with catch-all
+
+  // For local testing, you can use Gmail plus addressing:
+  // const baseEmail = process.env.E2E_USERNAME || 'your-email@gmail.com';
+  // const email = baseEmail.replace('@', `+test-${timestamp}-${random}@`);
+
+  // For CI testing, use mailinator (no email delivery needed):
+  const email = `test-${timestamp}-${random}@mailinator.com`;
 
   return {
     email,
