@@ -56,7 +56,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
       return new Response(
         JSON.stringify({
-          error: error.message || "Błąd podczas rejestracji",
+          error: error.message + "!2" || "Błąd podczas rejestracji",
         }),
         {
           status: 400,
