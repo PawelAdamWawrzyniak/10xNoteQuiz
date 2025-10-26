@@ -59,21 +59,13 @@ export function RegisterForm() {
       if (!response.ok) {
         // Handle API errors
         const errorMessage = data.error || "Wystąpił błąd podczas rejestracji";
-        const errorDetails = data.details ? ` (${data.details})` : "";
-        const fullErrorMessage = errorMessage + errorDetails;
 
         setError({
           type: "api",
-          message: fullErrorMessage,
+          message: errorMessage,
         });
 
-        // Special handling for rate limit errors
-        if (response.status === 429) {
-          toast.error("⚠️ Rate limit exceeded - please wait before trying again");
-        } else {
-          toast.error(fullErrorMessage);
-        }
-
+        toast.error(errorMessage);
         setIsLoading(false);
         return;
       }
@@ -128,10 +120,7 @@ export function RegisterForm() {
           {/* Display API error alert */}
           {error?.type === "api" && error.message && (
             <Alert variant="destructive" data-testid="register-error-alert">
-              <AlertTitle>Registration Error</AlertTitle>
-              <AlertDescription data-testid="register-error-message" className="mt-2">
-                {error.message}
-              </AlertDescription>
+              <AlertDescription data-testid="register-error-message">{error.message}</AlertDescription>
             </Alert>
           )}
 

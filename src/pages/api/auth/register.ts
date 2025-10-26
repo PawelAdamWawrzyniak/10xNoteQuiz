@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (error) {
-      // Log error for debugging
+      // Log error for debugging (visible in server logs only)
       // eslint-disable-next-line no-console
       console.error("Supabase registration error:", {
         message: error.message,
@@ -71,8 +71,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       ) {
         return new Response(
           JSON.stringify({
-            error: "Email rate limit exceeded",
-            details: error.message,
+            error: "Limit rejestracji został przekroczony. Spróbuj ponownie później.",
           }),
           {
             status: 429,
@@ -84,7 +83,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       return new Response(
         JSON.stringify({
           error: error.message || "Błąd podczas rejestracji",
-          details: error.code,
         }),
         {
           status: 400,
