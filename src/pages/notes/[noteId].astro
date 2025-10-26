@@ -2,6 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { QuizGenerationController } from "@/components/QuizGenerationController";
 import { findNoteById } from "@/lib/services/notes.service";
+import { renderMarkdown } from "@/lib/markdown/renderMarkdown";
 
 const { noteId } = Astro.params;
 const { user, supabase } = Astro.locals;
@@ -20,6 +21,8 @@ if (!note) {
   return new Response("Note not found", { status: 404 });
 }
 
+const { html: noteHtml, toc } = await renderMarkdown(note.content);
+
 // TODO: Replace with actual user data when implemented
 const userData = {
   hasUserApiKey: false,
@@ -30,12 +33,83 @@ const userData = {
 <Layout title={`Note: ${note.title}`}>
   <main class="container mx-auto max-w-4xl py-12">
     <a href="/notes" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
-    <h1 class="text-4xl font-bold mb-4">{note.title}</h1>
+    <h1 class="text-4xl font-bold mb-6">{note.title}</h1>
+
+    {toc.length > 0 && (
+      <aside class="mb-8 rounded-md border bg-card p-4 text-sm">
+        <div class="font-semibold mb-2">Table of contents</div>
+        <nav aria-label="Table of contents">
+          <ol class="space-y-1">
+            {toc.map((item) => (
+              <li style={`padding-left: ${(item.level - 1) * 16}px`}>
+                <a class="hover:underline" href={`#${item.id}`}>{item.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+    )}
+
     <div class="prose dark:prose-invert max-w-none">
-      <p>{note.content}</p>
+      {noteHtml ? (
+        <Fragment set:html={noteHtml} />
+      ) : (
+        <p class="text-muted-foreground italic">This note is empty.</p>
+      )}
     </div>
 
-    <div class="mt-8 border-t pt-8">
+    <style>
+      /* Minimal highlight.js theme tweaks for dark/light */
+      :global(pre.hljs) {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        background: color-mix(in oklab, canvas 92%, black 8%);
+      }
+      :global(code.hljs) {
+        background: transparent;
+      }
+    </style>
+
+    <script is:inline>
+      // Copy-to-clipboard buttons for code blocks
+      function enhanceCodeCopy() {
+        document.querySelectorAll('pre.hljs').forEach((pre) => {
+          if (pre.querySelector('[data-copy]')) return;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = 'Copy';
+          btn.setAttribute('data-copy', '');
+          btn.className = 'absolute right-2 top-2 text-xs rounded border px-2 py-1 bg-background/70 hover:bg-background';
+          btn.setAttribute('aria-label', 'Copy code to clipboard');
+
+          pre.style.position = 'relative';
+          pre.appendChild(btn);
+
+          btn.addEventListener('click', async () => {
+            const code = pre.querySelector('code')?.innerText || '';
+            try {
+              await navigator.clipboard.writeText(code);
+              btn.textContent = 'Copied!';
+              btn.classList.add('text-green-600');
+              setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('text-green-600'); }, 1200);
+            } catch (e) {
+              btn.textContent = 'Failed';
+              btn.classList.add('text-red-600');
+              setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('text-red-600'); }, 1200);
+            }
+          });
+        });
+      }
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        enhanceCodeCopy();
+      } else {
+        addEventListener('DOMContentLoaded', enhanceCodeCopy);
+      }
+    </script>
+
+    <div class="mt-10 border-t pt-8">
       <h2 class="text-2xl font-bold mb-4">Actions</h2>
       <QuizGenerationController
         client:load
