@@ -56,14 +56,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     if (error) {
-      // Log error for debugging (visible in server logs only)
-      // eslint-disable-next-line no-console
-      console.error("Supabase registration error:", {
-        message: error.message,
-        status: error.status,
-        code: error.code,
-      });
-
       // Check for rate limit errors
       if (
         error.message.toLowerCase().includes("rate") ||
