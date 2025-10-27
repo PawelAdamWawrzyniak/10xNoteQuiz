@@ -58,11 +58,14 @@ export function RegisterForm() {
 
       if (!response.ok) {
         // Handle API errors
+        const errorMessage = data.error || "Wystąpił błąd podczas rejestracji";
+
         setError({
           type: "api",
-          message: data.error || "Wystąpił błąd podczas rejestracji",
+          message: errorMessage,
         });
-        toast.error(data.error || "Wystąpił błąd podczas rejestracji");
+
+        toast.error(errorMessage);
         setIsLoading(false);
         return;
       }

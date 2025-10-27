@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { test, expect } from "@playwright/test";
-import { RegisterPage } from "../../page-objects/auth/register.page";
+import { RegisterByAuthPage } from "../../page-objects/auth/register-by-auth.page";
 import { generateUniqueUser } from "../../fixtures/users";
 
 /**
@@ -10,27 +10,34 @@ import { generateUniqueUser } from "../../fixtures/users";
  * Scenario: User tries to register with an email that already exists
  * Expected: Error message "Użytkownik o tym adresie e-mail już istnieje"
  * Priority: High
+ *
+ * Note: Uses RegisterByAuthPage for faster test execution
+ * - First user created via Admin API (fast)
+ * - Second registration via UI (to test duplicate detection)
  */
 test.describe("AUTH-02: Duplicate Email Registration", () => {
-  let registerPage: RegisterPage;
+  let registerPage: RegisterByAuthPage;
+  const userIdsToCleanup: string[] = [];
 
   test.beforeEach(async ({ page }) => {
-    registerPage = new RegisterPage(page);
+    registerPage = new RegisterByAuthPage(page);
+  });
+
+  test.afterEach(async () => {
+    // Cleanup all users created during the test
+    for (const userId of userIdsToCleanup) {
+      await registerPage.adminDeleteUser(userId);
+    }
+    userIdsToCleanup.length = 0;
   });
 
   test("should show error when registering with already existing email", async ({ page }) => {
-    // Arrange - Create a user first
+    // Arrange - Create a user via Admin API (fast)
     const user = generateUniqueUser();
+    const userId = await registerPage.adminRegister(user);
+    userIdsToCleanup.push(userId);
 
-    // Act - Register user for the first time
-    await registerPage.navigate();
-    await registerPage.register(user);
-
-    // Assert - First registration succeeds
-    await registerPage.expectSuccessMessage();
-    await expect(page).toHaveURL(/\/auth\/register/);
-
-    // Act - Navigate back to register page and try to register again with same email
+    // Act - Try to register with same email via UI
     await registerPage.navigate();
     await registerPage.fillEmail(user.email);
     await registerPage.fillPassword(user.password);
@@ -48,20 +55,16 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
   });
 
   test("should show specific error message about duplicate email", async ({ page: _page }) => {
-    // Arrange - Create a user first
+    // Arrange - Create a user via Admin API (fast)
     const user = generateUniqueUser();
+    const userId = await registerPage.adminRegister(user);
+    userIdsToCleanup.push(userId);
 
-    // Act - First registration
-    await registerPage.navigate();
-    await registerPage.register(user);
-    await registerPage.expectSuccessMessage();
-
-    // Act - Second registration with same email
+    // Act - Try to register with same email via UI
     await registerPage.navigate();
     await registerPage.register(user);
 
     // Assert - Specific error message about duplicate email
-    // Note: Adjust the error message text to match your actual implementation
     const errorAlert = registerPage.errorAlert;
     await expect(errorAlert).toBeVisible();
 
@@ -72,13 +75,10 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
   });
 
   test("should handle duplicate email with different password", async ({ page }) => {
-    // Arrange - Create a user first
+    // Arrange - Create a user via Admin API (fast)
     const user = generateUniqueUser();
-
-    // Act - First registration
-    await registerPage.navigate();
-    await registerPage.register(user);
-    await registerPage.expectSuccessMessage();
+    const userId = await registerPage.adminRegister(user);
+    userIdsToCleanup.push(userId);
 
     // Act - Try to register with same email but different password
     await registerPage.navigate();
@@ -93,17 +93,12 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
   });
 
   test("should handle case sensitivity correctly for duplicate emails", async ({ page: _page }) => {
-    // Arrange - Create a user with lowercase email
+    // Arrange - Create a user with lowercase email via Admin API (fast)
     const user = generateUniqueUser();
     const lowercaseEmail = user.email.toLowerCase();
 
-    // Act - Register with lowercase email
-    await registerPage.navigate();
-    await registerPage.fillEmail(lowercaseEmail);
-    await registerPage.fillPassword(user.password);
-    await registerPage.fillConfirmPassword(user.confirmPassword ?? user.password);
-    await registerPage.submit();
-    await registerPage.expectSuccessMessage();
+    const userId = await registerPage.adminRegister({ ...user, email: lowercaseEmail });
+    userIdsToCleanup.push(userId);
 
     // Act - Try to register with uppercase version of same email
     const uppercaseEmail = lowercaseEmail.toUpperCase();
@@ -120,13 +115,10 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
   });
 
   test("should handle email with extra whitespace", async ({ page: _page }) => {
-    // Arrange - Create a user
+    // Arrange - Create a user via Admin API (fast)
     const user = generateUniqueUser();
-
-    // Act - Register with normal email
-    await registerPage.navigate();
-    await registerPage.register(user);
-    await registerPage.expectSuccessMessage();
+    const userId = await registerPage.adminRegister(user);
+    userIdsToCleanup.push(userId);
 
     // Act - Try to register with same email but with extra whitespace
     await registerPage.navigate();
@@ -141,13 +133,10 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
   });
 
   test("should allow user to correct email after duplicate error", async ({ page }) => {
-    // Arrange - Create a user first
+    // Arrange - Create existing user via Admin API (fast)
     const existingUser = generateUniqueUser();
-
-    // Act - Register first user
-    await registerPage.navigate();
-    await registerPage.register(existingUser);
-    await registerPage.expectSuccessMessage();
+    const userId = await registerPage.adminRegister(existingUser);
+    userIdsToCleanup.push(userId);
 
     // Act - Try to register with duplicate email
     await registerPage.navigate();
@@ -167,15 +156,12 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
   });
 
   test("should not expose existing user information in error message", async ({ page: _page }) => {
-    // Arrange - Create a user
+    // Arrange - Create a user via Admin API (fast)
     const user = generateUniqueUser();
+    const userId = await registerPage.adminRegister(user);
+    userIdsToCleanup.push(userId);
 
-    // Act - Register user
-    await registerPage.navigate();
-    await registerPage.register(user);
-    await registerPage.expectSuccessMessage();
-
-    // Act - Try to register again
+    // Act - Try to register again via UI
     await registerPage.navigate();
     await registerPage.register(user);
 
@@ -199,22 +185,28 @@ test.describe("AUTH-02: Duplicate Email Registration", () => {
  * AUTH-02: Edge Cases and Security
  */
 test.describe("AUTH-02: Duplicate Email Edge Cases", () => {
-  let registerPage: RegisterPage;
+  let registerPage: RegisterByAuthPage;
+  const userIdsToCleanup: string[] = [];
 
   test.beforeEach(async ({ page }) => {
-    registerPage = new RegisterPage(page);
+    registerPage = new RegisterByAuthPage(page);
+  });
+
+  test.afterEach(async () => {
+    // Cleanup all users created during the test
+    for (const userId of userIdsToCleanup) {
+      await registerPage.adminDeleteUser(userId);
+    }
+    userIdsToCleanup.length = 0;
   });
 
   test("should prevent rapid duplicate registration attempts", async ({ page }) => {
-    // Arrange
+    // Arrange - Create user via Admin API (fast)
     const user = generateUniqueUser();
+    const userId = await registerPage.adminRegister(user);
+    userIdsToCleanup.push(userId);
 
-    // Act - Register user once
-    await registerPage.navigate();
-    await registerPage.register(user);
-    await registerPage.expectSuccessMessage();
-
-    // Act - Rapidly try to register 3 more times with same email
+    // Act - Rapidly try to register 3 times with same email
     for (let i = 0; i < 3; i++) {
       await registerPage.navigate();
       await registerPage.register(user);

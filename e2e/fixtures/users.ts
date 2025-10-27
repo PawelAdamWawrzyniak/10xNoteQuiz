@@ -16,7 +16,8 @@ export interface TestUser {
 export function generateUniqueUser(): TestUser {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 9);
-  const email = `test-${timestamp}-${random}@example.com`;
+
+  const email = `test-${timestamp}-${random}@mailinator.com`;
 
   return {
     email,
