@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     const { email, password } = result.data;
 
-    // Create SSR Supabase client
+    // Create SSR Supabase client for registration
     const supabase = createSupabaseServerInstance({
       cookies,
       headers: request.headers,
@@ -40,6 +40,21 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       password,
     });
 
+    // Check if user already exists by examining identities array
+    // Supabase returns data.user with empty identities array if email already exists
+    // This is more reliable than checking for errors since signUp() doesn't error on duplicates
+    if (data?.user && (!data.user.identities || data.user.identities.length === 0)) {
+      return new Response(
+        JSON.stringify({
+          error: "Użytkownik o tym adresie e-mail już istnieje",
+        }),
+        {
+          status: 409,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     if (error) {
       // Log error for debugging (visible in server logs only)
       // eslint-disable-next-line no-console
@@ -48,19 +63,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         status: error.status,
         code: error.code,
       });
-
-      // Check for existing user
-      if (error.message.includes("already registered")) {
-        return new Response(
-          JSON.stringify({
-            error: "Użytkownik o tym adresie e-mail już istnieje",
-          }),
-          {
-            status: 409,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
 
       // Check for rate limit errors
       if (
