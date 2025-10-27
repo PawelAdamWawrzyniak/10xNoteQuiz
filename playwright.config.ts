@@ -1,8 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 
-// Load environment variables from .env file
-dotenv.config();
+// Load environment variables from .env.test file for E2E tests
+// CI environment will use secrets which override file-based config
+dotenv.config({ path: ".env.test" });
 
 /**
  * Playwright E2E Test Configuration
