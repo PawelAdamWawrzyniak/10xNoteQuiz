@@ -32,7 +32,7 @@ export const test = base.extend<{ authenticatedUser: AuthenticatedUser }>({
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
-      email_confirm: true, // Auto-confirm email
+      email_confirm: true,
     });
 
     if (error) {
