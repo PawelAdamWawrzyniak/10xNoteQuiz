@@ -15,6 +15,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   adapter: cloudflare({
-    mode: "directory",
+    output: "server", // or 'server/hybrid'
+    adapter: cloudflare(),
   }),
 });
