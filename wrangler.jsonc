@@ -1,8 +1,0 @@
-{
-  "name": "10xnotequiz",
-  "compatibility_date": "2025-10-28", // Update to the day you deploy
-  "compatibility_flags" :["nodejs_compat"],
-  "assets": {
-    "directory": "./dist"
-  }
-}

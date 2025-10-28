@@ -1,0 +1,6 @@
+name = "10xnotequiz"
+compatibility_date = "2025-10-28"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
