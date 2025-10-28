@@ -41,7 +41,6 @@ jobs:
     needs: quality_checks
     environment:
       name: production
-      url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - name: Checkout code
