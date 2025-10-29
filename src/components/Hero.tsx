@@ -21,13 +21,7 @@ export const Hero = () => {
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           aria-hidden="true"
         >
-          <circle
-            cx={512}
-            cy={192}
-            r={512}
-            fill="url(#gradient-purple)"
-            fillOpacity="0.7"
-          />
+          <circle cx={512} cy={192} r={512} fill="url(#gradient-purple)" fillOpacity="0.7" />
           <defs>
             <radialGradient
               id="gradient-purple"
@@ -50,9 +44,7 @@ export const Hero = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm backdrop-blur-sm">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="font-medium text-foreground">
-              Ucz się 10x szybciej z AI
-            </span>
+            <span className="font-medium text-foreground">Ucz się 10x szybciej z AI</span>
           </div>
 
           {/* Heading */}
@@ -65,19 +57,13 @@ export const Hero = () => {
 
           {/* Subheading */}
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Twórz notatki w Markdown, a AI automatycznie wygeneruje
-            spersonalizowane quizy. System powtórek SRS zadba o to, żebyś
-            zapamiętał materiał na dłużej.
+            Twórz notatki w Markdown, a AI automatycznie wygeneruje spersonalizowane quizy. System powtórek SRS zadba o
+            to, żebyś zapamiętał materiał na dłużej.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Button
-              variant="default"
-              size="lg"
-              className="group text-base"
-              asChild
-            >
+            <Button variant="default" size="lg" className="group text-base" asChild>
               <a href="/auth/login">
                 Zacznij za darmo
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -91,17 +77,13 @@ export const Hero = () => {
               <div className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-3xl font-bold text-transparent">
                 AI-Powered
               </div>
-              <div className="text-sm text-muted-foreground">
-                Generowanie quizów
-              </div>
+              <div className="text-sm text-muted-foreground">Generowanie quizów</div>
             </div>
             <div className="space-y-2">
               <div className="bg-gradient-to-r from-secondary to-accent bg-clip-text text-3xl font-bold text-transparent">
                 SRS
               </div>
-              <div className="text-sm text-muted-foreground">
-                System powtórek
-              </div>
+              <div className="text-sm text-muted-foreground">System powtórek</div>
             </div>
             <div className="space-y-2">
               <div className="bg-gradient-to-r from-accent to-primary bg-clip-text text-3xl font-bold text-transparent">

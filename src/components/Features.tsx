@@ -39,17 +39,13 @@ export const Features = () => {
     <section className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Wszystko czego potrzebujesz
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Kompleksowe narzędzie do skutecznej nauki
-          </p>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Wszystko czego potrzebujesz</h2>
+          <p className="text-lg text-muted-foreground">Kompleksowe narzędzie do skutecznej nauki</p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
-            <Card 
+            <Card
               key={index}
               className="relative overflow-hidden transition-all hover:shadow-lg hover:border-primary/50"
             >
@@ -60,9 +56,7 @@ export const Features = () => {
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base leading-relaxed">
-                  {feature.description}
-                </CardDescription>
+                <CardDescription className="text-base leading-relaxed">{feature.description}</CardDescription>
               </CardContent>
             </Card>
           ))}

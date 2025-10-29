@@ -1,4 +1,4 @@
-import { Github, Mail } from "lucide-react";
+import { Github } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -17,10 +17,18 @@ export const Footer = () => {
 
           {/* Links */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Produkt</h4>
+            <h4 className="font-semibold">Polityki</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Polityka Prywatności</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Polityka Cookies</a></li>
+              <li>
+                <a href="/privacy-policy" className="hover:text-foreground transition-colors">
+                  Polityka Prywatności
+                </a>
+              </li>
+              <li>
+                <a href="/privacy-policy#8-pliki-cookies" className="hover:text-foreground transition-colors">
+                  Polityka Cookies
+                </a>
+              </li>
             </ul>
           </div>
 

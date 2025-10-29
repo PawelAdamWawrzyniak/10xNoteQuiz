@@ -27,18 +27,14 @@ export const HowItWorks = () => {
     <section className="py-24">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl text-center space-y-4 mb-16">
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Jak to działa?
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Trzy proste kroki do skutecznej nauki
-          </p>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Jak to działa?</h2>
+          <p className="text-lg text-muted-foreground">Trzy proste kroki do skutecznej nauki</p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((step, index) => (
-            <Card 
-              key={index} 
+            <Card
+              key={index}
               className="relative overflow-hidden border-2 transition-all hover:shadow-[var(--shadow-elegant)] hover:-translate-y-1"
             >
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
@@ -47,9 +43,7 @@ export const HowItWorks = () => {
                   <step.icon className="h-8 w-8" />
                 </div>
                 <h3 className="text-2xl font-bold">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
+                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
               </CardContent>
             </Card>
           ))}
