@@ -1,0 +1,408 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Footer } from "@/components/Footer";
+---
+
+<Layout title="Polityka Cookies - 10xNoteQuiz">
+  <main class="container mx-auto px-4 py-12 max-w-4xl">
+    <article class="prose prose-slate dark:prose-invert max-w-none">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          Polityka Cookies
+        </h1>
+        <p class="text-muted-foreground">
+          Ostatnia aktualizacja: {
+            new Date().toLocaleDateString("pl-PL", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </p>
+      </div>
+
+      <section class="space-y-6">
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">1. Czym są pliki cookies?</h2>
+          <p>
+            Pliki cookies (ciasteczka) to małe pliki tekstowe przechowywane na Twoim urządzeniu (komputerze, tablecie,
+            smartfonie) podczas przeglądania stron internetowych. Cookies umożliwiają stronie internetowej rozpoznanie
+            Twojego urządzenia i zapamiętanie określonych informacji o Twoich preferencjach lub działaniach.
+          </p>
+          <p>
+            Pliki cookies wykorzystywane przez <strong>10xNoteQuiz</strong> są w pełni zgodne z Rozporządzeniem Parlamentu
+            Europejskiego i Rady (UE) 2016/679 (RODO) oraz dyrektywą ePrivacy.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">2. Jakie pliki cookies używamy?</h2>
+          <p>
+            Nasza aplikacja wykorzystuje wyłącznie <strong>niezbędne pliki cookies</strong> do jej prawidłowego funkcjonowania.
+            Nie stosujemy cookies marketingowych, śledzących ani analitycznych.
+          </p>
+
+          <div class="mt-6 space-y-6">
+            <div class="border border-border rounded-lg p-4 bg-muted/10">
+              <h3 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                <span class="text-primary">🔐</span>
+                Ciasteczka sesji (Supabase Auth)
+              </h3>
+              <div class="space-y-2 text-sm">
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Nazwa:</span>
+                  <span class="text-muted-foreground">sb-*-auth-token</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Cel:</span>
+                  <span class="text-muted-foreground"
+                    >Utrzymanie sesji zalogowanego użytkownika i zapewnienie bezpiecznego dostępu do konta</span
+                  >
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Typ:</span>
+                  <span class="text-muted-foreground">Niezbędne (sesja)</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Czas życia:</span>
+                  <span class="text-muted-foreground">Do wylogowania lub 7 dni</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Atrybuty:</span>
+                  <span class="text-muted-foreground">HttpOnly, Secure, SameSite=Lax</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Dostawca:</span>
+                  <span class="text-muted-foreground">Supabase Auth</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="border border-border rounded-lg p-4 bg-muted/10">
+              <h3 class="text-xl font-semibold mb-3 flex items-center gap-2">
+                <span class="text-primary">🎨</span>
+                Ciasteczka preferencji motywu
+              </h3>
+              <div class="space-y-2 text-sm">
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Nazwa:</span>
+                  <span class="text-muted-foreground">theme-preference</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Cel:</span>
+                  <span class="text-muted-foreground"
+                    >Zapamiętanie wyboru trybu jasnego/ciemnego interfejsu użytkownika</span
+                  >
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Typ:</span>
+                  <span class="text-muted-foreground">Funkcjonalne (opcjonalne)</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Czas życia:</span>
+                  <span class="text-muted-foreground">1 rok</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Atrybuty:</span>
+                  <span class="text-muted-foreground">Lokalne przechowywanie (localStorage)</span>
+                </div>
+                <div class="grid grid-cols-[120px_1fr] gap-2">
+                  <span class="font-semibold">Dostawca:</span>
+                  <span class="text-muted-foreground">10xNoteQuiz</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">3. Czego NIE używamy?</h2>
+          <p>Dla przejrzystości informujemy, że nasza aplikacja <strong>nie wykorzystuje</strong>:</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li><strong>Cookies marketingowych:</strong> Nie profilujemy użytkowników w celach reklamowych</li>
+            <li>
+              <strong>Cookies śledzących:</strong> Nie śledzimy Twojej aktywności poza naszą aplikacją (brak trackerów zewnętrznych)
+            </li>
+            <li>
+              <strong>Cookies analitycznych:</strong> Nie używamy Google Analytics, Facebook Pixel ani podobnych narzędzi
+            </li>
+            <li><strong>Cookies stron trzecich:</strong> Nie osadzamy treści z serwisów społecznościowych</li>
+            <li><strong>Cookies reklamowych:</strong> Nie wyświetlamy reklam</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">4. Podstawa prawna stosowania cookies</h2>
+          <p>Wykorzystywane przez nas pliki cookies są niezbędne do świadczenia usługi, o którą prosisz:</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>
+              <strong>Ciasteczka sesji Supabase:</strong> Art. 6 ust. 1 lit. b RODO - niezbędne do wykonania umowy (świadczenia
+              usługi logowania i zarządzania kontem)
+            </li>
+            <li>
+              <strong>Preferencje motywu:</strong> Art. 6 ust. 1 lit. f RODO - prawnie uzasadniony interes administratora
+              w zapewnieniu lepszego doświadczenia użytkownika
+            </li>
+          </ul>
+          <p class="mt-3">
+            Zgodnie z art. 6 ust. 1 lit. f RODO oraz dyrektywą ePrivacy, pliki cookies niezbędne do świadczenia usługi
+            nie wymagają zgody użytkownika.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">5. Jak długo przechowujemy cookies?</h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full border-collapse border border-border mt-4">
+              <thead class="bg-muted">
+                <tr>
+                  <th class="border border-border px-4 py-2 text-left">Typ cookie</th>
+                  <th class="border border-border px-4 py-2 text-left">Czas przechowywania</th>
+                  <th class="border border-border px-4 py-2 text-left">Kiedy jest usuwane?</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-border px-4 py-2">Sesja Supabase</td>
+                  <td class="border border-border px-4 py-2">Do 7 dni</td>
+                  <td class="border border-border px-4 py-2">Po wylogowaniu lub wygaśnięciu sesji</td>
+                </tr>
+                <tr class="bg-muted/30">
+                  <td class="border border-border px-4 py-2">Preferencje motywu</td>
+                  <td class="border border-border px-4 py-2">1 rok</td>
+                  <td class="border border-border px-4 py-2"
+                    >Po wyczyszczeniu danych przeglądarki lub ręcznym usunięciu</td
+                  >
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">6. Jak zarządzać plikami cookies?</h2>
+          <p>Masz pełną kontrolę nad wykorzystywanymi plikami cookies. Możesz:</p>
+
+          <div class="mt-4 space-y-4">
+            <div class="border-l-4 border-primary pl-4">
+              <h3 class="font-semibold mb-2">Zarządzanie w przeglądarce</h3>
+              <p class="text-sm text-muted-foreground">
+                Większość przeglądarek domyślnie akceptuje pliki cookies. Możesz zmienić ustawienia przeglądarki, aby
+                blokować cookies lub otrzymywać powiadomienia przed ich zapisaniem. Oto instrukcje dla popularnych
+                przeglądarek:
+              </p>
+              <ul class="list-disc pl-6 space-y-1 text-sm mt-2">
+                <li>
+                  <a
+                    href="https://support.google.com/chrome/answer/95647"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-primary hover:underline">Google Chrome</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://support.mozilla.org/pl/kb/wzmocniona-ochrona-przed-sledzeniem-firefox-desktop"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-primary hover:underline">Mozilla Firefox</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://support.apple.com/pl-pl/guide/safari/sfri11471/mac"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-primary hover:underline">Safari</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://support.microsoft.com/pl-pl/microsoft-edge/usuwanie-plik%C3%B3w-cookie-w-przegl%C4%85darce-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-primary hover:underline">Microsoft Edge</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div class="border-l-4 border-secondary pl-4">
+              <h3 class="font-semibold mb-2">Wylogowanie z aplikacji</h3>
+              <p class="text-sm text-muted-foreground">
+                Aby usunąć ciasteczka sesji Supabase, wystarczy wylogować się z aplikacji klikając przycisk "Wyloguj" w
+                menu użytkownika.
+              </p>
+            </div>
+
+            <div class="border-l-4 border-accent pl-4">
+              <h3 class="font-semibold mb-2">Wyczyszczenie danych przeglądarki</h3>
+              <p class="text-sm text-muted-foreground">
+                Możesz usunąć wszystkie cookies z naszej domeny poprzez wyczyszczenie danych przeglądarki. Spowoduje to
+                również usunięcie Twoich preferencji motywu oraz wylogowanie z aplikacji.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">7. Konsekwencje zablokowania cookies</h2>
+          <p>Blokowanie lub usunięcie plików cookies może wpłynąć na funkcjonowanie aplikacji:</p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>
+              <strong>Blokowanie ciasteczek sesji:</strong> Uniemożliwi logowanie i korzystanie z aplikacji - nie będziesz
+              mógł zalogować się do swojego konta
+            </li>
+            <li>
+              <strong>Blokowanie preferencji motywu:</strong> Aplikacja zawsze będzie uruchamiać się w trybie domyślnym (systemowym),
+              nie zapamiętując Twojego wyboru
+            </li>
+          </ul>
+          <div class="mt-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <p class="text-sm">
+              <strong>⚠️ Uwaga:</strong> Aby korzystać z 10xNoteQuiz, niezbędne jest włączenie obsługi ciasteczek sesji.
+              Bez nich nie będziesz mógł zalogować się ani zarządzać swoimi notatkami i quizami.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">8. Cookies zewnętrznych dostawców</h2>
+          <p>
+            Choć nie osadzamy treści z zewnętrznych serwisów społecznościowych ani narzędzi analitycznych, korzystamy z
+            usług infrastrukturalnych, które mogą wykorzystywać własne cookies:
+          </p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>
+              <strong>Supabase:</strong> Zarządza ciasteczkami sesji niezbędnymi do autentykacji. Więcej informacji: <a
+                href="https://supabase.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline">supabase.com/privacy</a
+              >
+            </li>
+            <li>
+              <strong>Cloudflare Pages:</strong> Może wykorzystywać cookies techniczne do optymalizacji dystrybucji treści
+              (CDN). Więcej informacji: <a
+                href="https://www.cloudflare.com/privacypolicy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline">cloudflare.com/privacypolicy</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">9. Zmiany w Polityce Cookies</h2>
+          <p>
+            Zastrzegamy sobie prawo do aktualizacji niniejszej Polityki Cookies w celu odzwierciedlenia zmian w
+            wykorzystywanych technologiach lub przepisach prawnych. O istotnych zmianach poinformujemy użytkowników
+            poprzez:
+          </p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>Komunikat widoczny po zalogowaniu do aplikacji</li>
+            <li>Aktualizację daty "Ostatnia aktualizacja" na górze tego dokumentu</li>
+          </ul>
+          <p class="mt-3">
+            Zalecamy regularne przeglądanie Polityki Cookies w celu zapoznania się z ewentualnymi zmianami.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-semibold mb-3">10. Kontakt</h2>
+          <p>
+            Jeśli masz pytania dotyczące naszej Polityki Cookies lub wykorzystywania plików cookies w aplikacji, możesz
+            skontaktować się z nami:
+          </p>
+          <ul class="list-disc pl-6 space-y-2">
+            <li>
+              <strong>Poprzez GitHub Issues:</strong>
+              <a
+                href="https://github.com/PawelAdamWawrzyniak/10xdevs-project/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline"
+              >
+                github.com/PawelAdamWawrzyniak/10xdevs-project/issues
+              </a>
+            </li>
+            <li>
+              <strong>Więcej informacji o przetwarzaniu danych:</strong>
+              <a href="/privacy-policy" class="text-primary hover:underline">Polityka Prywatności</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="mt-12 p-6 bg-muted/30 rounded-lg border border-border">
+        <p class="text-sm text-muted-foreground">
+          <strong>Podsumowanie:</strong> Używamy tylko niezbędnych cookies do logowania i zapamiętywania preferencji motywu.
+          Nie śledzimy Cię, nie profilujemy, nie pokazujemy reklam. Twoja prywatność jest dla nas priorytetem.
+        </p>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .prose {
+    color: hsl(var(--foreground));
+  }
+
+  .prose h2 {
+    color: hsl(var(--foreground));
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .prose h3 {
+    color: hsl(var(--foreground));
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+
+  .prose ul {
+    margin-bottom: 1rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+  }
+
+  .prose a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .prose a:hover {
+    color: hsl(var(--primary) / 0.8);
+  }
+
+  .prose strong {
+    font-weight: 600;
+    color: hsl(var(--foreground));
+  }
+
+  .prose table {
+    width: 100%;
+    font-size: 0.875rem;
+  }
+
+  .prose th {
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .prose td,
+  .prose th {
+    vertical-align: top;
+  }
+</style>

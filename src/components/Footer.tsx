@@ -25,7 +25,7 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="/privacy-policy#8-pliki-cookies" className="hover:text-foreground transition-colors">
+                <a href="/cookie-policy" className="hover:text-foreground transition-colors">
                   Polityka Cookies
                 </a>
               </li>
