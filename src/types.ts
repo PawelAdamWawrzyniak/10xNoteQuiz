@@ -123,3 +123,48 @@ export interface NoteFormViewModel {
   categoryId: string | null;
   tags: TagDto[];
 }
+
+/** DTO for answering a single question in a quiz. */
+export interface UserAnswerDto {
+  question_id: string;
+  answer: string | null;
+}
+
+/** DTO for the result of a single question. */
+export interface QuestionResultDto {
+  question_id: string;
+  user_answer: string | null;
+  is_correct: boolean;
+  correct_answers_data: {
+    correct_answer_id?: string;
+    acceptable_answers?: string[];
+    correct_value?: boolean;
+  };
+}
+
+/** DTO for the result of a quiz attempt. */
+export interface QuizAttemptResultDto {
+  id: string;
+  quiz_id: string;
+  score_percentage: number;
+  completed_at: string;
+  results: QuestionResultDto[];
+}
+
+/** ViewModel for the state of solving a quiz. */
+export interface QuizSolvingState {
+  currentQuestionIndex: number;
+  userAnswers: Map<string, string | null>;
+  isSubmitting: boolean;
+  result?: QuizAttemptResultDto;
+}
+
+/** DTO for quiz details when solving (with full question data). */
+export interface QuizToSolveDto {
+  id: string;
+  note_id: string;
+  note_title: string;
+  status: "accepted";
+  questions: QuizQuestionDto[];
+  created_at: string;
+}

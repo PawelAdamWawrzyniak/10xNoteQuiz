@@ -1,0 +1,39 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { QuizSolver } from "@/components/QuizSolver";
+import { QuizAttemptService } from "@/lib/services/quiz-attempt.service";
+
+export const prerender = false;
+
+const { quizId } = Astro.params;
+const { user, supabase } = Astro.locals;
+
+// Check authentication
+if (!user) {
+  return Astro.redirect("/auth/login");
+}
+
+// Validate quiz ID
+if (!quizId) {
+  return new Response("Quiz ID is required", { status: 400 });
+}
+
+// Fetch quiz for solving
+const quizAttemptService = new QuizAttemptService(supabase, user.id);
+const quiz = await quizAttemptService.getQuizForSolving(quizId);
+
+if (!quiz) {
+  return new Response("Quiz not found or not accessible", { status: 404 });
+}
+
+// Verify quiz is in accepted status
+if (quiz.status !== "accepted") {
+  return new Response("This quiz cannot be solved yet", { status: 400 });
+}
+---
+
+<Layout title={`Solve Quiz: ${quiz.note_title}`}>
+  <main class="container mx-auto max-w-4xl py-12">
+    <QuizSolver client:load quiz={quiz} />
+  </main>
+</Layout>
