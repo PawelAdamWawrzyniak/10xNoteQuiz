@@ -8,14 +8,12 @@ import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://10xnotequiz.pages.dev",
   output: "server",
   integrations: [react(), sitemap()],
   server: { port: 3000 },
   vite: {
     plugins: [tailwindcss()],
   },
-  adapter: cloudflare({
-    output: "server", // or 'server/hybrid'
-    adapter: cloudflare(),
-  }),
+  adapter: cloudflare(),
 });
