@@ -13,7 +13,9 @@ export const quizSchema = {
     },
     questions: {
       type: "array",
-      description: "Lista pytań w quizie.",
+      description: "Lista pytań w quizie. Powinien zawierać 7-8 pytań: 2 pytania Prawda/Fałsz, 4-5 pytań wielokrotnego wyboru, 1-2 pytania otwarte.",
+      minItems: 7,
+      maxItems: 8,
       items: {
         type: "object",
         properties: {
@@ -29,7 +31,7 @@ export const quizSchema = {
           options: {
             type: "array",
             items: { type: "string" },
-            description: "Lista możliwych odpowiedzi (dla multiple_choice i true_false).",
+            description: "Lista możliwych odpowiedzi (dla multiple_choice i true_false). Dla true_false zawsze ['Prawda', 'Fałsz'], dla multiple_choice dokładnie 4 opcje.",
           },
           correct_answer: {
             type: "string",
