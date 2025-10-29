@@ -5,6 +5,7 @@
 ### Problem It Solves
 
 When running E2E tests that create users via normal registration flow:
+
 - ❌ Supabase sends confirmation emails
 - ❌ Email rate limits (3-4 per hour on free tier)
 - ❌ Tests fail in CI with "rate limit exceeded"
@@ -15,20 +16,25 @@ When running E2E tests that create users via normal registration flow:
 We provide **two approaches** for using Supabase Admin API to create test users:
 
 #### Approach A: Fixture-Based (Automatic) - `auth.fixture.ts`
+
 **Best for:** Tests needing authenticated users automatically
+
 - ✅ Fully automatic user creation and cleanup
 - ✅ Session automatically set in browser
 - ✅ Zero boilerplate code
 - ✅ Perfect for authenticated user flows
 
 #### Approach B: Page Object-Based (Manual Control) - `RegisterByAuthPage`
+
 **Best for:** Tests needing precise control over user creation timing
+
 - ✅ Create users exactly when needed
 - ✅ Test duplicate email scenarios
 - ✅ Test registration validation logic
 - ✅ More flexible for complex test scenarios
 
 Both approaches:
+
 - ✅ No emails sent (no rate limits)
 - ✅ Auto-confirm emails
 - ✅ Fast and reliable
@@ -36,6 +42,7 @@ Both approaches:
 ### Setup
 
 1. **Install dotenv (if not already installed):**
+
    ```bash
    npm install --save-dev dotenv
    ```
@@ -51,6 +58,7 @@ Both approaches:
    - Service role key: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU`
 
 3. **Add to local `.env`:**
+
    ```bash
    SUPABASE_URL=your_supabase_url
    SUPABASE_KEY=your_anon_key
@@ -75,8 +83,8 @@ import { test, expect } from "../../fixtures/auth.fixture";
 
 test("my test", async ({ authenticatedUser, page }) => {
   // User is already created and authenticated
-  console.log(authenticatedUser.id);       // User ID
-  console.log(authenticatedUser.email);    // test-123456789@mailinator.com
+  console.log(authenticatedUser.id); // User ID
+  console.log(authenticatedUser.email); // test-123456789@mailinator.com
   console.log(authenticatedUser.password); // TestPassword123!
 
   // Use the user in your test
@@ -208,6 +216,7 @@ test("registration UI test", async ({ page }) => {
 ### Migration Guide
 
 #### Before (Old Approach - Hit Rate Limits):
+
 ```typescript
 import { test, expect } from "@playwright/test";
 import { generateUniqueUser } from "../../fixtures/users";
@@ -224,6 +233,7 @@ test("my test", async ({ page }) => {
 ```
 
 #### After - Approach A (For Authenticated Flows):
+
 ```typescript
 import { test, expect } from "../../fixtures/auth.fixture";
 
@@ -235,6 +245,7 @@ test("my test", async ({ authenticatedUser, page }) => {
 ```
 
 #### After - Approach B (For Testing Registration Logic):
+
 ```typescript
 import { test, expect } from "@playwright/test";
 import { RegisterByAuthPage } from "../../page-objects/auth/register-by-auth.page";
@@ -259,19 +270,20 @@ test("duplicate email test", async ({ page }) => {
 
 ### Benefits
 
-| Old Approach (Manual Registration) | Approach A (Fixture) | Approach B (Page Object) |
-|-----------------------------------|----------------------|--------------------------|
-| ❌ Sends emails | ✅ No emails | ✅ No emails |
-| ❌ Rate limits | ✅ No rate limits | ✅ No rate limits |
-| ❌ Slow (email delays) | ✅ Fast (instant) | ✅ Fast (instant) |
-| ❌ Manual cleanup | ✅ Auto cleanup | ⚠️ Manual cleanup (in afterEach) |
-| ❌ CI failures | ✅ Reliable in CI | ✅ Reliable in CI |
-| ❌ Extra boilerplate | ✅ Zero boilerplate | ⚠️ Some boilerplate needed |
-| ✅ Full UI testing | ⚠️ User pre-authenticated | ✅ Flexible timing control |
+| Old Approach (Manual Registration) | Approach A (Fixture)      | Approach B (Page Object)         |
+| ---------------------------------- | ------------------------- | -------------------------------- |
+| ❌ Sends emails                    | ✅ No emails              | ✅ No emails                     |
+| ❌ Rate limits                     | ✅ No rate limits         | ✅ No rate limits                |
+| ❌ Slow (email delays)             | ✅ Fast (instant)         | ✅ Fast (instant)                |
+| ❌ Manual cleanup                  | ✅ Auto cleanup           | ⚠️ Manual cleanup (in afterEach) |
+| ❌ CI failures                     | ✅ Reliable in CI         | ✅ Reliable in CI                |
+| ❌ Extra boilerplate               | ✅ Zero boilerplate       | ⚠️ Some boilerplate needed       |
+| ✅ Full UI testing                 | ⚠️ User pre-authenticated | ✅ Flexible timing control       |
 
 ### Security Notes
 
 ⚠️ **Service Role Key Security:**
+
 - Never commit service role key to git
 - Only use in tests (never in production code)
 - Store in environment variables
@@ -281,30 +293,33 @@ test("duplicate email test", async ({ page }) => {
 ### Troubleshooting
 
 **Error: "Missing SUPABASE_SERVICE_ROLE_KEY"**
+
 - Solution: Add the key to `.env.test` locally and GitHub Secrets for CI
 
 **Error: "Failed to create test user"**
+
 - Check that service role key is correct
 - Verify Supabase project is accessible
 - Check network connectivity
 
 **Users not cleaned up after tests**
+
 - The fixture has automatic cleanup in `finally` block
 - If tests crash, some users might remain
 - Manually delete from Supabase Dashboard → Authentication → Users
 
 ### When to Use Which Approach
 
-| Use Case | Recommended Approach | Reason |
-|----------|---------------------|---------|
-| Testing authenticated user flows | ✅ **Approach A** (`auth.fixture.ts`) | Automatic authentication, zero boilerplate |
-| Testing dashboard/protected routes | ✅ **Approach A** (`auth.fixture.ts`) | User session already set |
-| Testing user-specific features | ✅ **Approach A** (`auth.fixture.ts`) | Clean, simple, automatic cleanup |
-| Testing duplicate email detection | ✅ **Approach B** (`RegisterByAuthPage`) | Need to create user first, then test UI |
-| Testing registration validation | ✅ **Approach B** (`RegisterByAuthPage`) | Need precise control over timing |
-| Testing login flow | ✅ **Approach B** (`RegisterByAuthPage`) | Create user via Admin, then test login UI |
-| Testing complete registration UI flow | ⚠️ **Neither** (Manual registration) | Test the full user journey including success messages |
-| Load testing (many users) | ✅ **Approach A** (`auth.fixture.ts`) | Fastest, most efficient |
+| Use Case                              | Recommended Approach                     | Reason                                                |
+| ------------------------------------- | ---------------------------------------- | ----------------------------------------------------- |
+| Testing authenticated user flows      | ✅ **Approach A** (`auth.fixture.ts`)    | Automatic authentication, zero boilerplate            |
+| Testing dashboard/protected routes    | ✅ **Approach A** (`auth.fixture.ts`)    | User session already set                              |
+| Testing user-specific features        | ✅ **Approach A** (`auth.fixture.ts`)    | Clean, simple, automatic cleanup                      |
+| Testing duplicate email detection     | ✅ **Approach B** (`RegisterByAuthPage`) | Need to create user first, then test UI               |
+| Testing registration validation       | ✅ **Approach B** (`RegisterByAuthPage`) | Need precise control over timing                      |
+| Testing login flow                    | ✅ **Approach B** (`RegisterByAuthPage`) | Create user via Admin, then test login UI             |
+| Testing complete registration UI flow | ⚠️ **Neither** (Manual registration)     | Test the full user journey including success messages |
+| Load testing (many users)             | ✅ **Approach A** (`auth.fixture.ts`)    | Fastest, most efficient                               |
 
 ### Complete Test File Examples
 
