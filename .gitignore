@@ -27,3 +27,6 @@ pnpm-debug.log*
 # playwright files
 /playwright-report/*
 /test-results/*
+
+#wrangler
+wrangler.toml
