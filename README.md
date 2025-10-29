@@ -3,6 +3,12 @@
 [![Project Status: In Development](https://img.shields.io/badge/status-in%20development-yellowgreen.svg)](https://github.com/PawelAdamWawrzyniak/10xdevs-project)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
+## 🚀 Live Demo
+
+The application is automatically deployed to Cloudflare Pages on every push to the master branch.
+
+so you can check the latest version here: [https://10xnotequiz.pages.dev/](https://10xnotequiz.pages.dev/)
+
 ## 1. Project Description
 
 **10xNoteQuiz** is a web application designed to enhance the learning process for students and lifelong learners. It empowers users to create notes in Markdown and then leverages Artificial Intelligence to automatically generate personalized quizzes from them. The application integrates a Spaced Repetition System (SRS) to optimize memory retention, making studying more efficient and effective.
@@ -39,7 +45,7 @@ The project is built with a modern, robust, and scalable tech stack:
 
 - **CI/CD & Hosting**:
   - [GitHub Actions](https://github.com/features/actions): For continuous integration and deployment pipelines.
-  - [DigitalOcean](https://www.digitalocean.com/): For hosting the application via a Docker image.
+  - [Cloudflare Pages](https://pages.cloudflare.com/): For hosting the application with automatic deployments from the master branch.
 
 ## 4. Getting Started Locally
 
