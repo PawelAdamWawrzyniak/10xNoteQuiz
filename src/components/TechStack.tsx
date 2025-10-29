@@ -8,7 +8,6 @@ const technologies = [
   { name: "Shadcn/ui", category: "Components" },
   { name: "Supabase", category: "Backend" },
   { name: "OpenRouter", category: "AI Gateway" },
-  { name: "PostgreSQL", category: "Database" },
 ];
 
 export const TechStack = () => {

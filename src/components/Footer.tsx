@@ -19,29 +19,23 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold">Produkt</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Funkcje</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Dokumentacja</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Cennik</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">Polityka Prywatności</a></li>
+              <li><a href="#" className="hover:text-foreground transition-colors">Polityka Cookies</a></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Kontakt</h4>
+            <h4 className="font-semibold">Github</h4>
             <div className="flex gap-4">
-              <a 
-                href="#" 
+              <a
+                href="https://github.com/PawelAdamWawrzyniak/10xdevs-project"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-lg bg-muted p-2 hover:bg-primary/10 transition-colors"
                 aria-label="GitHub"
               >
                 <Github className="h-5 w-5" />
-              </a>
-              <a 
-                href="#" 
-                className="inline-flex items-center justify-center rounded-lg bg-muted p-2 hover:bg-primary/10 transition-colors"
-                aria-label="Email"
-              >
-                <Mail className="h-5 w-5" />
               </a>
             </div>
           </div>

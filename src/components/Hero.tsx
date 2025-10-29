@@ -76,12 +76,12 @@ export const Hero = () => {
               variant="default"
               size="lg"
               className="group text-base"
+              asChild
             >
-              Zacznij za darmo
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button variant="outline" size="lg" className="text-base">
-              Zobacz demo
+              <a href="/auth/login">
+                Zacznij za darmo
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </a>
             </Button>
           </div>
 
