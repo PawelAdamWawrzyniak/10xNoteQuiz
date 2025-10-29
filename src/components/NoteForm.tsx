@@ -88,7 +88,16 @@ export function NoteForm({ initialData, onSubmit, onCancel, isSubmitting, mode }
 
       {/* Action Buttons */}
       <div className="flex gap-4 justify-end">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onCancel();
+          }}
+          disabled={isSubmitting}
+        >
           Anuluj
         </Button>
         <Button type="submit" disabled={isSubmitting}>

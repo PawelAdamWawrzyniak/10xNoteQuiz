@@ -32,7 +32,8 @@ export function NoteEditorView({ mode, noteId }: NoteEditorViewProps) {
   };
 
   const handleCancel = () => {
-    window.location.href = "/notes";
+    // Ensure navigation works by using window.location.assign
+    window.location.assign("/notes");
   };
 
   // Loading state for edit mode
