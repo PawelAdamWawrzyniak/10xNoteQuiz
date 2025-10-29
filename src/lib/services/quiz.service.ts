@@ -55,12 +55,17 @@ export class QuizGenerationService {
       const rawResponse = await this.openRouterService.getChatCompletion<any>({
         model: "google/gemini-2.5-flash-lite",
         // model: "google/gemini-2.5-flash-preview-09-2025",
-        systemPrompt: `Jesteś asystentem tworzącym quizy edukacyjne. 
-Twoim zadaniem jest wygenerowanie quizu składającego się z 3 pytań na podstawie dostarczonej notatki.
+        systemPrompt: `Jesteś asystentem tworzącym quizy edukacyjne.
+Twoim zadaniem jest wygenerowanie quizu na podstawie dostarczonej notatki.
+
+STRUKTURA QUIZU:
+- 2 pytania Prawda/Fałsz (true_false)
+- 4-5 pytań zamkniętych wielokrotnego wyboru (multiple_choice)
+- 1-2 pytania otwarte z krótką odpowiedzią tekstową (short_answer)
 
 WYMAGANIA:
 - Wygeneruj tytuł quizu (pole "title") - krótki, opisowy tytuł bazujący na temacie notatki
-- Generuj dokładnie 3 pytania różnego typu
+- Generuj łącznie 7-8 pytań zgodnie ze strukturą powyżej
 - Typy pytań: "true_false", "multiple_choice", "short_answer"
 - Dla pytań "true_false": podaj opcje ["Prawda", "Fałsz"]
 - Dla pytań "multiple_choice": podaj 4 opcje odpowiedzi
@@ -77,7 +82,7 @@ ${JSON.stringify(quizSchema, null, 2)}`,
 Treść notatki:
 ${note.content}
 
-Wygeneruj quiz z 3 pytaniami testującymi zrozumienie tej notatki.`,
+Wygeneruj quiz testujący zrozumienie tej notatki zgodnie ze strukturą: 2 pytania Prawda/Fałsz, 4-5 pytań wielokrotnego wyboru, 1-2 pytania otwarte.`,
         responseSchema: {
           name: "create_quiz",
           schema: quizSchema,
