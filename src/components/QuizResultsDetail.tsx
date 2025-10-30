@@ -41,32 +41,35 @@ export function QuizResultsDetail({ question, result, questionNumber }: QuizResu
   );
 }
 
-function formatUserAnswer(question: QuizQuestionDto, userAnswer: string | null): string {
+function formatUserAnswer(question: QuizQuestionDto, userAnswer: string | string[] | null): string {
   if (!userAnswer) return "No answer provided";
 
   if (question.type === "multiple_choice") {
-    const answer = question.answers?.find((a) => a.id === userAnswer);
-    return answer?.content || "Unknown answer";
+    const answerIds = Array.isArray(userAnswer) ? userAnswer : [userAnswer];
+    const selectedAnswers = question.answers?.filter((a) => answerIds.includes(a.id)) || [];
+    return selectedAnswers.map((a) => a.content).join(", ") || "Unknown answer";
   }
 
   if (question.type === "true_false") {
     return userAnswer === "true" ? "Prawda" : "Fałsz";
   }
 
-  return userAnswer;
+  return userAnswer as string;
 }
 
 function formatCorrectAnswer(
   question: QuizQuestionDto,
   correctData: {
     correct_answer_id?: string;
+    correct_answer_ids?: string[];
     acceptable_answers?: string[];
     correct_value?: boolean;
   }
 ): string {
-  if (question.type === "multiple_choice" && correctData.correct_answer_id) {
-    const answer = question.answers?.find((a) => a.id === correctData.correct_answer_id);
-    return answer?.content || "Unknown answer";
+  if (question.type === "multiple_choice" && correctData.correct_answer_ids) {
+    const correctAnswerIds = Array.isArray(correctData.correct_answer_ids) ? correctData.correct_answer_ids : [];
+    const correctAnswers = question.answers?.filter((a) => correctAnswerIds.includes(a.id)) || [];
+    return correctAnswers.map((a) => a.content).join(", ") || "Unknown answer";
   }
 
   if (question.type === "true_false") {

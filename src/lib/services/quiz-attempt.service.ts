@@ -137,8 +137,19 @@ export class QuizAttemptService {
         }
 
         case "multiple_choice": {
-          const correctAnswerId = correctData.correct_answer_id as string;
-          isCorrect = userAnswerValue === correctAnswerId;
+          const correctAnswerIds = (correctData.correct_answer_ids as string[] | undefined) || [];
+          const userAnswerIds = Array.isArray(userAnswerValue)
+            ? userAnswerValue
+            : userAnswerValue
+              ? [userAnswerValue]
+              : [];
+
+          // Sprawdź czy użytkownik zaznaczył dokładnie te same odpowiedzi
+          const sortedCorrect = [...correctAnswerIds].sort();
+          const sortedUser = [...userAnswerIds].sort();
+
+          isCorrect =
+            sortedCorrect.length === sortedUser.length && sortedCorrect.every((id, index) => id === sortedUser[index]);
           break;
         }
 
@@ -146,7 +157,7 @@ export class QuizAttemptService {
           const acceptableAnswers = correctData.correct_answers as string[];
           const caseSensitive = (correctData.case_sensitive as boolean) || false;
 
-          if (userAnswerValue) {
+          if (userAnswerValue && typeof userAnswerValue === "string") {
             isCorrect = acceptableAnswers.some((acceptable) => {
               if (caseSensitive) {
                 return userAnswerValue.trim() === acceptable.trim();
@@ -167,8 +178,8 @@ export class QuizAttemptService {
         user_answer: userAnswerValue,
         is_correct: isCorrect,
         correct_answers_data: {
-          correct_answer_id:
-            question.type === "multiple_choice" ? (correctData.correct_answer_id as string) : undefined,
+          correct_answer_ids:
+            question.type === "multiple_choice" ? (correctData.correct_answer_ids as string[]) : undefined,
           acceptable_answers: question.type === "short_answer" ? (correctData.correct_answers as string[]) : undefined,
           correct_value: question.type === "true_false" ? (correctData.correct_answer as boolean) : undefined,
         },

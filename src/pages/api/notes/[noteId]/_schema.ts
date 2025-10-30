@@ -1,5 +1,3 @@
-import type { JSONSchema } from "@/types";
-
 /**
  * JSON Schema for quiz generation response.
  * Defines the expected structure of a quiz created by the AI model.
@@ -36,8 +34,9 @@ export const quizSchema = {
               "Lista możliwych odpowiedzi (dla multiple_choice i true_false). Dla true_false zawsze ['Prawda', 'Fałsz'], dla multiple_choice dokładnie 4 opcje.",
           },
           correct_answer: {
-            type: "string",
-            description: "Poprawna odpowiedź.",
+            oneOf: [{ type: "string" }, { type: "array", items: { type: "string" } }],
+            description:
+              "Poprawna odpowiedź - string dla true_false/short_answer, tablica stringów dla multiple_choice (może być więcej niż jedna poprawna odpowiedź).",
           },
         },
         required: ["type", "question_text", "correct_answer"],
@@ -45,4 +44,4 @@ export const quizSchema = {
     },
   },
   required: ["title", "questions"],
-} as const satisfies JSONSchema;
+} as const;

@@ -12,7 +12,7 @@ const SubmitQuizBody = z.object({
   answers: z.array(
     z.object({
       question_id: z.string().uuid(),
-      answer: z.string().nullable(),
+      answer: z.union([z.string(), z.array(z.string()), z.null()]),
     })
   ),
 });

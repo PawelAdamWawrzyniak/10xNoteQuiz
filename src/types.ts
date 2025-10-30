@@ -60,7 +60,7 @@ export interface QuizQuestionDto {
   content: string;
   question_order: number;
   answers?: QuizAnswerDto[];
-  correct_answer?: string;
+  correct_answer?: string | string[]; // string[] dla multiple_choice z wieloma poprawnymi odpowiedziami
 }
 
 /** DTO for the quiz generation API response. */
@@ -84,12 +84,13 @@ export type QuizGenerationState =
 
 /** JSON Schema type for OpenRouter response schemas. */
 export interface JSONSchema {
-  type: string;
+  type?: string;
   properties?: Record<string, JSONSchema>;
   required?: string[];
   items?: JSONSchema;
   description?: string;
   enum?: string[];
+  oneOf?: JSONSchema[];
   [key: string]: unknown;
 }
 
@@ -127,16 +128,17 @@ export interface NoteFormViewModel {
 /** DTO for answering a single question in a quiz. */
 export interface UserAnswerDto {
   question_id: string;
-  answer: string | null;
+  answer: string | string[] | null; // string dla short_answer/true_false, string[] dla multiple_choice
 }
 
 /** DTO for the result of a single question. */
 export interface QuestionResultDto {
   question_id: string;
-  user_answer: string | null;
+  user_answer: string | string[] | null;
   is_correct: boolean;
   correct_answers_data: {
     correct_answer_id?: string;
+    correct_answer_ids?: string[]; // Zmiana z singular na plural dla multiple choice
     acceptable_answers?: string[];
     correct_value?: boolean;
   };
@@ -154,7 +156,7 @@ export interface QuizAttemptResultDto {
 /** ViewModel for the state of solving a quiz. */
 export interface QuizSolvingState {
   currentQuestionIndex: number;
-  userAnswers: Map<string, string | null>;
+  userAnswers: Map<string, string | string[] | null>; // Obsługa tablic dla multiple choice
   isSubmitting: boolean;
   result?: QuizAttemptResultDto;
 }

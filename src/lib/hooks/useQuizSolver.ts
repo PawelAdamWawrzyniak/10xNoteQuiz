@@ -3,7 +3,7 @@ import type { QuizToSolveDto, QuizSolvingState, UserAnswerDto, QuizAttemptResult
 
 interface UseQuizSolverReturn {
   state: QuizSolvingState;
-  answerQuestion: (questionId: string, answer: string | null) => void;
+  answerQuestion: (questionId: string, answer: string | string[] | null) => void;
   goToNextQuestion: () => void;
   goToPreviousQuestion: () => void;
   goToQuestion: (index: number) => void;
@@ -18,7 +18,7 @@ export function useQuizSolver(quiz: QuizToSolveDto): UseQuizSolverReturn {
     isSubmitting: false,
   });
 
-  const answerQuestion = (questionId: string, answer: string | null) => {
+  const answerQuestion = (questionId: string, answer: string | string[] | null) => {
     setState((prev) => {
       const newAnswers = new Map(prev.userAnswers);
       newAnswers.set(questionId, answer);
