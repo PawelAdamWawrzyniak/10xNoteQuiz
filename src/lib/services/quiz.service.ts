@@ -14,7 +14,7 @@ interface AIQuizResponse {
     type: "true_false" | "multiple_choice" | "short_answer";
     question_text: string;
     options?: string[];
-    correct_answer: string;
+    correct_answer: string | string[]; // string[] dla multiple_choice
   }[];
 }
 
@@ -67,16 +67,21 @@ WYMAGANIA:
 - Wygeneruj tytuł quizu (pole "title") - krótki, opisowy tytuł bazujący na temacie notatki
 - Generuj łącznie 7-8 pytań zgodnie ze strukturą powyżej
 - Typy pytań: "true_false", "multiple_choice", "short_answer"
-- Dla pytań "true_false": podaj opcje ["Prawda", "Fałsz"]
-- Dla pytań "multiple_choice": podaj 4 opcje odpowiedzi
-- Dla pytań "short_answer": nie podawaj opcji (options może być puste lub pominięte)
+- Dla pytań "true_false":
+  * Podaj opcje ["Prawda", "Fałsz"]
+  * W polu correct_answer podaj string: "Prawda" lub "Fałsz"
+- Dla pytań "multiple_choice":
+  * Podaj 4 opcje odpowiedzi
+  * Może być 1 lub więcej poprawnych odpowiedzi (zalecane: 2-3 poprawne z 4 opcji)
+  * W polu correct_answer podaj TABLICĘ wszystkich poprawnych odpowiedzi (np. ["opcja1", "opcja2"])
+  * Każda poprawna odpowiedź musi być dokładnie taka jak jedna z opcji
+- Dla pytań "short_answer":
+  * Nie podawaj opcji (options może być puste lub pominięte)
+  * W polu correct_answer podaj string z przykładową poprawną odpowiedzią
 - Pytania powinny testować zrozumienie kluczowych konceptów z notatki
 - Pytania powinny być konkretne i jednoznaczne
-- Poprawna odpowiedź (correct_answer) musi być dokładnie taka jak jedna z opcji
 
-Odpowiadaj TYLKO w formacie JSON zgodnym z dostarczonym schematem:
-
-${JSON.stringify(quizSchema, null, 2)}`,
+Odpowiadaj TYLKO w formacie JSON.`,
         userPrompt: `Tytuł notatki: "${note.title}"
 
 Treść notatki:
@@ -138,10 +143,13 @@ Wygeneruj quiz testujący zrozumienie tej notatki zgodnie ze strukturą: 2 pytan
           // Short answer questions don't have predefined answers
           answers = undefined;
         } else if (q.options && q.options.length > 0) {
+          // Handle both single string and array of correct answers
+          const correctAnswersArray = Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer];
+
           answers = q.options.map((option) => ({
             id: generateUUID(),
             content: option,
-            is_correct: option === q.correct_answer,
+            is_correct: correctAnswersArray.includes(option),
           }));
         } else {
           answers = undefined;
@@ -241,26 +249,32 @@ Wygeneruj quiz testujący zrozumienie tej notatki zgodnie ze strukturą: 2 pytan
   private buildCorrectAnswersData(question: QuizQuestionDto): Record<string, unknown> {
     switch (question.type) {
       case "true_false": {
+        const answer = Array.isArray(question.correct_answer) ? question.correct_answer[0] : question.correct_answer;
         return {
           type: "true_false",
-          correct_answer: question.correct_answer === "Prawda" || question.correct_answer === "True",
+          correct_answer: answer === "Prawda" || answer === "True",
         };
       }
 
       case "multiple_choice": {
-        // Find the correct answer ID from the answers array
-        const correctAnswer = question.answers?.find((answer) => answer.is_correct);
+        // Find all correct answer IDs from the answers array
+        const correctAnswers = question.answers?.filter((answer) => answer.is_correct) || [];
         return {
           type: "multiple_choice",
-          correct_answer_id: correctAnswer?.id || null,
-          correct_answer_text: question.correct_answer,
+          correct_answer_ids: correctAnswers.map((a) => a.id), // Tablica ID
+          correct_answer_texts: Array.isArray(question.correct_answer)
+            ? question.correct_answer
+            : [question.correct_answer],
         };
       }
 
       case "short_answer": {
+        const correctAnswerArray = Array.isArray(question.correct_answer)
+          ? question.correct_answer
+          : [question.correct_answer as string];
         return {
           type: "short_answer",
-          correct_answers: [question.correct_answer],
+          correct_answers: correctAnswerArray,
           // For short answers, we might want to accept variations
           case_sensitive: false,
         };

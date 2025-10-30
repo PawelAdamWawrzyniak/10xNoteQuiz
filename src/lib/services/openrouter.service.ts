@@ -104,7 +104,7 @@ export class OpenRouterService {
         type: "json_schema",
         json_schema: {
           name: options.responseSchema.name,
-          strict: true,
+          strict: false, // Allow flexible schema for multiple correct_answer formats
           schema: options.responseSchema.schema,
         },
       };
@@ -316,7 +316,7 @@ export class OpenRouterService {
           }
         }
       }
-    } else if (schema.type !== typeof data) {
+    } else if (schema.type && schema.type !== typeof data) {
       throw new Error(`Expected type ${schema.type}, got ${typeof data}`);
     }
   }
@@ -331,6 +331,30 @@ export class OpenRouterService {
    */
   private validateFieldType(value: unknown, schema: JSONSchema, fieldName: string): void {
     const actualType = Array.isArray(value) ? "array" : typeof value;
+
+    // Handle oneOf validation (union types)
+    if (schema.oneOf && Array.isArray(schema.oneOf)) {
+      let isValid = false;
+      for (const subSchema of schema.oneOf) {
+        try {
+          this.validateFieldType(value, subSchema as JSONSchema, fieldName);
+          isValid = true;
+          break;
+        } catch {
+          // Try next schema
+        }
+      }
+      if (!isValid) {
+        const allowedTypes = schema.oneOf.map((s) => (s as JSONSchema).type).join(" or ");
+        throw new Error(`Field ${fieldName}: expected ${allowedTypes}, got ${actualType}`);
+      }
+      return;
+    }
+
+    // If no type is specified, skip validation
+    if (!schema.type) {
+      return;
+    }
 
     if (schema.type === "array") {
       if (!Array.isArray(value)) {

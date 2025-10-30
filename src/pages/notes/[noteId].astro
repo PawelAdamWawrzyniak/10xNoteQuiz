@@ -28,6 +28,16 @@ const userData = {
   hasUserApiKey: false,
   freeQuizzesRemaining: 5,
 };
+
+// Check if there's an accepted quiz for this note
+const { data: acceptedQuiz } = await supabase
+  .from("quizzes")
+  .select("id")
+  .eq("note_id", noteId)
+  .eq("status", "accepted")
+  .order("created_at", { ascending: false })
+  .limit(1)
+  .single();
 ---
 
 <Layout title={`Note: ${note.title}`}>
@@ -73,12 +83,24 @@ const userData = {
 
     <div class="mt-10 border-t pt-8">
       <h2 class="text-2xl font-bold mb-4">Actions</h2>
-      <QuizGenerationController
-        client:idle
-        noteId={note.id}
-        hasUserApiKey={userData.hasUserApiKey}
-        freeQuizzesRemaining={userData.freeQuizzesRemaining}
-      />
+      <div class="flex gap-4">
+        <QuizGenerationController
+          client:idle
+          noteId={note.id}
+          hasUserApiKey={userData.hasUserApiKey}
+          freeQuizzesRemaining={userData.freeQuizzesRemaining}
+        />
+        {
+          acceptedQuiz && (
+            <a
+              href={`/quizzes/${acceptedQuiz.id}/solve`}
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+            >
+              Solve Quiz
+            </a>
+          )
+        }
+      </div>
     </div>
   </main>
 </Layout>

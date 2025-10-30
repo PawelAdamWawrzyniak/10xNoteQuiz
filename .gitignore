@@ -30,3 +30,6 @@ pnpm-debug.log*
 
 #wrangler
 wrangler.toml
+
+#claude files
+.clauderc
