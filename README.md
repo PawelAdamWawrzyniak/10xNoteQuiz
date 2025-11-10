@@ -7,7 +7,16 @@
 
 The application is automatically deployed to Cloudflare Pages on every push to the master branch.
 
-so you can check the latest version here: [https://10xnotequiz.pages.dev/](https://10xnotequiz.pages.dev/)
+You can check the latest version here: [https://10xnotequiz.pages.dev/](https://10xnotequiz.pages.dev/)
+
+### Demo User Account
+
+To explore the application without creating your own account, you can use the demo user credentials:
+
+- **Email:** `10xdevs@mailinator.com`
+- **Password:** `10Xdevs!`
+
+The demo account comes pre-populated with sample notes covering topics like Git, Playwright, React, Supabase, and Domain-Driven Design concepts.
 
 ## 1. Project Description
 

@@ -216,103 +216,103 @@ for each row execute procedure public.handle_updated_at();
 -- section: row level security (rls)
 -- description: enabling rls and defining policies for all tables.
 
--- rls for public.profiles
--- alter table public.profiles enable row level security;
--- create policy "allow authenticated users to select own profile" on public.profiles for select to authenticated using (auth.uid() = id);
--- create policy "allow authenticated users to insert own profile" on public.profiles for insert to authenticated with check (auth.uid() = id);
--- create policy "allow authenticated users to update own profile" on public.profiles for update to authenticated using (auth.uid() = id);
--- create policy "allow authenticated users to delete own profile" on public.profiles for delete to authenticated using (auth.uid() = id);
--- create policy "disallow anon users to select profiles" on public.profiles for select to anon using (false);
--- create policy "disallow anon users to insert profiles" on public.profiles for insert to anon with check (false);
--- create policy "disallow anon users to update profiles" on public.profiles for update to anon using (false);
--- create policy "disallow anon users to delete profiles" on public.profiles for delete to anon using (false);
+rls for public.profiles
+alter table public.profiles enable row level security;
+create policy "allow authenticated users to select own profile" on public.profiles for select to authenticated using (auth.uid() = id);
+create policy "allow authenticated users to insert own profile" on public.profiles for insert to authenticated with check (auth.uid() = id);
+create policy "allow authenticated users to update own profile" on public.profiles for update to authenticated using (auth.uid() = id);
+create policy "allow authenticated users to delete own profile" on public.profiles for delete to authenticated using (auth.uid() = id);
+create policy "disallow anon users to select profiles" on public.profiles for select to anon using (false);
+create policy "disallow anon users to insert profiles" on public.profiles for insert to anon with check (false);
+create policy "disallow anon users to update profiles" on public.profiles for update to anon using (false);
+create policy "disallow anon users to delete profiles" on public.profiles for delete to anon using (false);
 
--- -- rls for public.categories
--- alter table public.categories enable row level security;
--- create policy "allow authenticated users to select own categories" on public.categories for select to authenticated using (auth.uid() = user_id);
--- create policy "allow authenticated users to insert own categories" on public.categories for insert to authenticated with check (auth.uid() = user_id);
--- create policy "allow authenticated users to update own categories" on public.categories for update to authenticated using (auth.uid() = user_id);
--- create policy "allow authenticated users to delete own categories" on public.categories for delete to authenticated using (auth.uid() = user_id);
--- create policy "disallow anon users to select categories" on public.categories for select to anon using (false);
--- create policy "disallow anon users to insert categories" on public.categories for insert to anon with check (false);
--- create policy "disallow anon users to update categories" on public.categories for update to anon using (false);
--- create policy "disallow anon users to delete categories" on public.categories for delete to anon using (false);
+-- rls for public.categories
+alter table public.categories enable row level security;
+create policy "allow authenticated users to select own categories" on public.categories for select to authenticated using (auth.uid() = user_id);
+create policy "allow authenticated users to insert own categories" on public.categories for insert to authenticated with check (auth.uid() = user_id);
+create policy "allow authenticated users to update own categories" on public.categories for update to authenticated using (auth.uid() = user_id);
+create policy "allow authenticated users to delete own categories" on public.categories for delete to authenticated using (auth.uid() = user_id);
+create policy "disallow anon users to select categories" on public.categories for select to anon using (false);
+create policy "disallow anon users to insert categories" on public.categories for insert to anon with check (false);
+create policy "disallow anon users to update categories" on public.categories for update to anon using (false);
+create policy "disallow anon users to delete categories" on public.categories for delete to anon using (false);
 
--- -- rls for public.tags
--- alter table public.tags enable row level security;
--- create policy "allow authenticated users to select own tags" on public.tags for select to authenticated using (auth.uid() = user_id);
--- create policy "allow authenticated users to insert own tags" on public.tags for insert to authenticated with check (auth.uid() = user_id);
--- create policy "allow authenticated users to update own tags" on public.tags for update to authenticated using (auth.uid() = user_id);
--- create policy "allow authenticated users to delete own tags" on public.tags for delete to authenticated using (auth.uid() = user_id);
--- create policy "disallow anon users to select tags" on public.tags for select to anon using (false);
--- create policy "disallow anon users to insert tags" on public.tags for insert to anon with check (false);
--- create policy "disallow anon users to update tags" on public.tags for update to anon using (false);
--- create policy "disallow anon users to delete tags" on public.tags for delete to anon using (false);
+-- rls for public.tags
+alter table public.tags enable row level security;
+create policy "allow authenticated users to select own tags" on public.tags for select to authenticated using (auth.uid() = user_id);
+create policy "allow authenticated users to insert own tags" on public.tags for insert to authenticated with check (auth.uid() = user_id);
+create policy "allow authenticated users to update own tags" on public.tags for update to authenticated using (auth.uid() = user_id);
+create policy "allow authenticated users to delete own tags" on public.tags for delete to authenticated using (auth.uid() = user_id);
+create policy "disallow anon users to select tags" on public.tags for select to anon using (false);
+create policy "disallow anon users to insert tags" on public.tags for insert to anon with check (false);
+create policy "disallow anon users to update tags" on public.tags for update to anon using (false);
+create policy "disallow anon users to delete tags" on public.tags for delete to anon using (false);
 
--- -- rls for public.notes
--- alter table public.notes enable row level security;
--- create policy "allow authenticated users to select own notes" on public.notes for select to authenticated using (auth.uid() = user_id);
--- create policy "allow authenticated users to insert own notes" on public.notes for insert to authenticated with check (auth.uid() = user_id);
--- create policy "allow authenticated users to update own notes" on public.notes for update to authenticated using (auth.uid() = user_id);
--- create policy "allow authenticated users to delete own notes" on public.notes for delete to authenticated using (auth.uid() = user_id);
--- create policy "disallow anon users to select notes" on public.notes for select to anon using (false);
--- create policy "disallow anon users to insert notes" on public.notes for insert to anon with check (false);
--- create policy "disallow anon users to update notes" on public.notes for update to anon using (false);
--- create policy "disallow anon users to delete notes" on public.notes for delete to anon using (false);
+-- rls for public.notes
+alter table public.notes enable row level security;
+create policy "allow authenticated users to select own notes" on public.notes for select to authenticated using (auth.uid() = user_id);
+create policy "allow authenticated users to insert own notes" on public.notes for insert to authenticated with check (auth.uid() = user_id);
+create policy "allow authenticated users to update own notes" on public.notes for update to authenticated using (auth.uid() = user_id);
+create policy "allow authenticated users to delete own notes" on public.notes for delete to authenticated using (auth.uid() = user_id);
+create policy "disallow anon users to select notes" on public.notes for select to anon using (false);
+create policy "disallow anon users to insert notes" on public.notes for insert to anon with check (false);
+create policy "disallow anon users to update notes" on public.notes for update to anon using (false);
+create policy "disallow anon users to delete notes" on public.notes for delete to anon using (false);
 
--- -- rls for public.note_tags
--- alter table public.note_tags enable row level security;
--- create policy "allow authenticated users to select own note_tags" on public.note_tags for select to authenticated using (exists (select 1 from notes where notes.id = note_tags.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to insert own note_tags" on public.note_tags for insert to authenticated with check (exists (select 1 from notes where notes.id = note_tags.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to delete own note_tags" on public.note_tags for delete to authenticated using (exists (select 1 from notes where notes.id = note_tags.note_id and notes.user_id = auth.uid()));
--- -- note: update is not applicable for join table, composite key would be changed.
--- create policy "disallow anon users to select note_tags" on public.note_tags for select to anon using (false);
--- create policy "disallow anon users to insert note_tags" on public.note_tags for insert to anon with check (false);
--- create policy "disallow anon users to delete note_tags" on public.note_tags for delete to anon using (false);
+-- rls for public.note_tags
+alter table public.note_tags enable row level security;
+create policy "allow authenticated users to select own note_tags" on public.note_tags for select to authenticated using (exists (select 1 from notes where notes.id = note_tags.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to insert own note_tags" on public.note_tags for insert to authenticated with check (exists (select 1 from notes where notes.id = note_tags.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to delete own note_tags" on public.note_tags for delete to authenticated using (exists (select 1 from notes where notes.id = note_tags.note_id and notes.user_id = auth.uid()));
+-- note: update is not applicable for join table, composite key would be changed.
+create policy "disallow anon users to select note_tags" on public.note_tags for select to anon using (false);
+create policy "disallow anon users to insert note_tags" on public.note_tags for insert to anon with check (false);
+create policy "disallow anon users to delete note_tags" on public.note_tags for delete to anon using (false);
 
--- -- rls for public.srs_data
--- alter table public.srs_data enable row level security;
--- create policy "allow authenticated users to select own srs_data" on public.srs_data for select to authenticated using (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to insert own srs_data" on public.srs_data for insert to authenticated with check (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to update own srs_data" on public.srs_data for update to authenticated using (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to delete own srs_data" on public.srs_data for delete to authenticated using (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
--- create policy "disallow anon users to select srs_data" on public.srs_data for select to anon using (false);
--- create policy "disallow anon users to insert srs_data" on public.srs_data for insert to anon with check (false);
--- create policy "disallow anon users to update srs_data" on public.srs_data for update to anon using (false);
--- create policy "disallow anon users to delete srs_data" on public.srs_data for delete to anon using (false);
+-- rls for public.srs_data
+alter table public.srs_data enable row level security;
+create policy "allow authenticated users to select own srs_data" on public.srs_data for select to authenticated using (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to insert own srs_data" on public.srs_data for insert to authenticated with check (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to update own srs_data" on public.srs_data for update to authenticated using (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to delete own srs_data" on public.srs_data for delete to authenticated using (exists (select 1 from notes where notes.id = srs_data.note_id and notes.user_id = auth.uid()));
+create policy "disallow anon users to select srs_data" on public.srs_data for select to anon using (false);
+create policy "disallow anon users to insert srs_data" on public.srs_data for insert to anon with check (false);
+create policy "disallow anon users to update srs_data" on public.srs_data for update to anon using (false);
+create policy "disallow anon users to delete srs_data" on public.srs_data for delete to anon using (false);
 
--- -- rls for public.quizzes
--- alter table public.quizzes enable row level security;
--- create policy "allow authenticated users to select own quizzes" on public.quizzes for select to authenticated using (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to insert own quizzes" on public.quizzes for insert to authenticated with check (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to update own quizzes" on public.quizzes for update to authenticated using (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to delete own quizzes" on public.quizzes for delete to authenticated using (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
--- create policy "disallow anon users to select quizzes" on public.quizzes for select to anon using (false);
--- create policy "disallow anon users to insert quizzes" on public.quizzes for insert to anon with check (false);
--- create policy "disallow anon users to update quizzes" on public.quizzes for update to anon using (false);
--- create policy "disallow anon users to delete quizzes" on public.quizzes for delete to anon using (false);
+-- rls for public.quizzes
+alter table public.quizzes enable row level security;
+create policy "allow authenticated users to select own quizzes" on public.quizzes for select to authenticated using (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to insert own quizzes" on public.quizzes for insert to authenticated with check (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to update own quizzes" on public.quizzes for update to authenticated using (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to delete own quizzes" on public.quizzes for delete to authenticated using (exists (select 1 from notes where notes.id = quizzes.note_id and notes.user_id = auth.uid()));
+create policy "disallow anon users to select quizzes" on public.quizzes for select to anon using (false);
+create policy "disallow anon users to insert quizzes" on public.quizzes for insert to anon with check (false);
+create policy "disallow anon users to update quizzes" on public.quizzes for update to anon using (false);
+create policy "disallow anon users to delete quizzes" on public.quizzes for delete to anon using (false);
 
--- -- rls for public.questions
--- alter table public.questions enable row level security;
--- create policy "allow authenticated users to select own questions" on public.questions for select to authenticated using (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to insert own questions" on public.questions for insert to authenticated with check (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to update own questions" on public.questions for update to authenticated using (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to delete own questions" on public.questions for delete to authenticated using (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
--- create policy "disallow anon users to select questions" on public.questions for select to anon using (false);
--- create policy "disallow anon users to insert questions" on public.questions for insert to anon with check (false);
--- create policy "disallow anon users to update questions" on public.questions for update to anon using (false);
--- create policy "disallow anon users to delete questions" on public.questions for delete to anon using (false);
+-- rls for public.questions
+alter table public.questions enable row level security;
+create policy "allow authenticated users to select own questions" on public.questions for select to authenticated using (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to insert own questions" on public.questions for insert to authenticated with check (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to update own questions" on public.questions for update to authenticated using (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to delete own questions" on public.questions for delete to authenticated using (exists (select 1 from quizzes join notes on quizzes.note_id = notes.id where quizzes.id = questions.quiz_id and notes.user_id = auth.uid()));
+create policy "disallow anon users to select questions" on public.questions for select to anon using (false);
+create policy "disallow anon users to insert questions" on public.questions for insert to anon with check (false);
+create policy "disallow anon users to update questions" on public.questions for update to anon using (false);
+create policy "disallow anon users to delete questions" on public.questions for delete to anon using (false);
 
--- -- rls for public.answers
--- alter table public.answers enable row level security;
--- create policy "allow authenticated users to select own answers" on public.answers for select to authenticated using (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to insert own answers" on public.answers for insert to authenticated with check (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to update own answers" on public.answers for update to authenticated using (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
--- create policy "allow authenticated users to delete own answers" on public.answers for delete to authenticated using (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
--- create policy "disallow anon users to select answers" on public.answers for select to anon using (false);
--- create policy "disallow anon users to insert answers" on public.answers for insert to anon with check (false);
--- create policy "disallow anon users to update answers" on public.answers for update to anon using (false);
--- create policy "disallow anon users to delete answers" on public.answers for delete to anon using (false);
+-- rls for public.answers
+alter table public.answers enable row level security;
+create policy "allow authenticated users to select own answers" on public.answers for select to authenticated using (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to insert own answers" on public.answers for insert to authenticated with check (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to update own answers" on public.answers for update to authenticated using (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
+create policy "allow authenticated users to delete own answers" on public.answers for delete to authenticated using (exists (select 1 from questions join quizzes on questions.quiz_id = quizzes.id join notes on quizzes.note_id = notes.id where questions.id = answers.question_id and notes.user_id = auth.uid()));
+create policy "disallow anon users to select answers" on public.answers for select to anon using (false);
+create policy "disallow anon users to insert answers" on public.answers for insert to anon with check (false);
+create policy "disallow anon users to update answers" on public.answers for update to anon using (false);
+create policy "disallow anon users to delete answers" on public.answers for delete to anon using (false);
 
 -- -- rls for public.quiz_attempts
 -- alter table public.quiz_attempts enable row level security;
