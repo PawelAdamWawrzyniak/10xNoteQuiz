@@ -216,7 +216,7 @@ for each row execute procedure public.handle_updated_at();
 -- section: row level security (rls)
 -- description: enabling rls and defining policies for all tables.
 
-rls for public.profiles
+-- rls for public.profiles
 alter table public.profiles enable row level security;
 create policy "allow authenticated users to select own profile" on public.profiles for select to authenticated using (auth.uid() = id);
 create policy "allow authenticated users to insert own profile" on public.profiles for insert to authenticated with check (auth.uid() = id);
