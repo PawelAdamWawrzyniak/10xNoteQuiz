@@ -87,7 +87,7 @@ function createMd(toc: TocItem[]) {
         // Collect TOC items
         if (token.tag && token.tag.match(/^h[1-6]$/)) {
           const level = Number(token.tag[1]);
-          toc.push({ level, id: info.slug, text: token.content });
+          toc.push({ level, id: info.slug, text: info.title });
         }
       },
     });
@@ -113,6 +113,7 @@ function sanitize(html: string) {
       "td",
     ]),
     allowedAttributes: {
+      "*": ["id"], // Allow id attribute on all tags
       a: ["href", "name", "target", "rel"],
       img: ["src", "alt", "title", "width", "height", "loading"],
       span: ["class"],
