@@ -31,7 +31,7 @@ INSERT INTO auth.users (
     '6d229373-47dc-4cf4-b4d5-b4f9fc266311'::uuid,
     '00000000-0000-0000-0000-000000000000',
     '10xdevs@mailinator.com',
-    crypt('10Xdevs!', gen_salt('bf')),
+    crypt('10Xdevs!ABC', gen_salt('bf')),
     now(),
     now(),
     now(),

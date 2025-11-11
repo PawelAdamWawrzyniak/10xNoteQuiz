@@ -14,7 +14,7 @@ You can check the latest version here: [https://10xnotequiz.pages.dev/](https://
 To explore the application without creating your own account, you can use the demo user credentials:
 
 - **Email:** `10xdevs@mailinator.com`
-- **Password:** `10Xdevs!`
+- **Password:** `10Xdevs!ABC`
 
 The demo account comes pre-populated with sample notes covering topics like Git, Playwright, React, Supabase, and Domain-Driven Design concepts.
 
