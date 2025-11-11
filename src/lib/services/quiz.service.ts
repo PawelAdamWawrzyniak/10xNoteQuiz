@@ -80,6 +80,7 @@ WYMAGANIA:
   * W polu correct_answer podaj string z przykładową poprawną odpowiedzią
 - Pytania powinny testować zrozumienie kluczowych konceptów z notatki
 - Pytania powinny być konkretne i jednoznaczne
+- Odpowiedź powinna składać się z maksymalnie 2-3 słów dla pytań short_answer
 
 Odpowiadaj TYLKO w formacie JSON.`,
         userPrompt: `Tytuł notatki: "${note.title}"
