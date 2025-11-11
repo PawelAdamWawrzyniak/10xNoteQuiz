@@ -98,8 +98,10 @@ jobs:
           secrets: |
             SUPABASE_URL
             SUPABASE_KEY
+            OPENROUTER_API_KEY
         env:
           # This makes the secrets available to the action itself
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           # Add any other secrets here
