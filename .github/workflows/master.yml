@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Test, Build, and Deploy to Cloudflare Pages
 
 on:
   push:
@@ -10,11 +10,10 @@ permissions:
   deployments: write
 
 jobs:
-  # Job 1: Lintowanie i testowanie
-  quality_checks:
-    name: Lint and Test
+  # Job 1: Run quality checks and build the application
+  build_and_test:
+    name: Build and Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,35 +33,43 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-  # Job 2: Budowanie i wdrażanie
-  build_and_deploy:
-    name: Build and Deploy
-    runs-on: ubuntu-latest
-    needs: quality_checks
-    environment:
-      name: production
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
       - name: Build application
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: npm run build
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-build
+          path: dist
+
+  # Job 2: Deploy the built application to Cloudflare
+  deploy_to_cloudflare:
+    name: Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    # This job runs only after the build and tests are successful
+    needs: build_and_test
+    environment:
+      name: production
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pages-build
+          path: dist
+
       - name: Deploy to Cloudflare Pages
-        id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=10xnotequiz --branch=master
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          # These secrets are now correctly attached to the one and only deployment
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
