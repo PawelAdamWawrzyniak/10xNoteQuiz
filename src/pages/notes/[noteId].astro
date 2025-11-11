@@ -41,34 +41,61 @@ const { data: acceptedQuiz } = await supabase
 ---
 
 <Layout title={`Note: ${note.title}`}>
-  <main class="container mx-auto max-w-4xl py-12">
-    <a href="/notes" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
-    <h1 class="text-4xl font-bold mb-6">{note.title}</h1>
+  <main class="container mx-auto py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <a href="/notes" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
+      <h1 class="text-4xl font-bold mb-6">{note.title}</h1>
 
-    <div class="mb-8 pb-6 border-b" id="actions-section">
-      <h2 class="text-2xl font-bold mb-4">Actions</h2>
-      <div class="flex gap-4">
-        <QuizGenerationController
-          client:idle
-          noteId={note.id}
-          hasUserApiKey={userData.hasUserApiKey}
-          freeQuizzesRemaining={userData.freeQuizzesRemaining}
-        />
+      <div class="flex gap-8 items-start">
         {
-          acceptedQuiz && (
-            <a
-              href={`/quizzes/${acceptedQuiz.id}/solve`}
-              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
-            >
-              Solve Quiz
-            </a>
-          )
+          toc.length > 0 ? (
+            <aside class="w-64 flex-shrink-0 sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+              <div class="rounded-md border bg-card p-4 text-sm">
+                <div class="font-semibold mb-2">Table of contents</div>
+                <nav aria-label="Table of contents">
+                  <ol class="space-y-1">
+                    {toc.map((item) => (
+                      <li style={`padding-left: ${(item.level - 1) * 16}px`}>
+                        <a class="hover:underline text-muted-foreground hover:text-foreground transition-colors" href={`#${item.id}`}>
+                          {item.text}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              </div>
+            </aside>
+          ) : null
         }
-      </div>
-    </div>
 
-    <div class="prose dark:prose-invert max-w-none" id="note-content">
-      {noteHtml ? <Fragment set:html={noteHtml} /> : <p class="text-muted-foreground italic">This note is empty.</p>}
+        <div class="flex-1 min-w-0 max-w-4xl">
+          <div class="mb-8 pb-6 border-b" id="actions-section">
+            <h2 class="text-2xl font-bold mb-4">Actions</h2>
+            <div class="flex gap-4">
+              <QuizGenerationController
+                client:idle
+                noteId={note.id}
+                hasUserApiKey={userData.hasUserApiKey}
+                freeQuizzesRemaining={userData.freeQuizzesRemaining}
+              />
+              {
+                acceptedQuiz && (
+                  <a
+                    href={`/quizzes/${acceptedQuiz.id}/solve`}
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+                  >
+                    Solve Quiz
+                  </a>
+                )
+              }
+            </div>
+          </div>
+
+          <div class="prose dark:prose-invert max-w-none" id="note-content">
+            {noteHtml ? <Fragment set:html={noteHtml} /> : <p class="text-muted-foreground italic">This note is empty.</p>}
+          </div>
+        </div>
+      </div>
     </div>
 
     <style>
@@ -89,7 +116,9 @@ const { data: acceptedQuiz } = await supabase
         right: 2rem;
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s, visibility 0.3s;
+        transition:
+          opacity 0.3s,
+          visibility 0.3s;
       }
 
       .scroll-to-top.visible {
@@ -103,28 +132,51 @@ const { data: acceptedQuiz } = await supabase
       class="scroll-to-top inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 h-12 w-12"
       aria-label="Scroll to top"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m18 15-6-6-6 6"/>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m18 15-6-6-6 6"></path>
       </svg>
     </button>
 
     <script>
-      const scrollToTopBtn = document.getElementById('scroll-to-top');
-
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-          scrollToTopBtn?.classList.add('visible');
-        } else {
-          scrollToTopBtn?.classList.remove('visible');
-        }
-      });
-
-      scrollToTopBtn?.addEventListener('click', () => {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
+      (() => {
+        const scrollToTopBtn = document.getElementById("scroll-to-top");
+        window.addEventListener("scroll", () => {
+          if (window.scrollY > 300) {
+            scrollToTopBtn?.classList.add("visible");
+          } else {
+            scrollToTopBtn?.classList.remove("visible");
+          }
         });
-      });
+        scrollToTopBtn?.addEventListener("click", () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+          const tocLinks = document.querySelectorAll('aside[aria-label="Table of contents"] a[href^="#"]');
+          tocLinks.forEach((link) => {
+            link.addEventListener("click", (e) => {
+              e.preventDefault();
+              const targetId = link.getAttribute("href")?.substring(1);
+              if (targetId) {
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                  targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+                  window.history.pushState(null, "", `#${targetId}`);
+                }
+              }
+            });
+          });
+        });
+      })();
     </script>
   </main>
 </Layout>

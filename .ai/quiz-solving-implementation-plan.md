@@ -3,6 +3,7 @@
 ## 📋 Przegląd
 
 Implementacja strony do rozwiązywania zaakceptowanych quizów zgodnie z:
+
 - **PRD**: Historyjka FW-08 (Rozwiązywanie Quizów)
 - **Historyjki użytkownika**: US-017, US-018
 - **Architektura UI**: Dedykowany widok do rozwiązywania quizów
@@ -10,18 +11,21 @@ Implementacja strony do rozwiązywania zaakceptowanych quizów zgodnie z:
 ## 🎯 Wymagania Funkcjonalne
 
 ### Z PRD (FW-08):
+
 - Interfejs do rozwiązywania quizów
 - Prezentacja pytań z notatki
 - Obsługa różnych typów pytań (Prawda/Fałsz, wielokrotnego wyboru, otwarte)
 - Możliwość udzielania odpowiedzi na wszystkie pytania
 
 ### Z US-017:
+
 - Wyświetlanie jednego pytania na raz
 - Interfejs do zaznaczania odpowiedzi (P/F, wielokrotnego wyboru)
 - Pole tekstowe dla pytań otwartych
 - Możliwość zakończenia quizu po odpowiedzeniu na wszystkie pytania
 
 ### Z US-018:
+
 - Natychmiastowe wyświetlenie wyniku po zakończeniu
 - Procent poprawnych odpowiedzi
 - Przegląd wszystkich pytań z oznaczeniem poprawnych/błędnych odpowiedzi
@@ -110,16 +114,13 @@ export async function getQuizForSolving(
   supabase: SupabaseClient,
   quizId: string,
   userId: string
-): Promise<QuizToSolveDto | null>
+): Promise<QuizToSolveDto | null>;
 
 /**
  * Submituje odpowiedzi użytkownika
  * POST /api/quizzes/{quizId}/attempts
  */
-export async function submitQuizAttempt(
-  quizId: string,
-  answers: UserAnswerDto[]
-): Promise<QuizAttemptResultDto>
+export async function submitQuizAttempt(quizId: string, answers: UserAnswerDto[]): Promise<QuizAttemptResultDto>;
 ```
 
 ### 2. Hook (useQuizSolver.ts)
@@ -519,6 +520,7 @@ export function QuizProgress({ current, total, progress }: QuizProgressProps) {
 ### POST /api/quizzes/{quizId}/attempts
 
 **Request Body:**
+
 ```json
 {
   "answers": [
@@ -531,6 +533,7 @@ export function QuizProgress({ current, total, progress }: QuizProgressProps) {
 ```
 
 **Response (201 Created):**
+
 ```json
 {
   "id": "uuid",
@@ -555,12 +558,14 @@ export function QuizProgress({ current, total, progress }: QuizProgressProps) {
 ## 🎨 UI/UX Szczegóły
 
 ### Nawigacja między pytaniami:
+
 - ✅ Przyciski Previous/Next
 - ✅ Mini mapa z numerami pytań (wizualizacja postępu)
 - ✅ Możliwość przeskakiwania do dowolnego pytania
 - ✅ Wizualne oznaczenie pytań z odpowiedziami
 
 ### Feedback dla użytkownika:
+
 - ✅ Pasek postępu pokazujący % ukończenia
 - ✅ Licznik pytań (X of Y)
 - ✅ Walidacja przed submisją (wszystkie pytania muszą mieć odpowiedź)
@@ -568,6 +573,7 @@ export function QuizProgress({ current, total, progress }: QuizProgressProps) {
 - ✅ Toast z informacją o sukcesie/błędzie
 
 ### Wyniki:
+
 - ✅ Duży, wyraźny wynik procentowy
 - ✅ Liczba poprawnych/wszystkich odpowiedzi
 - ✅ Szczegółowy przegląd każdego pytania
@@ -575,11 +581,13 @@ export function QuizProgress({ current, total, progress }: QuizProgressProps) {
 - ✅ Pokazanie poprawnej odpowiedzi dla błędnych pytań
 
 ### Responsywność:
+
 - ✅ Mobile-first approach
 - ✅ Minimapa pytań zawijana na małych ekranach
 - ✅ Duże, łatwe do kliknięcia przyciski na urządzeniach dotykowych
 
 ### Dostępność (a11y):
+
 - ✅ Pełna obsługa klawiaturą (Tab, Enter, strzałki)
 - ✅ ARIA labels dla radio buttons i pól tekstowych
 - ✅ Semantyczne HTML (form elements)
@@ -589,6 +597,7 @@ export function QuizProgress({ current, total, progress }: QuizProgressProps) {
 ## 📝 Dodatkowe Komponenty UI (Shadcn/ui)
 
 Wykorzystamy istniejące komponenty:
+
 - ✅ `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardDescription`
 - ✅ `Button`
 - ✅ `RadioGroup`, `RadioGroupItem`
@@ -599,6 +608,7 @@ Wykorzystamy istniejące komponenty:
 - ⚠️ `Progress` - **do dodania**
 
 Nowy komponent do utworzenia:
+
 ```bash
 npx shadcn@latest add progress
 ```
@@ -606,6 +616,7 @@ npx shadcn@latest add progress
 ## 🧪 Testy i Walidacja
 
 ### Scenariusze testowe:
+
 1. ✅ Użytkownik może rozwiązać quiz z wszystkimi typami pytań
 2. ✅ System waliduje czy wszystkie pytania mają odpowiedź przed submisją
 3. ✅ Użytkownik może nawigować między pytaniami bez utraty odpowiedzi
@@ -615,6 +626,7 @@ npx shadcn@latest add progress
 7. ✅ Użytkownik ma dostęp tylko do własnych quizów
 
 ### Error handling:
+
 - ❌ Quiz nie istnieje → 404
 - ❌ Quiz nie należy do użytkownika → 403/404
 - ❌ Quiz nie jest w statusie "accepted" → 400
@@ -624,11 +636,13 @@ npx shadcn@latest add progress
 ## 🔗 Integracja z Istniejącym Kodem
 
 ### Linki do strony rozwiązywania:
+
 1. **Z widoku notatki** - przycisk "Solve Quiz" przy liście quizów
 2. **Z listy quizów** - przycisk "Solve" dla zaakceptowanych quizów
 3. **Z Dashboard** - dla quizów zaplanowanych do powtórki (SRS)
 
 ### Aktualizacje istniejących komponentów:
+
 - `NotesView.tsx` - dodać listę quizów z linkami do rozwiązywania
 - Ewentualny nowy komponent `QuizzesList.tsx` dla widoku wszystkich quizów użytkownika
 
@@ -677,15 +691,15 @@ npx shadcn@latest add progress
 
 ## 📊 Zgodność z PRD
 
-| Wymaganie | Status | Uwagi |
-|-----------|--------|-------|
-| FW-08: Rozwiązywanie Quizów | ✅ | Pełna implementacja |
-| US-017: Rozwiązywanie quizu | ✅ | Interfejs zgodny z kryteriami |
-| US-018: Weryfikacja odpowiedzi | ✅ | Automatyczna weryfikacja + wyniki |
-| Responsywność (mobile-first) | ✅ | Zgodnie z ui-architecture.md |
-| Dostępność (a11y) | ✅ | Pełna obsługa klawiatury + ARIA |
-| Integracja z API | ✅ | Zgodnie z api-plan.md |
-| Obsługa błędów | ✅ | Scentralizowana + przyjazne komunikaty |
+| Wymaganie                      | Status | Uwagi                                  |
+| ------------------------------ | ------ | -------------------------------------- |
+| FW-08: Rozwiązywanie Quizów    | ✅     | Pełna implementacja                    |
+| US-017: Rozwiązywanie quizu    | ✅     | Interfejs zgodny z kryteriami          |
+| US-018: Weryfikacja odpowiedzi | ✅     | Automatyczna weryfikacja + wyniki      |
+| Responsywność (mobile-first)   | ✅     | Zgodnie z ui-architecture.md           |
+| Dostępność (a11y)              | ✅     | Pełna obsługa klawiatury + ARIA        |
+| Integracja z API               | ✅     | Zgodnie z api-plan.md                  |
+| Obsługa błędów                 | ✅     | Scentralizowana + przyjazne komunikaty |
 
 ---
 
