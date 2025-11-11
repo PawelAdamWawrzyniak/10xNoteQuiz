@@ -123,9 +123,9 @@ export function LoginForm() {
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "Logowanie..." : "Zaloguj się"}
           </Button>
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-muted-foreground">
             Nie masz jeszcze konta?{" "}
-            <a href="/auth/register" className="font-semibold text-blue-600 hover:underline">
+            <a href="/auth/register" className="font-semibold text-primary hover:underline">
               Zarejestruj się
             </a>
           </p>

@@ -99,8 +99,8 @@ export function RegisterForm() {
             <AlertTitle data-testid="register-success-alert-title">✓ Konto utworzone</AlertTitle>
             <AlertDescription data-testid="register-success-alert-description">{successMessage}</AlertDescription>
           </Alert>
-          <p className="text-center text-sm text-gray-600">
-            <a href="/auth/login" className="font-semibold text-blue-600 hover:underline">
+          <p className="text-center text-sm text-muted-foreground">
+            <a href="/auth/login" className="font-semibold text-primary hover:underline">
               Przejdź do logowania →
             </a>
           </p>
@@ -178,9 +178,9 @@ export function RegisterForm() {
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "Rejestrowanie..." : "Zarejestruj się"}
           </Button>
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-muted-foreground">
             Masz już konto?{" "}
-            <a href="/auth/login" className="font-semibold text-blue-600 hover:underline">
+            <a href="/auth/login" className="font-semibold text-primary hover:underline">
               Zaloguj się
             </a>
           </p>

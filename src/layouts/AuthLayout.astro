@@ -1,7 +1,8 @@
 ---
 import "../styles/global.css";
 import { Toaster } from "@/components/ui/sonner";
-import Header from "@/components/Header.astro";
+import { AuthThemeWrapper } from "@/components/AuthThemeWrapper";
+import { themeInitScript } from "@/scripts/themeInit";
 
 interface Props {
   title?: string;
@@ -11,20 +12,22 @@ const { title = "10x Astro Starter" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" suppressHydrationWarning>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <script is:inline set:html={themeInitScript} />
   </head>
   <body class="flex min-h-screen flex-col">
-    <Header />
-    <main class="flex justify-center py-12 px-4">
-      <slot />
-    </main>
-    <Toaster richColors client:load />
+    <AuthThemeWrapper client:load>
+      <main class="flex justify-center py-12 px-4">
+        <slot />
+      </main>
+      <Toaster richColors client:load />
+    </AuthThemeWrapper>
   </body>
 </html>
 
