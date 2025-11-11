@@ -34,12 +34,6 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pages-build
-          path: dist
-
   # Job 2: Budowanie i wdrażanie
   build_and_deploy:
     name: Build and Deploy
@@ -72,6 +66,12 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=10xnotequiz --branch=master
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-build
+          path: dist
 
   # Job 2: Deploy the built application to Cloudflare
   deploy_to_cloudflare:
