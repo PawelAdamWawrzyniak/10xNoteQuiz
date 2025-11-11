@@ -87,6 +87,10 @@ jobs:
           name: pages-build
           path: dist
 
+      # --- ADD THIS STEP FOR DEBUGGING ---
+      - name: List files in the deployment directory
+        run: ls -R dist
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
