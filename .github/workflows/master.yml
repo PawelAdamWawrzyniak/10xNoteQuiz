@@ -95,13 +95,8 @@ jobs:
           # This command is now correct and robust
           command: pages deploy dist --project-name=10xnotequiz --branch=master
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          secrets: |
-            SUPABASE_URL
-            SUPABASE_KEY
-            OPENROUTER_API_KEY
         env:
           # This makes the secrets available to the action itself
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          # Add any other secrets here
