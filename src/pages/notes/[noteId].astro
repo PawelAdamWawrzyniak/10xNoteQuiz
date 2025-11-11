@@ -45,43 +45,7 @@ const { data: acceptedQuiz } = await supabase
     <a href="/notes" class="text-sm text-primary hover:underline mb-4 inline-block">&larr; Back to Notes</a>
     <h1 class="text-4xl font-bold mb-6">{note.title}</h1>
 
-    {
-      toc.length > 0 ? (
-        <aside class="mb-8 rounded-md border bg-card p-4 text-sm">
-          <div class="font-semibold mb-2">Table of contents</div>
-          <nav aria-label="Table of contents">
-            <ol class="space-y-1">
-              {toc.map((item) => (
-                <li style={`padding-left: ${(item.level - 1) * 16}px`}>
-                  <a class="hover:underline" href={`#${item.id}`}>
-                    {item.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        </aside>
-      ) : null
-    }
-
-    <div class="prose dark:prose-invert max-w-none">
-      {noteHtml ? <Fragment set:html={noteHtml} /> : <p class="text-muted-foreground italic">This note is empty.</p>}
-    </div>
-
-    <style>
-      /* Minimal highlight.js theme tweaks for dark/light */
-      :global(pre.hljs) {
-        padding: 1rem;
-        border-radius: 0.5rem;
-        overflow-x: auto;
-        background: color-mix(in oklab, canvas 92%, black 8%);
-      }
-      :global(code.hljs) {
-        background: transparent;
-      }
-    </style>
-
-    <div class="mt-10 border-t pt-8">
+    <div class="mb-8 pb-6 border-b" id="actions-section">
       <h2 class="text-2xl font-bold mb-4">Actions</h2>
       <div class="flex gap-4">
         <QuizGenerationController
@@ -102,5 +66,65 @@ const { data: acceptedQuiz } = await supabase
         }
       </div>
     </div>
+
+    <div class="prose dark:prose-invert max-w-none" id="note-content">
+      {noteHtml ? <Fragment set:html={noteHtml} /> : <p class="text-muted-foreground italic">This note is empty.</p>}
+    </div>
+
+    <style>
+      /* Minimal highlight.js theme tweaks for dark/light */
+      :global(pre.hljs) {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        background: color-mix(in oklab, canvas 92%, black 8%);
+      }
+      :global(code.hljs) {
+        background: transparent;
+      }
+
+      .scroll-to-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+      }
+
+      .scroll-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+    </style>
+
+    <button
+      id="scroll-to-top"
+      class="scroll-to-top inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 h-12 w-12"
+      aria-label="Scroll to top"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m18 15-6-6-6 6"/>
+      </svg>
+    </button>
+
+    <script>
+      const scrollToTopBtn = document.getElementById('scroll-to-top');
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          scrollToTopBtn?.classList.add('visible');
+        } else {
+          scrollToTopBtn?.classList.remove('visible');
+        }
+      });
+
+      scrollToTopBtn?.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    </script>
   </main>
 </Layout>
