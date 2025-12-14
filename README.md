@@ -1,13 +1,13 @@
 # 10xNoteQuiz - AI-Powered Quiz Generator from Your Notes
 
-[![Project Status: In Development](https://img.shields.io/badge/status-in%20development-yellowgreen.svg)](https://github.com/PawelAdamWawrzyniak/10xdevs-project)
+[![Project Status: In Development](https://img.shields.io/badge/status-paussed-yellowgreen.svg)](https://github.com/PawelAdamWawrzyniak/10xdevs-project)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 🚀 Live Demo
 
-The application is automatically deployed to Cloudflare Pages on every push to the master branch.
+Not is not available because of Supabase free tier limitations.
 
-You can check the latest version here: [https://10xnotequiz.pages.dev/](https://10xnotequiz.pages.dev/)
+The plan is to switch to Supabase self-hosted in the future.
 
 ### Demo User Account
 
