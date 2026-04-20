@@ -8,8 +8,8 @@ When running E2E tests that create users via normal registration flow:
 
 - ❌ Supabase sends confirmation emails
 - ❌ Email rate limits (3-4 per hour on free tier)
-- ❌ Tests fail in CI with "rate limit exceeded"
 - ❌ Slow test execution waiting for emails
+- ❌ Tests fail in CI with "rate limit exceeded"
 
 ### Solution: Admin API Direct User Creation
 
