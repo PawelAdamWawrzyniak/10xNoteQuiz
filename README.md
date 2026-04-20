@@ -1,13 +1,13 @@
 # 10xNoteQuiz - AI-Powered Quiz Generator from Your Notes
 
-[![Project Status: In Development](https://img.shields.io/badge/status-paussed-yellowgreen.svg)](https://github.com/PawelAdamWawrzyniak/10xdevs-project)
+[![Project Status: In Development](https://img.shields.io/badge/status-in%20development-yellowgreen.svg)](https://github.com/PawelAdamWawrzyniak/10xdevs-project)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## 🚀 Live Demo
 
-Not is not available because of Supabase free tier limitations.
+The application is automatically deployed to Cloudflare Pages on every push to the master branch.
 
-The plan is to switch to Supabase self-hosted in the future.
+You can check the latest version here: [https://10xnotequiz.pages.dev/](https://10xnotequiz.pages.dev/)
 
 ### Demo User Account
 
@@ -40,21 +40,21 @@ The core problem this project solves is the time-consuming nature of creating se
 The project is built with a modern, robust, and scalable tech stack:
 
 - **Frontend**:
-  - [Astro 5](https://astro.build/): For building fast, content-focused websites.
-  - [React 19](https://react.dev/): For creating interactive UI components.
-  - [TypeScript 5](https://www.typescriptlang.org/): For static type-checking and improved developer experience.
-  - [Tailwind CSS 4](https://tailwindcss.com/): A utility-first CSS framework for rapid styling.
-  - [Shadcn/ui](https://ui.shadcn.com/): A collection of accessible and reusable React components.
+    - [Astro 5](https://astro.build/): For building fast, content-focused websites.
+    - [React 19](https://react.dev/): For creating interactive UI components.
+    - [TypeScript 5](https://www.typescriptlang.org/): For static type-checking and improved developer experience.
+    - [Tailwind CSS 4](https://tailwindcss.com/): A utility-first CSS framework for rapid styling.
+    - [Shadcn/ui](https://ui.shadcn.com/): A collection of accessible and reusable React components.
 
 - **Backend**:
-  - [Supabase](https://supabase.io/): An open-source Firebase alternative providing a PostgreSQL database, authentication, and a Backend-as-a-Service SDK.
+    - [Supabase](https://supabase.io/): An open-source Firebase alternative providing a PostgreSQL database, authentication, and a Backend-as-a-Service SDK.
 
 - **Artificial Intelligence**:
-  - [Openrouter.ai](https://openrouter.ai/): A service that provides access to a wide range of AI models (from OpenAI, Anthropic, Google, etc.) for high-efficiency and low-cost quiz generation.
+    - [Openrouter.ai](https://openrouter.ai/): A service that provides access to a wide range of AI models (from OpenAI, Anthropic, Google, etc.) for high-efficiency and low-cost quiz generation.
 
 - **CI/CD & Hosting**:
-  - [GitHub Actions](https://github.com/features/actions): For continuous integration and deployment pipelines.
-  - [Cloudflare Pages](https://pages.cloudflare.com/): For hosting the application with automatic deployments from the master branch.
+    - [GitHub Actions](https://github.com/features/actions): For continuous integration and deployment pipelines.
+    - [Cloudflare Pages](https://pages.cloudflare.com/): For hosting the application with automatic deployments from the master branch.
 
 ## 4. Getting Started Locally
 
